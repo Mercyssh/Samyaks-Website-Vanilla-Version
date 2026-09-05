@@ -1,0 +1,115 @@
+/* ============================================================
+   Base — reset, fonts, typography, helpers
+   ============================================================ */
+
+/* ---- Fonts ---- */
+/* Plus Jakarta Sans (self-hosted, OFL) */
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal; font-weight: 400; font-display: swap;
+  src: url("../assets/fonts/plus-jakarta-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal; font-weight: 500; font-display: swap;
+  src: url("../assets/fonts/plus-jakarta-sans-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal; font-weight: 600; font-display: swap;
+  src: url("../assets/fonts/plus-jakarta-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal; font-weight: 700; font-display: swap;
+  src: url("../assets/fonts/plus-jakarta-sans-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal; font-weight: 800; font-display: swap;
+  src: url("../assets/fonts/plus-jakarta-sans-800.woff2") format("woff2");
+}
+
+/* Magistral (licensed; supplied by user as OTF, converted to woff2).
+   Weights: 300 Light, 400 Book, 500 Medium, 700 Bold, 800 Extra Bold. */
+@font-face {
+  font-family: "Magistral";
+  font-style: normal; font-weight: 300; font-display: swap;
+  src: url("../assets/fonts/magistral-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Magistral";
+  font-style: normal; font-weight: 400; font-display: swap;
+  src: url("../assets/fonts/magistral-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Magistral";
+  font-style: normal; font-weight: 500; font-display: swap;
+  src: url("../assets/fonts/magistral-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Magistral";
+  font-style: normal; font-weight: 700; font-display: swap;
+  src: url("../assets/fonts/magistral-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Magistral";
+  font-style: normal; font-weight: 800; font-display: swap;
+  src: url("../assets/fonts/magistral-800.woff2") format("woff2");
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Lenis smooth-scroll requirements */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+img, video { height: auto; }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+ul, ol { list-style: none; padding: 0; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---- Helpers ---- */
+.u-container { width: min(100% - 2 * var(--section-pad), var(--maxw)); margin-inline: auto; }
+.u-visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Sections are full-viewport-tall shells by default; individual
+   section CSS overrides as needed. */
+.section { position: relative; z-index: var(--z-content); }
+
+/* Reduced motion: disable heavy scrubbing (JS also checks this). */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}

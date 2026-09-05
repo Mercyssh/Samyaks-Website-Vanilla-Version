@@ -1,0 +1,54 @@
+/* ============================================================
+   Section scaffolding (Phase 1)
+   Per-section detail is layered on in Phase 2. For now each
+   section is a full-height shell with a label so we can verify
+   smooth scroll, scroll-spy and fonts.
+   ============================================================ */
+
+.section {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  padding: var(--space-xl) var(--section-pad);
+}
+
+.section__eyebrow {
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-mid);
+  margin-bottom: var(--space-sm);
+}
+
+.section__title {
+  font-size: var(--step-3);
+  color: var(--fg);
+  max-width: 16ch;
+}
+
+.section__lead {
+  margin-top: var(--space-md);
+  max-width: 60ch;
+  color: var(--fg-dim);
+  font-size: var(--step-1);
+  line-height: 1.35;
+}
+
+/* the one light section */
+#abilities {
+  background: var(--light-bg);
+  color: var(--light-fg);
+}
+#abilities .section__title { color: var(--light-fg); }
+#abilities .section__lead { color: var(--light-dim); }
+#abilities .section__eyebrow { color: var(--accent-deep); }
+
+/* placeholder for a three.js canvas mount inside a section */
+.scene-mount {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-scene);
+  pointer-events: none;
+}
+.scene-mount canvas { width: 100% !important; height: 100% !important; }

@@ -1,0 +1,68 @@
+/* ============================================================
+   Design tokens — colors, type, spacing, layers
+   Observed from the live Framer site (samyakchakrabarty.com)
+   ============================================================ */
+
+:root {
+  /* --- Brand greens (site accent) --- */
+  --accent:        #A6FF3D;   /* nav highlight / primary */
+  --accent-mid:    #9CE325;   /* glow / titles */
+  --accent-deep:   #8CC63F;   /* darker accent */
+  --accent-glow:   rgba(156, 227, 37, 0.45);
+
+  /* --- Dark theme (default page) --- */
+  --bg:            #0a0a0a;
+  --bg-elev:       #141414;   /* raised cards */
+  --bg-elev-2:     #1c1c1c;
+  --border:        rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --fg:            #f4f5f2;
+  --fg-dim:        #a2a49c;
+  --fg-faint:      #6b6d66;
+
+  /* --- Light section (Abilities) --- */
+  --light-bg:      #f2f3ee;
+  --light-fg:      #0c0d0a;
+  --light-dim:     #55574f;
+
+  /* --- Type --- */
+  --font-head: "Magistral", "Eurostile", "Bahnschrift", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* --- Fluid type scale (desktop-first) --- */
+  --step--1: clamp(0.82rem, 0.78rem + 0.2vw, 0.94rem);
+  --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  --step-1:  clamp(1.3rem, 1.1rem + 0.9vw, 1.9rem);
+  --step-2:  clamp(1.9rem, 1.4rem + 2.2vw, 3.2rem);
+  --step-3:  clamp(2.8rem, 1.8rem + 4.5vw, 6rem);
+  --step-4:  clamp(4rem, 2rem + 9vw, 11rem);
+
+  /* --- Spacing --- */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+  --section-pad: clamp(1.25rem, 5vw, 6rem);
+
+  /* --- Radii --- */
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: 28px;
+  --r-pill: 999px;
+
+  /* --- Layout --- */
+  --maxw: 1440px;
+  --nav-h: 56px;
+
+  /* --- Z-index layers --- */
+  --z-scene:     1;   /* three.js canvases sit behind section content */
+  --z-content:   2;
+  --z-nav:       50;
+  --z-overlay:   80;  /* read-more / read-article overlays */
+  --z-preloader: 100;
+
+  /* --- Motion --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}

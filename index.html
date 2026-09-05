@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Samyak Chakrabarty</title>
+  <meta name="description" content="Samyak Chakrabarty — building and leading systems where technology, science, storytelling and behavioural change operate as one." />
+
+  <!-- Preload the fonts most likely above the fold -->
+  <link rel="preload" href="./assets/fonts/plus-jakarta-sans-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./assets/fonts/plus-jakarta-sans-800.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="./css/tokens.css" />
+  <link rel="stylesheet" href="./css/base.css" />
+  <link rel="stylesheet" href="./css/nav.css" />
+  <link rel="stylesheet" href="./css/preloader.css" />
+  <link rel="stylesheet" href="./css/sections.css" />
+  <link rel="stylesheet" href="./css/media.css" />
+
+  <!-- Resolve bare module specifiers with no bundler -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three.module.min.js",
+      "three/addons/loaders/GLTFLoader.js": "./vendor/GLTFLoader.js",
+      "three/addons/utils/BufferGeometryUtils.js": "./vendor/BufferGeometryUtils.js"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <!-- ===== Preloader ===== -->
+  <div class="preloader" id="preloader" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="preloader__inner">
+      <div class="preloader__mark">SAMYAK<span>.</span></div>
+      <div class="preloader__track"><div class="preloader__bar" id="preloaderBar"></div></div>
+      <div class="preloader__pct" id="preloaderPct">0%</div>
+    </div>
+  </div>
+
+  <!-- ===== Nav ===== -->
+  <nav class="nav" id="nav" aria-label="Primary">
+    <a class="nav__link" href="#landing"      data-nav>Home</a>
+    <a class="nav__link" href="#what-i-build"  data-nav>What I build</a>
+    <a class="nav__link" href="#abilities"     data-nav>Abilities</a>
+    <a class="nav__link" href="#journey"       data-nav>Journey</a>
+    <a class="nav__link" href="#media"         data-nav>Media</a>
+  </nav>
+
+  <!-- ===== Page ===== -->
+  <main id="main">
+
+    <section class="section" id="landing" data-section>
+      <div class="scene-mount" data-scene="landing"></div>
+      <p class="section__eyebrow">Samyak Chakrabarty</p>
+      <h1 class="section__title">Landing</h1>
+      <p class="section__lead">Scaffold placeholder. Scroll-driven 3D hero comes in Phase 4.</p>
+    </section>
+
+    <section class="section" id="what-i-build" data-section>
+      <p class="section__eyebrow">01 — What I Build</p>
+      <h2 class="section__title">What I Build</h2>
+      <p class="section__lead">Technology alone doesn't move anything. Impact happens when these levers operate as one system. I build and lead those systems.</p>
+    </section>
+
+    <section class="section" id="abilities" data-section>
+      <div class="scene-mount" data-scene="abilities"></div>
+      <p class="section__eyebrow">02 — Abilities</p>
+      <h2 class="section__title">Abilities</h2>
+      <p class="section__lead">Interactive card scene (click to flip) comes in Phase 4.</p>
+    </section>
+
+    <section class="section" id="journey" data-section>
+      <div class="scene-mount" data-scene="journey"></div>
+      <p class="section__eyebrow">03 — Journey</p>
+      <h2 class="section__title">Journey</h2>
+      <p class="section__lead">Every stage taught me something the next one needed. Scroll-driven camera travel comes in Phase 4.</p>
+    </section>
+
+    <section class="section media" id="media" data-section>
+      <div class="u-container media__inner">
+        <header class="media__head">
+          <p class="section__eyebrow">Publication, Media &amp; Awards</p>
+          <h2 class="media__title">Publication, Media <em>&amp;</em> Awards</h2>
+        </header>
+        <div class="media__body">
+          <nav class="media__list" id="mediaList" aria-label="Coverage"></nav>
+          <div class="media__detail" id="mediaDetail" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Vendored UMD libs (attach to window) — load before the module -->
+  <script src="./vendor/gsap.min.js"></script>
+  <script src="./vendor/ScrollTrigger.min.js"></script>
+  <script src="./vendor/lenis.min.js"></script>
+
+  <!-- App entry (ES module) -->
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+/* ============================================================
+   Preloader — full-screen overlay with a progress bar
+   ============================================================ */
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-preloader);
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+}
+.preloader.is-done {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.preloader__inner {
+  width: min(360px, 72vw);
+  text-align: center;
+}
+
+.preloader__mark {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: var(--step-1);
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  margin-bottom: 20px;
+}
+.preloader__mark span { color: var(--accent-mid); }
+
+.preloader__track {
+  position: relative;
+  height: 3px;
+  width: 100%;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+}
+.preloader__bar {
+  position: absolute;
+  inset: 0 100% 0 0;               /* scaleX via right inset */
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  box-shadow: 0 0 18px var(--accent-glow);
+  transition: right 0.3s var(--ease-out);
+}
+
+.preloader__pct {
+  margin-top: 14px;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-faint);
+  letter-spacing: 0.08em;
+}
