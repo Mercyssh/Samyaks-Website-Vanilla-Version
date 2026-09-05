@@ -64,6 +64,9 @@
    | --sel-tick-radius   | radius of the ticker arc around the button  |
    | --sel-tick-spacing  | angle between adjacent ticks (fan spread)   |
    | --sel-tick-offset   | rotates the whole fan (0deg = centred top)  |
+   | --sel-list-gap      | vertical gap between groups                 |
+   | --sel-group-gap     | vertical gap between rows within a group    |
+   | --sel-item-lh       | line-height of item labels (wrapped rows)   |
    ============================================================ */
 .mediaSel {
   --sel-persp: 1500px;
@@ -81,6 +84,9 @@
   --sel-tick-radius: 30px;
   --sel-tick-spacing: 14deg;
   --sel-tick-offset: 45deg;
+  --sel-list-gap: 1.6rem;
+  --sel-group-gap: 0.55rem;
+  --sel-item-lh: 1.3;
 
   perspective: var(--sel-persp);
   perspective-origin: 60% 40%;
@@ -258,14 +264,23 @@
 .mediaSel__tick.is-on { background: var(--accent); height: 8px; }
 
 /* ---- selection list ---- */
-.mediaSel__list { position: relative; }
-.mediaSel__group + .mediaSel__group { margin-top: var(--space-sm); }
+.mediaSel__list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sel-list-gap);       /* spacing between groups */
+}
+
+.mediaSel__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sel-group-gap);      /* spacing between label + item rows */
+}
 
 .mediaSel__group-label {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.4rem;
   font-size: var(--step--1);
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -288,6 +303,7 @@
   padding: 0 0 0 0.9rem;
   text-align: left;
   color: var(--fg-dim);
+  line-height: var(--sel-item-lh);   /* wrapped-line spacing; inherited by label + sub */
   transition: color 0.18s ease;
 }
 .mediaSel__item:hover { color: var(--fg); }
@@ -295,7 +311,6 @@
 .mediaSel__item-label { font-weight: 500; font-size: var(--step-0); }
 .mediaSel__item-sub {
   display: block;
-  margin-top: 0.1rem;
   font-size: var(--step--1);
   color: var(--fg-faint);
 }
