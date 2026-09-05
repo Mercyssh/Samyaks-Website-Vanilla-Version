@@ -1,6 +1,6 @@
 /* ============================================================
    Media — "Publication, Media & Awards"
-   Master (grouped coverage list) + detail (featured item).
+   Left: selection window (.mediaSel).  Right: detail (.media__*).
    ============================================================ */
 
 .media { align-content: center; }
@@ -13,59 +13,290 @@
 /* ---- master / detail grid ---- */
 .media__body {
   display: grid;
-  grid-template-columns: minmax(220px, 300px) 1fr;
-  gap: clamp(1.5rem, 4vw, 4rem);
-  align-items: start;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
 }
 
-/* ---- coverage list ---- */
-.media__group + .media__group { margin-top: var(--space-md); }
+/* ============================================================
+   Selection window (left half)
+   ------------------------------------------------------------
+   Visual controls — tweak these, everything reflows:
 
-.media__group-label {
+   | Variable            | Controls                                    |
+   |---------------------|---------------------------------------------|
+   | --sel-persp         | 3D perspective depth (smaller = stronger)   |
+   | --sel-tilt-y        | panel Y-rotation (the main tilt)            |
+   | --sel-tilt-x        | panel X-rotation (slight top/bottom lean)   |
+   | --sel-radius        | corner radius of panel + ghost              |
+   | --sel-ghost-x/y     | offset of the outline "ghost" copy behind   |
+   | --sel-motif-x/y     | how far the dot/X motif box overhangs panel |
+   | --sel-dot-size      | dot-grid spacing                            |
+   | --sel-dot-color     | dot-grid color                              |
+   | --sel-x-size        | size of the corner X marks                  |
+   | --sel-x-color       | color of the corner X marks                 |
+   | --sel-tick-radius   | radius of the ticker arc around the button  |
+   | --sel-tick-spacing  | angle between adjacent ticks (fan spread)   |
+   ============================================================ */
+.mediaSel {
+  --sel-persp: 1500px;
+  --sel-tilt-y: 10deg;
+  --sel-tilt-x: 3.5deg;
+  --sel-radius: 22px;
+  --sel-ghost-x: -8px;
+  --sel-ghost-y: 8px;
+  --sel-motif-x: 34px;
+  --sel-motif-y: 26px;
+  --sel-dot-size: 15px;
+  --sel-dot-color: rgba(255, 255, 255, 0.22);
+  --sel-x-size: 13px;
+  --sel-x-color: var(--accent-mid);
+  --sel-tick-radius: 30px;
+  --sel-tick-spacing: 14deg;
+
+  perspective: var(--sel-persp);
+  perspective-origin: 60% 40%;
+  /* breathing room so the tilted ghost + overhanging motif never clip */
+  padding: 30px 46px 34px 20px;
+}
+
+/* the element that actually carries the 3D rotation */
+.mediaSel__stage {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--sel-tilt-x)) rotateY(var(--sel-tilt-y));
+}
+
+/* ---- outline-only duplicate sitting behind, offset down-left ---- */
+.mediaSel__ghost {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--sel-radius);
+  transform: translate(var(--sel-ghost-x), var(--sel-ghost-y));
+  pointer-events: none;
+  /* fade the ghost out toward the bottom like the main panel */
+  -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 92%);
+          mask-image: linear-gradient(180deg, #000 45%, transparent 92%);
+}
+
+/* ---- corner motif box (bigger than the panel) ---- */
+.mediaSel__motif {
+  position: absolute;
+  inset: calc(-1 * var(--sel-motif-y)) calc(-1 * var(--sel-motif-x));
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* dot-grid patches, each fading diagonally out of a corner */
+.mediaSel__dots {
+  position: absolute;
+  width: 66%;
+  height: 60%;
+  background-image: radial-gradient(circle, var(--sel-dot-color) 1px, transparent 1.6px);
+  background-size: var(--sel-dot-size) var(--sel-dot-size);
+}
+.mediaSel__dots--tl {
+  top: 0; left: 0;
+  -webkit-mask-image: linear-gradient(to bottom right, #000, transparent 68%);
+          mask-image: linear-gradient(to bottom right, #000, transparent 68%);
+}
+.mediaSel__dots--br {
+  bottom: 0; right: 0;
+  -webkit-mask-image: linear-gradient(to top left, #000, transparent 68%);
+          mask-image: linear-gradient(to top left, #000, transparent 68%);
+}
+
+/* thin X marks in three corners of the motif box */
+.mediaSel__x {
+  position: absolute;
+  width: var(--sel-x-size);
+  height: var(--sel-x-size);
+  background:
+    linear-gradient(45deg,  transparent calc(50% - 0.6px), var(--sel-x-color) calc(50% - 0.6px), var(--sel-x-color) calc(50% + 0.6px), transparent calc(50% + 0.6px)),
+    linear-gradient(-45deg, transparent calc(50% - 0.6px), var(--sel-x-color) calc(50% - 0.6px), var(--sel-x-color) calc(50% + 0.6px), transparent calc(50% + 0.6px));
+}
+.mediaSel__x--tl { top: 0;    left: 0;  }
+.mediaSel__x--bl { bottom: 0; left: 0;  }
+.mediaSel__x--br { bottom: 0; right: 0; }
+
+/* ---- the main panel: gradient fill + gradient border, faded at base ---- */
+.mediaSel__panel {
+  position: relative;
+  z-index: 2;
+  padding: 26px 26px;
+  border-radius: var(--sel-radius);
+  /* fill fades to transparent toward the bottom */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.02) 38%, transparent 78%);
+}
+/* gradient border via masked pseudo-element; the border color itself
+   fades to transparent toward the bottom, so no second mask is needed */
+.mediaSel__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.18) 42%,
+    rgba(255, 255, 255, 0.02) 78%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ---- panel label (top-left, absolute) ---- */
+.mediaSel__label {
+  /* --- tunable knobs (mirror .section-title) --- */
+  --label-fill-from: #ffffff;                    /* gradient fill: top   */
+  --label-fill-to:   rgba(255, 255, 255, 0.45);  /* gradient fill: bottom */
+  --label-outline:   rgba(255, 255, 255, 0.70);  /* solid text outline    */
+  --label-stroke-w:  1px;
+
+  position: absolute;
+  top: 0px;
+  left: 24px;
+  transform: translate(0, -50%);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+
+  /* gradient fill clipped to the glyphs */
+  color: transparent;
+  background: linear-gradient(90deg, var(--label-fill-from), var(--label-fill-to));
+  -webkit-background-clip: text;
+          background-clip: text;
+  /* solid outline behind the gradient fill */
+  -webkit-text-stroke: var(--label-stroke-w) var(--label-outline);
+  paint-order: stroke fill;
+  /* drop-shadow (not text-shadow) so it survives background-clip: text */
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.55));
+}
+
+/* ---- cycle button (top-right) with ticker ring ---- */
+.mediaSel__cycle {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  transform: translate(50%, -50%);
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 1);
+  color: var(--fg);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.mediaSel__cycle:hover { border-color: var(--accent); background: rgba(166, 255, 61, 0.10); }
+.mediaSel__cycle:active { transform: translate(50%, -50%) scale(0.7); transition: transform 0s;}
+.mediaSel__arrow { width: 20px; height: 20px; }
+
+/* ticker: one tick per panel, fanned in an arc over the button top */
+.mediaSel__ticker {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mediaSel__tick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 6px;
+  margin: -3px 0 0 -1px;         /* centre the tick before rotating out */
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.22);
+  transform-origin: 50% 50%;
+  /* --i (signed offset from centre) is set inline in JS; spacing + radius
+     are CSS controls, so the whole fan is tunable without touching JS */
+  transform:
+    rotate(calc(var(--i, 0) * var(--sel-tick-spacing)))
+    translateY(calc(-1 * var(--sel-tick-radius)));
+  transition: background 0.25s ease, height 0.25s ease;
+}
+.mediaSel__tick.is-on { background: var(--accent); height: 8px; }
+
+/* ---- selection list ---- */
+.mediaSel__list { position: relative; }
+.mediaSel__group + .mediaSel__group { margin-top: var(--space-md); }
+
+.mediaSel__group-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.7rem;
   font-size: var(--step--1);
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--fg-faint);
-  margin-bottom: 0.6rem;
+}
+.mediaSel__group-label span { flex: 0 0 auto; }
+/* trailing hairline that runs to the panel edge */
+.mediaSel__group-label::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-strong), transparent);
 }
 
-.media__item {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
+.mediaSel__item {
+  position: relative;
+  display: block;
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--r-sm);
+  padding: 0.42rem 0 0.42rem 0.9rem;
   text-align: left;
   color: var(--fg-dim);
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: color 0.18s ease;
 }
-.media__item:hover { color: var(--fg); background: rgba(255, 255, 255, 0.04); }
+.mediaSel__item:hover { color: var(--fg); }
 
-.media__item.is-active {
-  color: var(--fg);
-  background: rgba(156, 227, 37, 0.10);
+.mediaSel__item-label { font-weight: 500; font-size: var(--step-0); }
+.mediaSel__item-sub {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: var(--step--1);
+  color: var(--fg-faint);
 }
-.media__item.is-active::before {
+
+/* active row: accent text + left bar */
+.mediaSel__item.is-active { color: var(--accent); }
+.mediaSel__item.is-active .mediaSel__item-sub { color: var(--fg-dim); }
+.mediaSel__item.is-active::before {
   content: "";
-  width: 6px; height: 6px; border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 0.42rem;
+  bottom: 0.42rem;
+  width: 2px;
+  border-radius: 1px;
   background: var(--accent);
   box-shadow: 0 0 10px var(--accent-glow);
-  flex: 0 0 auto;
-  translate: 0 -2px;
 }
 
-.media__item-outlet { font-weight: 600; }
-
-/* ---- detail panel ---- */
+/* ---- detail panel (right half) ---- */
 .media__detail {
   display: grid;
   grid-template-columns: 1fr minmax(280px, 46%);
   gap: clamp(1.5rem, 3vw, 3rem);
   align-items: center;
   min-height: 340px;
+  transition: opacity 0.25s ease;
 }
+.media__detail.is-swapping { opacity: 0; }
 
 .media__detail-outlet {
   font-size: var(--step--1);
@@ -131,11 +362,8 @@
   object-fit: cover;
 }
 
-/* fade the detail on change (JS toggles .is-swapping) */
-.media__detail { transition: opacity 0.25s ease; }
-.media__detail.is-swapping { opacity: 0; }
-
 @media (max-width: 900px) {
   .media__body { grid-template-columns: 1fr; }
+  .mediaSel { --sel-tilt-y: -5deg; --sel-tilt-x: 2deg; padding: 24px 34px 28px 12px; }
   .media__detail { grid-template-columns: 1fr; }
 }

@@ -2,6 +2,7 @@
 
 <!-- Your rules go here. A few starters — keep, change or delete them. -->
 
+- Always read PLAN.md when starting a new chat session
 - Don't re-explain code I can read. Explain the *why* when it isn't
   obvious from the diff.
 - Don't explain every minute detail of the changes unless i ask explicitely

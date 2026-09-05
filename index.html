@@ -130,7 +130,32 @@
           <h2 class="section-title" data-title="Publication, Media &amp; Awards">Publication, Media &amp; Awards</h2>
         </header>
         <div class="media__body">
-          <nav class="media__list" id="mediaList" aria-label="Coverage"></nav>
+          <!-- Left half: stylised selection window (chrome built in CSS,
+               list + label + ticker filled by js/sections/media.js) -->
+          <div class="mediaSel" id="mediaSel">
+            <div class="mediaSel__stage">
+              <div class="mediaSel__motif" aria-hidden="true">
+                <span class="mediaSel__dots mediaSel__dots--tl"></span>
+                <span class="mediaSel__dots mediaSel__dots--br"></span>
+                <span class="mediaSel__x mediaSel__x--tl"></span>
+                <span class="mediaSel__x mediaSel__x--bl"></span>
+                <span class="mediaSel__x mediaSel__x--br"></span>
+              </div>
+              <div class="mediaSel__ghost" aria-hidden="true"></div>
+              <div class="mediaSel__panel">
+                <span class="mediaSel__label" id="mediaSelLabel">Media</span>
+                <button class="mediaSel__cycle" id="mediaSelCycle" type="button"
+                        aria-label="Switch to next panel">
+                  <span class="mediaSel__ticker" id="mediaSelTicker" aria-hidden="true"></span>
+                  <svg class="mediaSel__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor"
+                          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <nav class="mediaSel__list" id="mediaList" aria-label="Coverage"></nav>
+              </div>
+            </div>
+          </div>
           <div class="media__detail" id="mediaDetail" aria-live="polite"></div>
         </div>
       </div>
