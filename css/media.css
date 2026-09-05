@@ -5,7 +5,7 @@
 
 .media { align-content: center; }
 
-.media__inner { width: min(100% - 2 * var(--section-pad), var(--maxw)); }
+.media__inner { width: min(100% - 2 * var(--section-pad), var(--maxw)); margin-inline: auto; }
 
 .media__head { margin-bottom: var(--space-lg); }
 /* title uses the shared .section-title (css/sections.css) */

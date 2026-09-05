@@ -65,17 +65,24 @@
   --title-fill-to:   rgba(156, 227, 37, 0.20); /* #9CE325 @ 20% */
   --title-outline:   #9CE325;
   --title-echo:      #ffffff21;
-  --title-echo-x:   -6px;   /* echo offset: left */
+  --title-echo-x:   0px;   /* echo offset: left */
   --title-echo-y:    6px;   /* echo offset: down */
-  --title-stroke-w:  .5px;
-  --title-stripe:    rgba(156, 227, 37, 0.32);
-  --title-stripe-gap: 7px;
+  --title-stroke-w:  1.3px;
+
+  --title-stripe:    rgba(255, 255, 255, 0.089);
+  --title-stripe-gap: 10px;
+  --title-stripe-pad-x: 6em;  /* stripe motif extends past text: sides  */
+  --title-stripe-pad-y: 0em; /* stripe motif extends past text: top/bottom */
 
   position: relative;
-  display: inline-block;      /* size to text so the stripe motif matches width */
+  display: block;             /* block + fit-content so it can center on the page */
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;        /* centered on the page */
+  text-align: center;
   isolation: isolate;         /* own stacking context for the ± z pseudo layers */
   font-family: var(--font-head);
-  font-weight: 800;
+  font-weight: 600;
   font-style: italic;
   font-size: var(--step-2);   /* matches the reference "Publication, Media & Awards" */
   line-height: 1.06;
@@ -107,15 +114,15 @@
   pointer-events: none;
 }
 
-/* horizontal stripe motif — text width, radial-gradient masked */
+/* horizontal stripe motif — slightly larger than text, radial-gradient masked */
 .section-title::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: calc(-1 * var(--title-stripe-pad-y)) calc(-1 * var(--title-stripe-pad-x));
   z-index: -1;
   background: repeating-linear-gradient(
     to bottom,
-    var(--title-stripe) 0 1px,
+    var(--title-stripe) 0 2px,
     transparent 1px var(--title-stripe-gap)
   );
   -webkit-mask-image: radial-gradient(55% 140% at 50% 50%, #000 20%, transparent 72%);

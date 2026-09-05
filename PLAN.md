@@ -216,10 +216,46 @@ employability", etc.), each linking out via "Read Article". Reference:
 _Updated: 2026-09-05 · ✅ done · 🔄 in progress · ⏳ blocked · ⬜ todo_
 
 - ✅ **P1 Scaffold** — structure, vendored libs (three/gsap/scrolltrigger/lenis), fonts (Jakarta + Magistral woff2), nav, preloader, Lenis+ScrollTrigger boot. Browser-verified.
-- ✅ **P2 Static sections** (first pass, awaiting user review) — ✅ Media (master/detail) · ✅ What I Build (metallic title, 3 pillar tabs, card+stats) · ✅ Landing overlays (press corners, halo, device placeholder, tagline) · ✅ Journey timeline (3 Acts / nodes). Copy TODOs flagged in-code.
+- 🔄 **P2 Static sections** (first pass built; user reviewing / requesting changes) — ✅ Media (master/detail) · ✅ What I Build (3 pillar tabs, card+stats) · ✅ Landing overlays (press corners, halo, device placeholder, tagline) · ✅ Journey timeline (3 Acts / nodes) · ✅ Unified `.section-title` component (gradient fill + outline + offset echo + stripe motif, centered, tunable vars). Copy TODOs flagged in-code.
 - ⬜ **P3 Scroll-animation pass** — pin/scrub landing, WIB card stack, entrances.
 - ⏳ **P4 Three.js scenes** — blocked on GLBs. Choreography ready in `docs/scene-specs.md`.
 - ⬜ **P5 Polish + perf** — reduced-motion, cross-browser, asset optimization.
 - ⬜ **P6 Mobile phase** — bespoke mobile layouts + mobile 3D.
 
 **Assets:** ✅ fonts · ✅ recordings · ⏳ GLBs (user adding) · placeholder image in use.
+
+---
+
+## Session Handoff — READ FIRST in a fresh chat
+_Written 2026-09-05 to carry context across a new session. Code + `docs/scene-specs.md` + `CLAUDE.md` are the other sources of truth._
+
+### Where we are
+Phase 1 done; Phase 2 first pass built and **under user review** (user is sending change requests section-by-section — the section-title restyle was the latest). Next after review → Phase 3.
+
+### Built files (all exist, wired, no console errors)
+- `index.html` — import map + all 5 `<section>`s + preloader + nav. Vendored UMD scripts load before the `type="module"` entry.
+- `js/main.js` — boots Lenis + GSAP/ScrollTrigger, inits nav/preloader + all section modules. Exposes `window.__app = { lenis, gsap, ScrollTrigger, prefersReduced }`.
+- `js/nav.js`, `js/preloader.js`.
+- `js/sections/{landing,what-i-build,journey,media}.js` — each `initX()`; content is data-driven arrays inside the module.
+- `css/{tokens,base,nav,preloader,sections,landing,what-i-build,journey,media}.css`.
+- `abilities` section is still a **stub** (3D — Phase 4).
+
+### Key technical facts
+- **No build tooling.** ES modules via import map: `three` → `vendor/three.module.min.js`, plus GLTFLoader + BufferGeometryUtils. GSAP 3.12.5 + ScrollTrigger + Lenis 1.1.14 are **UMD → window globals**. Three is **r0.160.0**.
+- **Run it:** `python -m http.server 5173` (or preview `.claude/launch.json` → "static"). Modules need HTTP, not `file://`.
+- **Fonts:** Plus Jakarta Sans self-hosted (`400–800.woff2`). Magistral: user supplied 15 `.otf`; converted to `magistral-{300,400,500,700,800}.woff2` via `python -m pip install fonttools brotli` → `TTFont(otf).flavor='woff2'`. The 15 `.otf` originals still sit in `assets/fonts/` (unused; safe to delete).
+- **Type scale:** `--step-N` in tokens.css are `clamp(MIN, base+vw, MAX)`. `--step-2` = section titles. Raise MIN+MAX to grow everywhere, MAX only = desktop, the `vw` = ramp speed.
+- **`.section-title`** (css/sections.css): one shared class; needs `data-title` attr on the element (echo copy uses it). Tunable vars: `--title-fill-from/-to`, `--title-outline`, `--title-echo`, `--title-echo-x/-y`, `--title-stroke-w`, `--title-stripe`, `--title-stripe-gap`, `--title-stripe-pad-x/-y`. Uses `-webkit-text-stroke` + `background-clip:text` + `paint-order` → **verify in Firefox**.
+
+### Working agreements (important)
+- **Don't auto-start a preview server or verify in the browser** (per CLAUDE.md) — the user checks the site themselves. Write the change, explain it, stop. Only verify when asked.
+- **The user edits CSS directly on disk** (esp. `.section-title` vars in sections.css). Always treat the on-disk file as source of truth; **never revert their manual tweaks**.
+- **Copy** comes from a live-site text dump + the recordings. Anything uncertain is marked `TODO(copy)` in the modules: Journey Act 2 node descriptions (UN Young Changemakers / Welcome / DDB India) + some "built" lines; all Media items beyond the Hindustan Times article; every outbound "Read More/Article" + social URL. Do not invent facts.
+- **Media = one placeholder image everywhere** until real assets arrive.
+
+### Known issues / candidates
+- Landing tagline overlaps the bottom press cards below ~800px width (desktop-first; revisit in mobile phase).
+- What I Build stat blocks crowd when a pillar has 4 stats — spacing candidate.
+
+### Next steps
+1. Finish P2 review edits. 2. **P3** scroll pass — pin/scrub landing (device → 3-card fan), the WIB card stack, section entrances (GSAP ScrollTrigger). 3. **P4** Three.js scenes from GLBs following `docs/scene-specs.md` (Abilities interactive first, then Landing + Journey scroll cams). 4. P5 polish. 5. P6 mobile.
