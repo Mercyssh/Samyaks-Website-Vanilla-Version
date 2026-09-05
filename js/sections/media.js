@@ -21,14 +21,26 @@ const PLACEHOLDER = "./assets/img/placeholder.svg";
 
    panel : { name, items: [item] }
    item  : {
-     label     required — text shown in the selection list
-     group     optional — sub-heading; consecutive items sharing a
-                          group collapse under one label (Media only)
-     subtitle  optional — small muted line under the label (Books years)
-     title     optional — detail headline (falls back to label)
-     blurb     optional — detail body copy
-     href      optional — "Read Article" link ("#"/empty = disabled)
-     img       optional — detail preview image
+     label       required — text shown in the selection list
+     group       optional — sub-heading; consecutive items sharing a
+                            group collapse under one label (Media only)
+     subtitle    optional — small muted line under the label (Books years)
+     title       optional — detail headline (falls back to label)
+     blurb       optional — detail body copy (clamped + faded)
+
+     -- preview graphic (right half) — pick ONE source --
+     img         image preview (used when there's no `video`)
+     video       YouTube/Vimeo URL, or a path to an .mp4 file
+     videoKind   optional — "youtube" | "mp4" (auto-detected if omitted)
+     poster      optional — poster image for an mp4
+     mediaAspect optional — e.g. "16 / 9"; sets the video box aspect so
+                            the width is derived with no JS measuring.
+                            Images size themselves from their own ratio.
+
+     -- read-more overlay --
+     article     full-length screenshot shown in the overlay. The
+                 "Read Article" button appears ONLY when this is set.
+     buttonLabel optional — button text (default "Read Article")
    }
 --------------------------------------------------------------------------- */
 const MEDIA_CONFIG = {
@@ -42,14 +54,16 @@ const MEDIA_CONFIG = {
           title: "Soft Skills: The missing piece in employability",
           blurb:
             "India's aspiration to become an economic superpower is intricately tied to its ability to leverage the demographic dividend and uplift disadvantaged regions. However, this ambition faces a significant challenge.",
-          href: "#", // TODO(copy): real article URL
           img: PLACEHOLDER,
+          article: PLACEHOLDER, // TODO(copy): full-length article screenshot
         },
         // TODO(copy): NDTV / CNBC editorial headlines + blurbs + URLs
-        { group: "Editorials", label: "NDTV", title: "NDTV editorial", href: "#", img: PLACEHOLDER },
-        { group: "Editorials", label: "CNBC", title: "CNBC editorial", href: "#", img: PLACEHOLDER },
+        { group: "Editorials", label: "NDTV", title: "NDTV editorial", img: PLACEHOLDER },
+        { group: "Editorials", label: "CNBC", title: "CNBC editorial", img: PLACEHOLDER },
 
-        { group: "Interviews", label: "NDTV", title: "NDTV interview", href: "#", img: PLACEHOLDER },
+        // Example of a video preview (YouTube). Swap `video` for an .mp4
+        // path to serve a file instead; mediaAspect avoids any JS sizing.
+        { group: "Interviews", label: "NDTV", title: "NDTV interview", video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", mediaAspect: "16 / 9" },
         { group: "Interviews", label: "BBC", title: "BBC interview", href: "#", img: PLACEHOLDER },
         { group: "Interviews", label: "Master's Union", title: "Master's Union", href: "#", img: PLACEHOLDER },
         { group: "Interviews", label: "Analytics India Magazine", title: "Analytics India Magazine", href: "#", img: PLACEHOLDER },
@@ -84,6 +98,49 @@ const MEDIA_CONFIG = {
     },
   ],
 };
+
+/* --------------------------------------------------------------- helpers --- */
+
+/** youtube / vimeo watch URLs → embeddable player URLs. */
+function toEmbedUrl(url) {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") return `https://www.youtube.com/embed/${u.pathname.slice(1)}?rel=0`;
+    if (host.endsWith("youtube.com")) {
+      const id = u.searchParams.get("v") || u.pathname.split("/").pop();
+      return `https://www.youtube.com/embed/${id}?rel=0`;
+    }
+    if (host.endsWith("vimeo.com"))
+      return `https://player.vimeo.com/video/${u.pathname.split("/").filter(Boolean).pop()}`;
+    return url;
+  } catch {
+    return url;
+  }
+}
+
+const isYouTube = (url) => /youtu\.?be|youtube\.com/.test(url || "");
+
+/** Preview graphic markup — image, YouTube embed or mp4 <video>. */
+function renderMedia(it) {
+  const aspectStyle = it.mediaAspect ? ` style="--media-aspect:${it.mediaAspect}"` : "";
+  const kind = it.videoKind || (it.video ? (isYouTube(it.video) ? "youtube" : "mp4") : "image");
+
+  if (kind === "youtube" && it.video) {
+    return `<div class="media__video"${aspectStyle}>
+        <iframe src="${toEmbedUrl(it.video)}" title="${it.title || it.label || "video"}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen loading="lazy"></iframe>
+      </div>`;
+  }
+  if (kind === "mp4" && it.video) {
+    return `<div class="media__video"${aspectStyle}>
+        <video src="${it.video}" controls playsinline${it.poster ? ` poster="${it.poster}"` : ""}></video>
+      </div>`;
+  }
+  return `<img class="media__media" src="${it.img || PLACEHOLDER}" alt="Preview of ${it.title || it.label}" loading="lazy" />`;
+}
 
 /* ------------------------------------------------------------------ boot --- */
 export function initMedia() {
@@ -166,21 +223,63 @@ export function initMedia() {
     });
   };
 
+  /* ---- read-more overlay (shared, one instance) ---- */
+  const overlayEl = document.getElementById("mediaOverlay");
+  const overlayImg = document.getElementById("mediaOverlayImg");
+  const overlayClose = document.getElementById("mediaOverlayClose");
+  let hideTimer = 0;
+  let rafId = 0;
+
+  const openOverlay = (src, alt) => {
+    if (!overlayEl || !src) return;
+    clearTimeout(hideTimer);
+    overlayImg.src = src;
+    overlayImg.alt = alt ? `${alt} — full article` : "Full article";
+    overlayEl.hidden = false;
+    document.body.classList.add("media-overlay-open");
+    // two RAFs: unhide paints first, then the class flips → transition runs
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() =>
+      requestAnimationFrame(() => overlayEl.classList.add("is-open"))
+    );
+  };
+  const closeOverlay = () => {
+    if (!overlayEl || overlayEl.hidden) return;
+    overlayEl.classList.remove("is-open");
+    document.body.classList.remove("media-overlay-open");
+    hideTimer = setTimeout(() => {
+      overlayEl.hidden = true;
+      overlayImg.src = "";
+    }, 320); // keep in sync with the CSS transition duration
+  };
+
+  if (overlayEl) {
+    overlayClose && overlayClose.addEventListener("click", closeOverlay);
+    // click on the backdrop / scroll gutter (marked data-close) closes it
+    overlayEl.addEventListener("click", (e) => {
+      if (e.target.closest("[data-close]") && !e.target.closest(".media-overlay__img"))
+        closeOverlay();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeOverlay();
+    });
+  }
+
   /* ---- detail (right half) ---- */
   const paint = (it) => {
-    const hasLink = it.href && it.href !== "#";
+    const showRead = !!it.article;
     detailEl.innerHTML = `
       <div class="media__detail-text">
         <h3 class="media__detail-title">${it.title || it.label}</h3>
         ${it.blurb ? `<p class="media__detail-blurb">${it.blurb}</p>` : ""}
-        <a class="media__cta" href="${it.href || "#"}"${hasLink ? ' target="_blank" rel="noopener"' : ' aria-disabled="true"'}>
-          Read Article →
-        </a>
+        ${showRead ? `<button class="media__cta" type="button" data-read>${it.buttonLabel || "Read Article"}</button>` : ""}
       </div>
-      <figure class="media__preview">
-        <div class="media__preview-bar"><span></span><span></span><span></span></div>
-        <img src="${it.img || PLACEHOLDER}" alt="Preview of ${it.title || it.label}" loading="lazy" />
-      </figure>`;
+      <div class="media__preview">
+        ${renderMedia(it)}
+      </div>`;
+
+    const readBtn = detailEl.querySelector("[data-read]");
+    if (readBtn) readBtn.addEventListener("click", () => openOverlay(it.article, it.title || it.label));
   };
 
   let current = -1;

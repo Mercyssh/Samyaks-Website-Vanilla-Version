@@ -3,7 +3,9 @@
    Left: selection window (.mediaSel).  Right: detail (.media__*).
    ============================================================ */
 
-.media { align-content: center; }
+/* clip the right→left fade where it bleeds past the viewport edge
+   (clip on x only, so the left panel's vertical overhang stays visible) */
+.media { align-content: center; overflow-x: clip; }
 
 .media__inner { width: min(100% - 2 * var(--section-pad), var(--maxw)); margin-inline: auto; }
 
@@ -12,10 +14,34 @@
 
 /* ---- master / detail grid ---- */
 .media__body {
+  /* right→left fade lives here (see the fade knobs in the detail block) */
+  --detail-fade: rgba(255, 255, 255, 0.05);
+  --detail-fade-stop: 60%;
+  /* gutter from the body's right edge to the viewport edge. The body is
+     centred in the viewport (symmetric section padding + auto margins), so
+     the gutter is simply half the leftover space — this is robust no matter
+     how many nested paddings inset the container. 100% = the body's width. */
+  --detail-bleed: calc((100vw - 100%) / 2);
+
+  position: relative;
+  z-index: 0;                    /* own stacking context so ::before sits behind */
   display: grid;
   grid-template-columns: minmax(300px, 380px) 1fr;
   gap: clamp(2rem, 5vw, 5rem);
   align-items: center;
+}
+/* the fade — on the UN-transformed grid, so no 3D skew shifts its edge.
+   Its right edge is pushed out by --detail-bleed to meet the viewport edge. */
+.media__body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40%;                     /* ~ where the detail column begins */
+  right: calc(-1 * var(--detail-bleed));
+  z-index: -1;                   /* behind both halves */
+  background: linear-gradient(to left, var(--detail-fade), transparent var(--detail-fade-stop));
+  pointer-events: none;
 }
 
 /* ============================================================
@@ -233,16 +259,16 @@
 
 /* ---- selection list ---- */
 .mediaSel__list { position: relative; }
-.mediaSel__group + .mediaSel__group { margin-top: var(--space-md); }
+.mediaSel__group + .mediaSel__group { margin-top: var(--space-sm); }
 
 .mediaSel__group-label {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.4rem;
   font-size: var(--step--1);
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg-faint);
 }
@@ -259,7 +285,7 @@
   position: relative;
   display: block;
   width: 100%;
-  padding: 0.42rem 0 0.42rem 0.9rem;
+  padding: 0 0 0 0.9rem;
   text-align: left;
   color: var(--fg-dim);
   transition: color 0.18s ease;
@@ -289,13 +315,54 @@
   box-shadow: 0 0 10px var(--accent-glow);
 }
 
-/* ---- detail panel (right half) ---- */
+/* ============================================================
+   Detail panel (right half)
+   ------------------------------------------------------------
+   | Variable            | Controls                              |
+   |---------------------|---------------------------------------|
+   | --preview-max-h     | max height of the preview graphic     |
+   | --preview-gap       | gap between graphic and its stroke    |
+   | --preview-radius    | corner radius of the preview frame    |
+   | --preview-stroke-w  | thickness of the gradient stroke      |
+   | --preview-stroke    | the gradient used for the stroke      |
+   | --media-aspect      | fallback aspect ratio for videos      |
+   | --blurb-lines       | body lines shown before clamp + fade  |
+   | --cta-fill-from/to  | Read-more button gradient fill        |
+   | --cta-border        | Read-more button solid border color   |
+   | --detail-persp      | 3D perspective depth of the container |
+   | --detail-tilt-y     | container Y-rotation (main tilt)      |
+   | --detail-tilt-x     | container X-rotation (slight lean)    |
+   | --detail-pad-y      | top/bottom padding of the container   |
+   | --detail-fade       | right→left fade fill (bright at right)|
+   | --detail-fade-stop  | where the fade reaches transparent    |
+   | --detail-bleed      | how far the fill bleeds past the right|
+   ============================================================ */
 .media__detail {
+  --preview-max-h: 440px;
+  --preview-gap: 10px;
+  --preview-radius: 18px;
+  --preview-stroke-w: 1px;
+  --preview-stroke: linear-gradient(150deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.06) 52%, rgba(255, 255, 255, 0.28));
+  --media-aspect: 16 / 9;
+  --blurb-lines: 4;
+  --cta-fill-from: #2b2b2b;
+  --cta-fill-to: #141414;
+  --cta-border: rgba(255, 255, 255, 0.22);
+  --detail-persp: 1500px;
+  --detail-tilt-y: -9deg;
+  --detail-tilt-x: 2deg;
+  --detail-pad-y: 2.75rem;
+
+  position: relative;
   display: grid;
   grid-template-columns: 1fr minmax(280px, 46%);
   gap: clamp(1.5rem, 3vw, 3rem);
   align-items: center;
   min-height: 340px;
+  padding: var(--detail-pad-y) 0;
+  /* rotate the whole display in 3D (self-perspective keeps it isolated) */
+  transform: perspective(var(--detail-persp)) rotateX(var(--detail-tilt-x)) rotateY(var(--detail-tilt-y));
+  transform-style: preserve-3d;
   transition: opacity 0.25s ease;
 }
 .media__detail.is-swapping { opacity: 0; }
@@ -309,54 +376,167 @@
   margin-bottom: 1rem;
 }
 
+/* body copy: clamped to a few lines and faded out at the bottom */
 .media__detail-blurb {
   color: var(--fg-dim);
   max-width: 46ch;
   margin-bottom: 1.6rem;
+  display: -webkit-box;
+  -webkit-line-clamp: var(--blurb-lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent);
+          mask-image: linear-gradient(180deg, #000 45%, transparent);
 }
 
+/* Read-more button: gradient fill + solid border, centred under the text */
 .media__cta {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
+  margin: 1.6rem auto 0;         /* auto margins centre it in the text column */
   align-items: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.3rem;
+  padding: 0.8rem 1.6rem;
   border-radius: var(--r-pill);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--cta-border);
+  background: linear-gradient(180deg, var(--cta-fill-from), var(--cta-fill-to));
+  font-family: inherit;
   font-size: var(--step--1);
   font-weight: 600;
   color: var(--fg);
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  transition: border-color 0.2s ease, filter 0.2s ease, transform 0.1s ease;
 }
-.media__cta:hover { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
-.media__cta[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.media__cta:hover { border-color: var(--accent); filter: brightness(1.18); }
+.media__cta:active { transform: translateY(1px); }
 
-/* browser-style preview frame */
+/* ---- preview graphic + its container ---- */
+/* container hugs the graphic, adds a gap, and draws a gradient stroke */
 .media__preview {
-  border-radius: var(--r-md);
-  overflow: hidden;
-  border: 1px solid var(--border);
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: var(--preview-gap);
+  border-radius: var(--preview-radius);
   background: var(--bg-elev);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
-.media__preview-bar {
-  display: flex;
-  gap: 6px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-elev-2);
+.media__preview::before {          /* gradient stroke via masked border */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--preview-stroke-w);
+  background: var(--preview-stroke);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
 }
-.media__preview-bar span {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
+
+/* image: height capped, width follows its own aspect ratio */
+.media__media {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: var(--preview-max-h);
+  border-radius: calc(var(--preview-radius) - var(--preview-gap));
+  object-fit: contain;
 }
-.media__preview img {
+/* video: height fixed, width derived from --media-aspect (no JS) */
+.media__video {
+  height: var(--preview-max-h);
+  width: auto;
+  aspect-ratio: var(--media-aspect);
+  max-width: 100%;
+  border-radius: calc(var(--preview-radius) - var(--preview-gap));
+  overflow: hidden;
+}
+.media__video iframe,
+.media__video video {
+  display: block;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  height: 100%;
+  border: 0;
   object-fit: cover;
+  background: #000;
 }
+
+/* ============================================================
+   Read-more overlay
+   ============================================================ */
+body.media-overlay-open { overflow: hidden; }
+
+.media-overlay {
+  /* defined here (not on .media__detail) because the overlay is a direct
+     child of <body>, so it can't inherit the detail-scoped variable */
+  --overlay-bg: rgba(0, 0, 0, 0.9);
+
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  background: var(--overlay-bg);
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+/* class display:flex would otherwise override [hidden] and leave the
+   invisible overlay covering the page, eating every click */
+.media-overlay[hidden] { display: none; }
+/* don't intercept clicks until it's actually open (covers the close fade) */
+.media-overlay:not(.is-open) { pointer-events: none; }
+.media-overlay.is-open { opacity: 1; pointer-events: auto; }
+.media-overlay__backdrop { position: absolute; inset: 0; }
+
+.media-overlay__scroll {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+.media-overlay__img {
+  align-self: flex-start;
+  width: min(920px, 100%);
+  height: auto;
+  border-radius: var(--r-md);
+  /* scale + fade in when the overlay opens */
+  transform: scale(0.92);
+  opacity: 0;
+  transition: transform 0.34s var(--ease-out), opacity 0.34s ease;
+}
+.media-overlay.is-open .media-overlay__img { transform: scale(1); opacity: 1; }
+
+.media-overlay__close {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: rgba(20, 20, 20, 0.6);
+  color: var(--fg);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.media-overlay__close:hover { border-color: var(--accent); background: rgba(166, 255, 61, 0.12); }
+.media-overlay__close svg { width: 14px; height: 14px; }
 
 @media (max-width: 900px) {
   .media__body { grid-template-columns: 1fr; }
   .mediaSel { --sel-tilt-y: -5deg; --sel-tilt-x: 2deg; padding: 24px 34px 28px 12px; }
-  .media__detail { grid-template-columns: 1fr; }
+  .media__detail { grid-template-columns: 1fr; --preview-max-h: 320px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-overlay, .media-overlay__img { transition: none; }
 }

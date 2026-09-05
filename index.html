@@ -163,6 +163,19 @@
 
   </main>
 
+  <!-- Read-more overlay: full-screen scrollable screenshot (filled by media.js) -->
+  <div class="media-overlay" id="mediaOverlay" hidden>
+    <div class="media-overlay__backdrop" data-close></div>
+    <button class="media-overlay__close" id="mediaOverlayClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="media-overlay__scroll" data-close>
+      <img class="media-overlay__img" id="mediaOverlayImg" src="" alt="" />
+    </div>
+  </div>
+
   <!-- Vendored UMD libs (attach to window) — load before the module -->
   <script src="./vendor/gsap.min.js"></script>
   <script src="./vendor/ScrollTrigger.min.js"></script>
