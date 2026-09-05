@@ -37,6 +37,7 @@
    | --sel-x-color       | color of the corner X marks                 |
    | --sel-tick-radius   | radius of the ticker arc around the button  |
    | --sel-tick-spacing  | angle between adjacent ticks (fan spread)   |
+   | --sel-tick-offset   | rotates the whole fan (0deg = centred top)  |
    ============================================================ */
 .mediaSel {
   --sel-persp: 1500px;
@@ -53,6 +54,7 @@
   --sel-x-color: var(--accent-mid);
   --sel-tick-radius: 30px;
   --sel-tick-spacing: 14deg;
+  --sel-tick-offset: 0deg;
 
   perspective: var(--sel-persp);
   perspective-origin: 60% 40%;
@@ -200,7 +202,7 @@
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
-.mediaSel__cycle:hover { border-color: var(--accent); background: rgba(166, 255, 61, 0.10); }
+.mediaSel__cycle:hover { border-color: var(--accent); background: rgb(31, 51, 8); }
 .mediaSel__cycle:active { transform: translate(50%, -50%) scale(0.7); transition: transform 0s;}
 .mediaSel__arrow { width: 20px; height: 20px; }
 
@@ -223,7 +225,7 @@
   /* --i (signed offset from centre) is set inline in JS; spacing + radius
      are CSS controls, so the whole fan is tunable without touching JS */
   transform:
-    rotate(calc(var(--i, 0) * var(--sel-tick-spacing)))
+    rotate(calc(var(--sel-tick-offset) + var(--i, 0) * var(--sel-tick-spacing)))
     translateY(calc(-1 * var(--sel-tick-radius)));
   transition: background 0.25s ease, height 0.25s ease;
 }
