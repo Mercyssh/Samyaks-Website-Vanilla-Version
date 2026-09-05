@@ -171,7 +171,6 @@ export function initMedia() {
     const hasLink = it.href && it.href !== "#";
     detailEl.innerHTML = `
       <div class="media__detail-text">
-        <p class="media__detail-outlet">${panels[panelIndex].name}</p>
         <h3 class="media__detail-title">${it.title || it.label}</h3>
         ${it.blurb ? `<p class="media__detail-blurb">${it.blurb}</p>` : ""}
         <a class="media__cta" href="${it.href || "#"}"${hasLink ? ' target="_blank" rel="noopener"' : ' aria-disabled="true"'}>

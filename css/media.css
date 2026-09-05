@@ -54,7 +54,7 @@
   --sel-x-color: var(--accent-mid);
   --sel-tick-radius: 30px;
   --sel-tick-spacing: 14deg;
-  --sel-tick-offset: 0deg;
+  --sel-tick-offset: 45deg;
 
   perspective: var(--sel-persp);
   perspective-origin: 60% 40%;
@@ -300,21 +300,12 @@
 }
 .media__detail.is-swapping { opacity: 0; }
 
-.media__detail-outlet {
-  font-size: var(--step--1);
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent-mid);
-  margin-bottom: 0.9rem;
-}
-
 .media__detail-title {
   font-family: var(--font-head);
   font-weight: 700;
   font-size: var(--step-1);
   line-height: 1.1;
-  color: var(--fg);
+  color: var(--accent-mid);
   margin-bottom: 1rem;
 }
 
