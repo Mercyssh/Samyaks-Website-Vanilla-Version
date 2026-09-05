@@ -64,10 +64,10 @@
   --title-fill-from: rgba(156, 227, 37, 0.80); /* #9CE325 @ 80% */
   --title-fill-to:   rgba(156, 227, 37, 0.20); /* #9CE325 @ 20% */
   --title-outline:   #9CE325;
-  --title-echo:      #404040;
-  --title-echo-x:   -4px;   /* echo offset: left */
-  --title-echo-y:    4px;   /* echo offset: down */
-  --title-stroke-w:  1.5px;
+  --title-echo:      #ffffff21;
+  --title-echo-x:   -6px;   /* echo offset: left */
+  --title-echo-y:    6px;   /* echo offset: down */
+  --title-stroke-w:  .5px;
   --title-stripe:    rgba(156, 227, 37, 0.32);
   --title-stripe-gap: 7px;
 
