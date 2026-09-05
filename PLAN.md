@@ -216,7 +216,7 @@ employability", etc.), each linking out via "Read Article". Reference:
 _Updated: 2026-09-05 · ✅ done · 🔄 in progress · ⏳ blocked · ⬜ todo_
 
 - ✅ **P1 Scaffold** — structure, vendored libs (three/gsap/scrolltrigger/lenis), fonts (Jakarta + Magistral woff2), nav, preloader, Lenis+ScrollTrigger boot. Browser-verified.
-- 🔄 **P2 Static sections** — ✅ Media (master/detail, cross-fade; item copy = TODO) · ⬜ What I Build · ⬜ Landing overlays · ⬜ Journey timeline. ← current
+- ✅ **P2 Static sections** (first pass, awaiting user review) — ✅ Media (master/detail) · ✅ What I Build (metallic title, 3 pillar tabs, card+stats) · ✅ Landing overlays (press corners, halo, device placeholder, tagline) · ✅ Journey timeline (3 Acts / nodes). Copy TODOs flagged in-code.
 - ⬜ **P3 Scroll-animation pass** — pin/scrub landing, WIB card stack, entrances.
 - ⏳ **P4 Three.js scenes** — blocked on GLBs. Choreography ready in `docs/scene-specs.md`.
 - ⬜ **P5 Polish + perf** — reduced-motion, cross-browser, asset optimization.

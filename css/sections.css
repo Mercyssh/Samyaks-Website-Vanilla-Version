@@ -52,3 +52,73 @@
   pointer-events: none;
 }
 .scene-mount canvas { width: 100% !important; height: 100% !important; }
+
+/* ============================================================
+   Unified section title — ONE definition for every section
+   (What I Build, Abilities, Journey, Media, …).
+   Requires the plain text also in a data-title attribute so the
+   offset echo (::before) can duplicate it.
+   ============================================================ */
+.section-title {
+  /* --- tunable knobs --- */
+  --title-fill-from: rgba(156, 227, 37, 0.80); /* #9CE325 @ 80% */
+  --title-fill-to:   rgba(156, 227, 37, 0.20); /* #9CE325 @ 20% */
+  --title-outline:   #9CE325;
+  --title-echo:      #404040;
+  --title-echo-x:   -4px;   /* echo offset: left */
+  --title-echo-y:    4px;   /* echo offset: down */
+  --title-stroke-w:  1.5px;
+  --title-stripe:    rgba(156, 227, 37, 0.32);
+  --title-stripe-gap: 7px;
+
+  position: relative;
+  display: inline-block;      /* size to text so the stripe motif matches width */
+  isolation: isolate;         /* own stacking context for the ± z pseudo layers */
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-style: italic;
+  font-size: var(--step-2);   /* matches the reference "Publication, Media & Awards" */
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  text-transform: none;
+
+  /* gradient fill: #9CE325 80% -> 20%, left to right */
+  color: transparent;
+  background: linear-gradient(90deg, var(--title-fill-from), var(--title-fill-to));
+  -webkit-background-clip: text;
+          background-clip: text;
+
+  /* solid green outline */
+  -webkit-text-stroke: var(--title-stroke-w) var(--title-outline);
+  paint-order: stroke fill;   /* stroke behind, gradient fill on top */
+}
+
+/* offset, outline-only echo in #404040 (down + left) */
+.section-title::before {
+  content: attr(data-title);
+  position: absolute;
+  left: var(--title-echo-x);
+  top: var(--title-echo-y);
+  z-index: -2;
+  color: transparent;
+  background: none;
+  -webkit-text-stroke: var(--title-stroke-w) var(--title-echo);
+  paint-order: stroke;
+  pointer-events: none;
+}
+
+/* horizontal stripe motif — text width, radial-gradient masked */
+.section-title::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--title-stripe) 0 1px,
+    transparent 1px var(--title-stripe-gap)
+  );
+  -webkit-mask-image: radial-gradient(55% 140% at 50% 50%, #000 20%, transparent 72%);
+          mask-image: radial-gradient(55% 140% at 50% 50%, #000 20%, transparent 72%);
+  pointer-events: none;
+}

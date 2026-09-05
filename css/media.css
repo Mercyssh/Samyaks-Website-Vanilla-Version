@@ -8,16 +8,7 @@
 .media__inner { width: min(100% - 2 * var(--section-pad), var(--maxw)); }
 
 .media__head { margin-bottom: var(--space-lg); }
-
-.media__title {
-  font-family: var(--font-head);
-  font-weight: 800;
-  font-size: var(--step-2);
-  font-style: italic;           /* matches the live italic display title */
-  letter-spacing: -0.01em;
-  color: var(--fg);
-}
-.media__title em { color: var(--accent-mid); font-style: italic; }
+/* title uses the shared .section-title (css/sections.css) */
 
 /* ---- master / detail grid ---- */
 .media__body {

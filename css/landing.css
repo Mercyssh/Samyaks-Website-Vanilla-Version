@@ -1,0 +1,120 @@
+/* ============================================================
+   Landing — dot-grid + mouse-follow halo, corner press cards,
+   centre device (3D placeholder), tagline, social.
+   The 3D device arrives in Phase 4 via .scene-mount[data-scene].
+   ============================================================ */
+
+.landing {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: var(--space-lg) var(--section-pad);
+}
+
+/* dot grid + diagonal lines */
+.landing__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(120% 90% at 50% 45%, #000 40%, transparent 78%);
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 45%, #000 40%, transparent 78%);
+}
+
+/* green halo that tracks the pointer (JS sets --mx/--my) */
+.landing__halo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  --mx: 50%;
+  --my: 45%;
+  background: radial-gradient(
+    360px 360px at var(--mx) var(--my),
+    rgba(140, 198, 63, 0.22),
+    rgba(140, 198, 63, 0.07) 40%,
+    transparent 70%
+  );
+  transition: background-position 0.1s linear;
+  pointer-events: none;
+}
+
+/* corner press cards */
+.press {
+  position: absolute;
+  z-index: var(--z-content);
+  max-width: 260px;
+  color: var(--fg-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.press__outlet {
+  font-family: Georgia, "Times New Roman", serif; /* wordmark stand-in until logos supplied */
+  font-size: var(--step-1);
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+}
+.press__headline { font-size: var(--step--1); font-weight: 700; color: var(--fg); }
+.press__snippet { font-size: var(--step--1); color: var(--fg-faint); line-height: 1.35; }
+
+.press--tl { top: 8vh; left: var(--section-pad); text-align: left; }
+.press--tr { top: 8vh; right: var(--section-pad); text-align: right; align-items: flex-end; }
+.press--bl { bottom: 8vh; left: var(--section-pad); text-align: left; }
+.press--br { bottom: 8vh; right: var(--section-pad); text-align: right; align-items: flex-end; }
+
+/* centre */
+.landing__center {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  text-align: center;
+}
+
+.landing__device {
+  width: clamp(180px, 22vw, 300px);
+  aspect-ratio: 3 / 4;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 0 60px rgba(140, 198, 63, 0.18), 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+.landing__device img { width: 100%; height: 100%; object-fit: cover; }
+
+.landing__social { display: flex; gap: 0.8rem; }
+.landing__social a {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.landing__social a:hover { color: #0a0a0a; background: var(--accent); border-color: var(--accent); }
+.landing__social svg { width: 18px; height: 18px; }
+
+.landing__tagline {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  translate: -50% 0;
+  z-index: var(--z-content);
+  max-width: 44ch;
+  text-align: center;
+  color: var(--accent-mid);
+  font-weight: 600;
+}
+.landing__tagline span { display: block; color: var(--fg-dim); font-weight: 500; margin-top: 0.4rem; }
+
+@media (max-width: 720px) {
+  .press { max-width: 42vw; }
+  .press__outlet { font-size: var(--step-0); }
+  .landing__tagline { bottom: 4vh; }
+}

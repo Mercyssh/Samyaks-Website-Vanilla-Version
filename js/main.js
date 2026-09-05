@@ -5,6 +5,9 @@
 
 import { initPreloader } from "./preloader.js";
 import { initNav } from "./nav.js";
+import { initLanding } from "./sections/landing.js";
+import { initWhatIBuild } from "./sections/what-i-build.js";
+import { initJourney } from "./sections/journey.js";
 import { initMedia } from "./sections/media.js";
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -34,6 +37,9 @@ initPreloader();
 initNav(app);
 
 /* ---- Section modules ---- */
+initLanding();
+initWhatIBuild();
+initJourney();
 initMedia();
 
 /* Keep ScrollTrigger honest when the layout settles / fonts swap. */
