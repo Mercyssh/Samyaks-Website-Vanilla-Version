@@ -71,7 +71,7 @@ export function initJourney() {
 
   actsEl.innerHTML = ACTS.map(
     (a) => `
-    <article class="act">
+    <article class="act" data-reveal>
       <header class="act__head">
         <span class="act__years">${a.years}</span>
         <h3 class="act__title">${a.title}</h3>

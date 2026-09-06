@@ -1,0 +1,34 @@
+/* ============================================================
+   Reveal-on-scroll — elements fade + rise as they enter view.
+   js/reveal.js adds .is-in via IntersectionObserver.
+   Fully disabled under reduced motion (content always visible).
+   ============================================================ */
+
+[data-reveal] {
+  --reveal-y: 24px;          /* rise distance */
+  --reveal-dur: 0.7s;        /* per-element duration */
+  --reveal-delay: 0s;        /* set by reveal.js for staggered groups */
+  opacity: 0;
+  transform: translateY(var(--reveal-y));
+  transition:
+    opacity var(--reveal-dur) var(--ease-out) var(--reveal-delay),
+    transform var(--reveal-dur) var(--ease-out) var(--reveal-delay);
+  will-change: opacity, transform;
+}
+[data-reveal].is-in { opacity: 1; transform: none; }
+
+/* variants (set the attribute value) */
+[data-reveal="fade"] { --reveal-y: 0px; }
+[data-reveal="left"]  { transform: translateX(calc(-1 * var(--reveal-y))); }
+[data-reveal="right"] { transform: translateX(var(--reveal-y)); }
+[data-reveal="left"].is-in,
+[data-reveal="right"].is-in { transform: none; }
+
+/* safety: never leave content hidden for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

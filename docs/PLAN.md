@@ -217,7 +217,7 @@ _Updated: 2026-09-05 · ✅ done · 🔄 in progress · ⏳ blocked · ⬜ todo_
 
 - ✅ **P1 Scaffold** — structure, vendored libs (three/gsap/scrolltrigger/lenis), fonts (Jakarta + Magistral woff2), nav, preloader, Lenis+ScrollTrigger boot. Browser-verified.
 - 🔄 **P2 Static sections** (first pass built; user reviewing / requesting changes) — ✅ Media (master/detail) · ✅ What I Build (3 pillar tabs, card+stats) · ✅ Landing overlays (press corners, halo, device placeholder, tagline) · ✅ Journey timeline (3 Acts / nodes) · ✅ Unified `.section-title` component (gradient fill + outline + offset echo + stripe motif, centered, tunable vars). Copy TODOs flagged in-code.
-- ⬜ **P3 Scroll-animation pass** — pin/scrub landing, WIB card stack, entrances.
+- 🔄 **P3 Scroll-animation pass** — ✅ entrance reveals (`js/reveal.js` + `css/reveal.css`) · ✅ WIB pinned card-stack scrub (current card shrinks/fades, next rises; tabs sync/click) + structured card (tags·title·body·stats·Read More) + Read More overlay (sub-project pills + Problem/Design/Innovation; overlay copy = TODO) · ⬜ landing device→fan & journey camera scrubs (3D-coupled → land with P4 GLBs).
 - ⏳ **P4 Three.js scenes** — blocked on GLBs. Choreography ready in `docs/scene-specs.md`.
 - ⬜ **P5 Polish + perf** — reduced-motion, cross-browser, asset optimization.
 - ⬜ **P6 Mobile phase** — bespoke mobile layouts + mobile 3D.
@@ -244,7 +244,7 @@ Phase 1 done; Phase 2 first pass built and **under user review** (user is sendin
 - **No build tooling.** ES modules via import map: `three` → `vendor/three.module.min.js`, plus GLTFLoader + BufferGeometryUtils. GSAP 3.12.5 + ScrollTrigger + Lenis 1.1.14 are **UMD → window globals**. Three is **r0.160.0**.
 - **Run it:** `python -m http.server 5173` (or preview `.claude/launch.json` → "static"). Modules need HTTP, not `file://`.
 - **Fonts:** Plus Jakarta Sans self-hosted (`400–800.woff2`). Magistral: user supplied 15 `.otf`; converted to `magistral-{300,400,500,700,800}.woff2` via `python -m pip install fonttools brotli` → `TTFont(otf).flavor='woff2'`. The 15 `.otf` originals still sit in `assets/fonts/` (unused; safe to delete).
-- **Type scale:** `--step-N` in tokens.css are `clamp(MIN, base+vw, MAX)`. `--step-2` = section titles. Raise MIN+MAX to grow everywhere, MAX only = desktop, the `vw` = ramp speed.
+- **Type scale:** `--step-N` in tokens.css are `clamp(MIN, base+vw, MAX)`, running `--step--1` … `--step-5`. `--step-1` is a small intermediate (between body `--step-0` and `--step-2`); `--step-3` = section titles. Raise MIN+MAX to grow everywhere, MAX only = desktop, the `vw` = ramp speed.
 - **`.section-title`** (css/sections.css): one shared class; needs `data-title` attr on the element (echo copy uses it). Tunable vars: `--title-fill-from/-to`, `--title-outline`, `--title-echo`, `--title-echo-x/-y`, `--title-stroke-w`, `--title-stripe`, `--title-stripe-gap`, `--title-stripe-pad-x/-y`. Uses `-webkit-text-stroke` + `background-clip:text` + `paint-order` → **verify in Firefox**.
 
 ### Working agreements (important)

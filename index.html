@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="./css/nav.css" />
   <link rel="stylesheet" href="./css/preloader.css" />
   <link rel="stylesheet" href="./css/sections.css" />
+  <link rel="stylesheet" href="./css/reveal.css" />
   <link rel="stylesheet" href="./css/landing.css" />
   <link rel="stylesheet" href="./css/what-i-build.css" />
   <link rel="stylesheet" href="./css/journey.css" />
@@ -59,28 +60,28 @@
       <div class="landing__grid" aria-hidden="true"></div>
       <div class="landing__halo" id="landingHalo" aria-hidden="true"></div>
 
-      <a class="press press--tl" href="#media">
+      <a class="press press--tl" href="#media" data-reveal>
         <span class="press__outlet">Hindustan Times</span>
         <span class="press__headline">Soft Skills: The missing piece in employability</span>
         <span class="press__snippet">India must rethink employability by using AI-driven teaching methods to unlock youth potential.</span>
       </a>
-      <a class="press press--tr" href="#media">
+      <a class="press press--tr" href="#media" data-reveal>
         <span class="press__outlet">ET HRWorld</span>
         <span class="press__headline">Gen AI and women's employability</span>
         <span class="press__snippet">Generative AI could be a game-changer for women's employability, if approached with inclusion at its very core.</span>
       </a>
-      <a class="press press--bl" href="#media">
+      <a class="press press--bl" href="#media" data-reveal>
         <span class="press__outlet">CNBC</span>
         <span class="press__headline">CSR 2.0: How can it be optimised in the age of GenAI</span>
         <span class="press__snippet">Generative AI poses risks of job loss and irrelevance — Samyak Chakrabarty urges safeguarding India's next generation.</span>
       </a>
-      <a class="press press--br" href="#media">
+      <a class="press press--br" href="#media" data-reveal>
         <span class="press__outlet">ThePrint</span>
         <span class="press__headline">HarperCollins India to publish Navya Naveli &amp; Samyak Chakrabarty's new book</span>
         <span class="press__snippet">"The Map" is a journey for India's GenZ to explore identity, work purpose, dopamine loops and morality.</span>
       </a>
 
-      <div class="landing__center">
+      <div class="landing__center" data-reveal="fade">
         <div class="landing__device">
           <img src="./assets/img/placeholder.svg" alt="Samyak Chakrabarty" />
         </div>
@@ -94,42 +95,44 @@
         </div>
       </div>
 
-      <p class="landing__tagline">
+      <p class="landing__tagline" data-reveal="fade">
         Breakthroughs happen between disciplines, not inside them.
         <span>I operate as the central dot that connects and enables all dots to solve what no single expert can.</span>
       </p>
     </section>
 
     <section class="section wib" id="what-i-build" data-section>
-      <div class="wib__intro u-container">
-        <h2 class="section-title" data-title="What I Build">What I Build</h2>
-        <p class="wib__lead">Technology alone doesn't move anything. Neither does science, storytelling or capacity building. Impact happens when these levers operate as one system. I build and lead those systems.</p>
+      <div class="wib__intro u-container" data-reveal-group="0.12">
+        <h2 class="section-title" data-title="What I Build" data-reveal>What I Build</h2>
+        <p class="wib__lead" data-reveal>Technology alone doesn't move anything. Neither does science, storytelling or capacity building. Impact happens when these levers operate as one system. I build and lead those systems.</p>
       </div>
-      <div class="wib__tabs u-container" role="tablist" aria-label="What I build" id="wibTabs"></div>
-      <div class="wib__stage u-container" id="wibStage"></div>
+      <div class="wib__pin" id="wibPin">
+        <div class="wib__tabs" role="tablist" aria-label="What I build" id="wibTabs"></div>
+        <div class="wib__stack" id="wibStack"></div>
+      </div>
     </section>
 
     <section class="section" id="abilities" data-section>
       <div class="scene-mount" data-scene="abilities"></div>
-      <h2 class="section-title" data-title="Abilities">Abilities</h2>
-      <p class="section__lead">Interactive card scene (click to flip) comes in Phase 4.</p>
+      <h2 class="section-title" data-title="Abilities" data-reveal>Abilities</h2>
+      <p class="section__lead" data-reveal>Interactive card scene (click to flip) comes in Phase 4.</p>
     </section>
 
     <section class="section journey" id="journey" data-section>
       <div class="scene-mount" data-scene="journey"></div>
-      <div class="journey__intro u-container">
-        <h2 class="section-title" data-title="Journey">Journey</h2>
-        <p class="journey__lead" id="journeyLead"></p>
+      <div class="journey__intro u-container" data-reveal-group="0.12">
+        <h2 class="section-title" data-title="Journey" data-reveal>Journey</h2>
+        <p class="journey__lead" id="journeyLead" data-reveal></p>
       </div>
-      <div class="journey__acts u-container" id="journeyActs"></div>
+      <div class="journey__acts u-container" id="journeyActs" data-reveal-group="0.14"></div>
     </section>
 
     <section class="section media" id="media" data-section>
       <div class="u-container media__inner">
-        <header class="media__head">
+        <header class="media__head" data-reveal>
           <h2 class="section-title" data-title="Publication, Media &amp; Awards">Publication, Media &amp; Awards</h2>
         </header>
-        <div class="media__body">
+        <div class="media__body" data-reveal>
           <!-- Left half: stylised selection window (chrome built in CSS,
                list + label + ticker filled by js/sections/media.js) -->
           <div class="mediaSel" id="mediaSel">
@@ -173,6 +176,21 @@
     </button>
     <div class="media-overlay__scroll" data-close>
       <img class="media-overlay__img" id="mediaOverlayImg" src="" alt="" />
+    </div>
+  </div>
+
+  <!-- What I Build: Read More overlay (sub-project pill menu + sections) -->
+  <div class="wib-overlay" id="wibOverlay" hidden>
+    <div class="wib-overlay__bar">
+      <div class="wib-ov__tabs" id="wibOvTabs" role="tablist" aria-label="Projects"></div>
+      <button class="wib-overlay__close" id="wibOvClose" type="button" aria-label="Close">
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="wib-overlay__scroll">
+      <div class="wib-ov__body" id="wibOvBody"></div>
     </div>
   </div>
 

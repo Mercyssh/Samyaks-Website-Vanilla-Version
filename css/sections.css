@@ -22,7 +22,7 @@
 }
 
 .section__title {
-  font-size: var(--step-3);
+  font-size: var(--step-4);
   color: var(--fg);
   max-width: 16ch;
 }
@@ -31,7 +31,7 @@
   margin-top: var(--space-md);
   max-width: 60ch;
   color: var(--fg-dim);
-  font-size: var(--step-1);
+  font-size: var(--step-2);
   line-height: 1.35;
 }
 
@@ -84,7 +84,7 @@
   font-family: var(--font-head);
   font-weight: 600;
   font-style: italic;
-  font-size: var(--step-2);   /* matches the reference "Publication, Media & Awards" */
+  font-size: var(--step-5);   /* matches the reference "Publication, Media & Awards" */
   line-height: 1.06;
   letter-spacing: -0.01em;
   text-transform: none;

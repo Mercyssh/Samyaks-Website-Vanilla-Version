@@ -54,7 +54,7 @@
 }
 .press__outlet {
   font-family: Georgia, "Times New Roman", serif; /* wordmark stand-in until logos supplied */
-  font-size: var(--step-1);
+  font-size: var(--step-2);
   font-weight: 700;
   color: var(--fg);
   letter-spacing: -0.01em;

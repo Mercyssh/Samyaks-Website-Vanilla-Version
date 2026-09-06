@@ -32,10 +32,11 @@
   /* --- Fluid type scale (desktop-first) --- */
   --step--1: clamp(0.82rem, 0.78rem + 0.2vw, 0.94rem);
   --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
-  --step-1:  clamp(1.3rem, 1.1rem + 0.9vw, 1.9rem);
-  --step-2:  clamp(2.05rem, 1.45rem + 2.5vw, 4.2rem);
-  --step-3:  clamp(2.8rem, 1.8rem + 4.5vw, 6rem);
-  --step-4:  clamp(4rem, 2rem + 9vw, 11rem);
+  --step-1:  clamp(1.1rem, 1.0rem + 0.45vw, 1.4rem);   /* NEW intermediate: between step-0 and step-2 */
+  --step-2:  clamp(1.3rem, 1.1rem + 0.9vw, 1.9rem);    /* was step-1 */
+  --step-3:  clamp(1.7rem, 1.4rem + 1.4vw, 2.55rem);   /* was step-2 */
+  --step-4:  clamp(2.2rem, 1.75rem + 2.1vw, 3.4rem);   /* was step-3 */
+  --step-5:  clamp(2.9rem, 2.2rem + 3.2vw, 4.6rem);    /* was step-4 */
 
   /* --- Spacing --- */
   --space-xs: 0.5rem;

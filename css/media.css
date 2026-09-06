@@ -385,7 +385,7 @@
 .media__detail-title {
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: var(--step-1);
+  font-size: var(--step-2);
   line-height: 1.1;
   color: var(--accent-mid);
   margin-bottom: 1rem;

@@ -9,6 +9,7 @@ import { initLanding } from "./sections/landing.js";
 import { initWhatIBuild } from "./sections/what-i-build.js";
 import { initJourney } from "./sections/journey.js";
 import { initMedia } from "./sections/media.js";
+import { initReveal } from "./reveal.js";
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const { gsap, ScrollTrigger, Lenis } = window;
@@ -41,6 +42,18 @@ initLanding();
 initWhatIBuild();
 initJourney();
 initMedia();
+
+/* ---- Entrance reveals: start after the preloader, with a hard
+   safety fallback so content can never stay hidden if site:ready
+   never fires. ---- */
+let revealStarted = false;
+const startReveal = () => {
+  if (revealStarted) return;
+  revealStarted = true;
+  initReveal();
+};
+document.addEventListener("site:ready", startReveal, { once: true });
+setTimeout(startReveal, 5000);
 
 /* Keep ScrollTrigger honest when the layout settles / fonts swap. */
 if (document.fonts && document.fonts.ready) {
