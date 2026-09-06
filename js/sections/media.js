@@ -53,13 +53,25 @@ const MEDIA_CONFIG = {
           label: "Hindustan Times",
           title: "Soft Skills: The missing piece in employability",
           blurb:
-            "India's aspiration to become an economic superpower is intricately tied to its ability to leverage the demographic dividend and uplift disadvantaged regions. However, this ambition faces a significant challenge.",
+            "India's aspiration to become an economic superpower is intricately tied to its ability to leverage the demographic dividend and uplift disadvantaged regions. However, this ambition faces a significant challenge",
           img: PLACEHOLDER,
           article: PLACEHOLDER, // TODO(copy): full-length article screenshot
         },
         // TODO(copy): NDTV / CNBC editorial headlines + blurbs + URLs
-        { group: "Editorials", label: "NDTV", title: "NDTV editorial", img: PLACEHOLDER },
-        { group: "Editorials", label: "CNBC", title: "CNBC editorial", img: PLACEHOLDER },
+        { 
+          group: "Editorials", 
+          label: "NDTV", 
+          title: "The World Of Work Has Changed", 
+          blurb: "Kumudini is a 22-year-old living at Mumbai's Dharavi slum. Her father works at a leather tannery and her mother as a domestic help. They worked hard to send her to a private school and then took a loan against the little gold they had",
+          img: PLACEHOLDER 
+        },
+        { 
+          group: "Editorials", 
+          label: "CNBC", 
+          title: "CSR 2.0: How can it be optimised in the age of GenAI", 
+          blurb: "Intelligent technologies and forecasts such as generative AI raise the question of how we can save India's next generation from automation-induced unemployment and professional irrelevance",
+          img: PLACEHOLDER 
+        },
 
         // Example of a video preview (YouTube). Swap `video` for an .mp4
         // path to serve a file instead; mediaAspect avoids any JS sizing.
