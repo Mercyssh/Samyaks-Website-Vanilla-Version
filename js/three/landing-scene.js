@@ -112,7 +112,7 @@ export function initLandingScene() {
       makeCardOpaque(cards.middle);
       makeCardOpaque(cards.right);
 
-      // hand: bespoke material stack (gradient + fresnel + outline + 50% opacity)
+      // hand: bespoke material stack (gradient + fresnel + 50% opacity)
       if (hand) {
         handBaseZ = hand.position.z;
         handKit = buildHandMaterial(hand);
@@ -137,7 +137,7 @@ export function initLandingScene() {
       const dist = radius / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       cfg.target.copy(fc);
       camera.position.set(fc.x, fc.y, fc.z + dist);
-      camera.lookAt(cfg.target);
+      // no auto look-at — camera keeps its own orientation
 
       document.querySelector(".landing__center")?.style.setProperty("display", "none");
       mount.style.pointerEvents = "auto";
@@ -220,7 +220,40 @@ export function initLandingScene() {
     }
     const gui = new GUI({ title: "Landing scene" });
 
-    const applyCam = () => camera.lookAt(cfg.target);
+    // ---- copy ALL current values to clipboard (paste back to bake) ----
+    gui.add({ copy() {
+      const r = (n, d = 3) => Number(n.toFixed(d));
+      const hex = (c) => "#" + c.getHexString();
+      const u = handKit && handKit.uniforms;
+      const dump = {
+        camera: {
+          position: [r(camera.position.x), r(camera.position.y), r(camera.position.z)],
+          target: [r(cfg.target.x), r(cfg.target.y), r(cfg.target.z)],
+          fov: camera.fov,
+        },
+        animation: { flipDeg: cfg.flipDeg, fanSpread: r(cfg.fanSpread), handRecede: r(cfg.handRecede) },
+        hand: handKit ? {
+          colorBottom: hex(u.uColorBottom.value),
+          colorTop: hex(u.uColorTop.value),
+          opacity: r(u.uOpacity.value),
+          ambient: r(u.uAmbient.value),
+          lightStrength: r(u.uLightStrength.value),
+          fresnelColor: hex(u.uFresnelColor.value),
+          fresnelPower: r(u.uFresnelPower.value),
+          fresnelStrength: r(u.uFresnelStrength.value),
+          fresnelAlpha: r(u.uFresnelAlpha.value),
+        } : null,
+      };
+      const text = JSON.stringify(dump, null, 2);
+      const done = () => console.log("[landing-scene] copied values:\n" + text);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => { done(); prompt("Copy failed — copy manually:", text); });
+      } else { done(); prompt("Copy these values:", text); }
+    } }, "copy").name("⧉ COPY ALL VALUES");
+
+    // no auto look-at; pos/target sliders just move values (target only
+    // feeds OrbitControls when it's enabled)
+    const applyCam = () => {};
     const cam = gui.addFolder("Camera");
     cam.add(camera.position, "x", -20, 20, 0.01).name("pos x").onChange(applyCam).listen();
     cam.add(camera.position, "y", -20, 20, 0.01).name("pos y").onChange(applyCam).listen();
@@ -255,7 +288,7 @@ export function initLandingScene() {
 
     // ---- Hand material stack ----
     if (handKit) {
-      const { cfg: h, uniforms: u, outlineUniforms: ou } = handKit;
+      const { cfg: h, uniforms: u } = handKit;
       const hf = gui.addFolder("Hand material");
       hf.addColor(h, "colorTop").name("colour top").onChange((v) => u.uColorTop.value.set(v));
       hf.addColor(h, "colorBottom").name("colour bottom").onChange((v) => u.uColorBottom.value.set(v));
@@ -267,10 +300,6 @@ export function initLandingScene() {
       ff.add(u.uFresnelPower, "value", 0.1, 8, 0.1).name("power");
       ff.add(u.uFresnelStrength, "value", 0, 2, 0.01).name("rim colour");
       ff.add(u.uFresnelAlpha, "value", 0, 1, 0.01).name("rim alpha");
-      const of = hf.addFolder("Outline");
-      of.addColor(h, "outlineColor").name("colour").onChange((v) => ou.uColor.value.set(v));
-      of.add(ou.uOpacity, "value", 0, 1, 0.01).name("opacity");
-      of.add(ou.uThickness, "value", 0, 0.03, 0.0005).name("thickness");
     }
   }
 }
