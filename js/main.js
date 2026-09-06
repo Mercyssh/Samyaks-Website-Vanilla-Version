@@ -10,6 +10,7 @@ import { initWhatIBuild } from "./sections/what-i-build.js";
 import { initJourney } from "./sections/journey.js";
 import { initMedia } from "./sections/media.js";
 import { initReveal } from "./reveal.js";
+import { initLandingScene } from "./three/landing-scene.js";
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const { gsap, ScrollTrigger, Lenis } = window;
@@ -42,6 +43,9 @@ initLanding();
 initWhatIBuild();
 initJourney();
 initMedia();
+
+/* ---- 3D scenes ---- */
+initLandingScene();
 
 /* ---- Entrance reveals: start after the preloader, with a hard
    safety fallback so content can never stay hidden if site:ready

@@ -63,14 +63,15 @@
   position: relative;
   width: min(100% - 2 * var(--section-pad), var(--maxw));
   margin-inline: auto;
-  height: clamp(440px, 74vh, 700px);
+  height: clamp(360px, 56vh, 560px);
 }
 
 .wib-card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(240px, 40%) 1fr;
   gap: clamp(1.25rem, 3vw, 2.75rem);
-  align-items: center;
+  align-items: stretch;
   height: 100%;
   padding: clamp(1.25rem, 2.5vw, 2rem);
   border: 1px solid var(--border);
@@ -84,16 +85,16 @@
 .wib-card__media img,
 .wib-card__media video { width: 100%; height: 100%; object-fit: cover; }
 
-.wib-card__content { display: flex; flex-direction: column; gap: clamp(0.55rem, 1.4vw, 0.85rem); min-width: 0; }
+.wib-card__content { display: flex; flex-direction: column; justify-content: flex-start; gap: clamp(0.55rem, 1.4vw, 0.85rem); min-width: 0; }
 
 .wib-card__tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .wib-card__tags li {
   padding: 0.32rem 0.7rem;
   border-radius: var(--r-pill);
-  border: 1px solid rgba(156, 227, 37, 0.3);
-  background: rgba(156, 227, 37, 0.06);
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
   color: var(--accent);
-  font-size: var(--step--1);
+  font-size: var(--step--2);
   font-weight: 600;
 }
 
@@ -113,39 +114,69 @@
 }
 .wib-card__body p { max-width: 60ch; }
 
-/* stats row (number + label) */
+/* stats row (number + label) — sits directly under the body in flow */
 .wib-stats {
   display: flex;
-  flex-wrap: wrap;
-  gap: clamp(0.5rem, 1.4vw, 1rem) 1.8rem;
-  margin-top: 0.2rem;
-  padding-top: clamp(0.6rem, 1.6vw, 0.9rem);
+  flex-wrap: nowrap;              /* keep all stats on one row (desktop) */
+  gap: clamp(0rem, 1.4vw, .8rem) 1.2rem;
+  padding-block: clamp(0.6rem, 1.6vw, 0.9rem);
   border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-.wib-stat { display: flex; flex-direction: column; gap: 0.2rem; }
+.wib-stat {
+  flex: 1 1 0;                    /* equal width, share the row */
+  min-width: 0;                  /* allow shrink below content size */
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.2rem;
+}
 .wib-stat__n {
   font-family: var(--font-head);
-  font-weight: 800;
-  font-style: italic;
-  font-size: var(--step-3);
+  font-weight: 500;
+  font-size: var(--step-2);
   line-height: 1;
-  color: var(--accent-mid);
-  text-shadow: 0 0 18px var(--accent-glow);
+
+  /* gradient fill: #9CE325 80% -> 20% (matches .section-title) */
+  color: transparent;
+  background: linear-gradient(90deg, rgba(156, 227, 37, 0.80), rgba(156, 227, 37, 0.20));
+  -webkit-background-clip: text;
+          background-clip: text;
+
+  /* solid green outline */
+  -webkit-text-stroke: 1.3px #9CE325;
+  paint-order: stroke fill;
+
+  /* white 20% drop shadow, offset down + left */
+  text-shadow: -2px 2px 0 rgba(255, 255, 255, 0.2);
 }
-.wib-stat__l { font-size: var(--step--1); color: var(--fg-faint); max-width: 24ch; line-height: 1.25; }
+.wib-stat__l { font-size: var(--step--1); color: #fff; max-width: 24ch; line-height: 1.25; }
 
 .wib-card__more {
   align-self: flex-start;
   margin-top: 0.4rem;
-  padding: 0.7rem 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.35rem 0.35rem 1.15rem;   /* tight right side: icon circle sits in it */
   border-radius: var(--r-pill);
-  border: 1px solid var(--border-strong);
+  border: 1px solid rgba(156, 227, 37, 0.35);
   font-size: var(--step--1);
   font-weight: 600;
-  color: var(--fg);
+  color: var(--accent);
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
-.wib-card__more:hover { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+.wib-card__more-icon {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.wib-card__more-icon svg { width: 1rem; height: 1rem; }
+.wib-card__more:hover { background: rgba(156, 227, 37, 0.08); border-color: var(--accent); }
+.wib-card__more:hover .wib-card__more-icon { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
 
 /* reduced-motion / no-GSAP fallback: static vertical list */
 .wib__stack--static { height: auto; display: flex; flex-direction: column; gap: var(--space-md); }

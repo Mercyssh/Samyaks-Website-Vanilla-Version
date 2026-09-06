@@ -165,7 +165,12 @@ function cardHTML(p, i) {
       <h3 class="wib-card__title">${p.title}</h3>
       <div class="wib-card__body">${p.body.map((t) => `<p>${t}</p>`).join("")}</div>
       ${statsRow(p.stats)}
-      <button class="wib-card__more" type="button" data-more="${i}">Read More →</button>
+      <button class="wib-card__more" type="button" data-more="${i}">
+        <span class="wib-card__more-label">Read More</span>
+        <span class="wib-card__more-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+        </span>
+      </button>
     </div>
   </article>`;
 }
