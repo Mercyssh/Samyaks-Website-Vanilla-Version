@@ -1,18 +1,22 @@
 /* ============================================================
    landing-scene.js — landing 3D device (assets/models/landing.glb)
 
-   PINNED scroll scrub (progress 0→1):
-   - hand recedes (−Z) + fades out
-   - card stack flips 180° about Y (cover card backface-culled → hidden
-     once flipped; the three pillar cards come to face the camera)
-   - left card fans left, right card fans right
-   - icon planes (LinkedIn / Mail) hover-lit + clickable
-   No pointer parallax.
+   The GLB carries BAKED Blender animation clips (hand + the card
+   "Control" empties). We drive them by SCRUBBING an AnimationMixer
+   from the first keyframe to the last as the pinned section scrolls,
+   then HOLD on the final frame for extra scroll before releasing.
 
-   DEBUG: open the page with ?debug to get an on-screen GUI (lil-gui):
-   camera position/target/fov, a progress slider (detach from scroll to
-   scrub by hand), OrbitControls toggle, animation-tuning knobs, and a
-   "log camera" button so chosen values can be baked in.
+   Mesh motion  → baked animation (Blender).
+   Material     → done here in code (hand gradient/fresnel/opacity fade,
+                  card opacity fix, cover backface reveal, icon fades).
+   Camera       → if the GLB contains a camera, we mirror its transform
+                  + FOV onto the render camera every frame (supports an
+                  animated camera too). Otherwise we fall back to an
+                  auto-fit framing. NOTE: the current GLB export has NO
+                  camera — re-export from Blender with Include ▸ Cameras.
+
+   DEBUG: open with ?debug for a lil-gui (progress scrub, hold length,
+   OrbitControls, hand-material knobs, copy-all-values button).
    ============================================================ */
 
 import * as THREE from "three";
@@ -40,13 +44,14 @@ export function initLandingScene() {
   key.position.set(2, 3, 4);
   scene.add(key);
 
-  // tunable animation params (editable via GUI)
-  const cfg = { flipDeg: 180, fanSpread: 1.3, handRecede: 1.6, target: new THREE.Vector3(0, 0, 0) };
+  // scroll layout (viewport-height multiples): animation plays over animVh,
+  // then the final frame is HELD over holdVh before the pin releases.
+  const cfg = { animVh: 1.1, holdVh: 0.7, target: new THREE.Vector3(0, 0, 0), useGlbCam: true };
 
   const cards = {};
-  const base = {};
-  let pivot = null;
-  let hand = null, handKit = null, handBaseZ = 0, coverMat = null;
+  let hand = null, handKit = null, coverMat = null;
+  let mixer = null, clipDur = 0;
+  let glbCam = null;
   const icons = [];
   let iconFade = 1;
   let st = null;
@@ -54,6 +59,13 @@ export function initLandingScene() {
 
   const applyIconOpacity = () => {
     icons.forEach((ic) => { if (ic.mat) { ic.mat.opacity = (ic.hover ? 1 : 0.5) * iconFade; ic.obj.visible = iconFade > 0.02; } });
+  };
+
+  const syncCamera = () => {
+    if (!glbCam) return;
+    glbCam.updateWorldMatrix(true, false);
+    camera.position.setFromMatrixPosition(glbCam.matrixWorld);
+    camera.quaternion.setFromRotationMatrix(glbCam.matrixWorld);
   };
 
   const loader = new GLTFLoader();
@@ -67,35 +79,36 @@ export function initLandingScene() {
       // --- resilient lookup by name substring (GLB names have spaces) ---
       const byName = {};
       root.traverse((o) => { if (o.name) byName[o.name.toLowerCase()] = o; });
-      if (DEBUG) console.log("[landing-scene] node names:", Object.keys(byName));
+      if (DEBUG) console.log("[landing-scene] node names:", Object.keys(byName), "| clips:", gltf.animations.map((a) => a.name));
       const find = (...subs) => {
         for (const k in byName) if (subs.some((s) => k.includes(s))) return byName[k];
         return null;
       };
       cards.cover = find("cover");
-      cards.left = find("left");
+      cards.left = find("left card", "left");
       cards.middle = find("middle");
-      cards.right = find("right");
+      cards.right = find("right card", "right");
       hand = find("hand");
 
-      // --- recentre on the cards, then build a flip pivot at world origin ---
-      const cardsBox = new THREE.Box3();
-      ["cover", "left", "middle", "right"].forEach((k) => cards[k] && cardsBox.expandByObject(cards[k]));
-      const cc = cardsBox.getCenter(new THREE.Vector3());
-      root.position.sub(cc);
-      root.updateMatrixWorld(true);
+      // --- baked animation → scrub via mixer ---
+      if (gltf.animations && gltf.animations.length) {
+        mixer = new THREE.AnimationMixer(root);
+        gltf.animations.forEach((clip) => {
+          // Keep every action permanently active and scrub it by hand with
+          // mixer.setTime(). Do NOT use LoopOnce/clampWhenFinished — those
+          // fire "finished" at the end, pause the action (timescale→0) and
+          // freeze the pose so setTime can no longer move it (breaks reverse
+          // + replay). Default LoopRepeat is fine because we clamp the time
+          // to just under the duration, so it never wraps to 0.
+          mixer.clipAction(clip).play();
+          clipDur = Math.max(clipDur, clip.duration);
+        });
+      }
 
-      pivot = new THREE.Group();
-      scene.add(pivot);
-      pivot.updateMatrixWorld(true);
-      ["cover", "left", "middle", "right"].forEach((k) => cards[k] && pivot.attach(cards[k]));
-      ["cover", "left", "middle", "right"].forEach((k) => cards[k] && (base[k] = cards[k].position.clone()));
-
-      // All meshes in the GLB share ONE "Card Material" (alphaMode BLEND +
-      // doubleSided). That shared transparency is what makes the stacked
-      // cards sort wrong at the flip extreme (back card bleeds to front).
-      // → give each card its OWN opaque clone so the depth buffer occludes
-      //   them correctly regardless of viewing angle.
+      // All meshes share ONE "Card Material" (alphaMode BLEND + doubleSided).
+      // That shared transparency makes the stacked cards sort wrong at the
+      // flip extreme (back card bleeds through). → give each its own OPAQUE
+      // clone so the depth buffer occludes them at any angle.
       const makeCardOpaque = (node, { front = false } = {}) => {
         node && node.traverse((o) => {
           if (!o.isMesh || !o.material) return;
@@ -105,7 +118,7 @@ export function initLandingScene() {
           o.material.side = front ? THREE.FrontSide : THREE.DoubleSide;
         });
       };
-      // cover: FrontSide so its back is culled → reveals pillar cards once flipped
+      // cover: FrontSide → its back is culled once flipped, revealing the pillars
       makeCardOpaque(cards.cover, { front: true });
       cards.cover && cards.cover.traverse((o) => { if (o.isMesh) coverMat = o.material; });
       makeCardOpaque(cards.left);
@@ -113,10 +126,7 @@ export function initLandingScene() {
       makeCardOpaque(cards.right);
 
       // hand: bespoke material stack (gradient + fresnel + 50% opacity)
-      if (hand) {
-        handBaseZ = hand.position.z;
-        handKit = buildHandMaterial(hand);
-      }
+      if (hand) handKit = buildHandMaterial(hand);
 
       // icons (the two planes): upper = LinkedIn, lower = Mail  [TODO(copy)]
       const planes = Object.keys(byName).filter((k) => k.includes("plane")).map((k) => byName[k]);
@@ -129,19 +139,33 @@ export function initLandingScene() {
       });
       applyIconOpacity();
 
-      // --- default camera framing (fit whole scene; user tunes via GUI) ---
-      const full = new THREE.Box3().setFromObject(root);
-      const fc = full.getCenter(new THREE.Vector3());
-      const fs = full.getSize(new THREE.Vector3());
-      const radius = 0.5 * Math.max(fs.x, fs.y) * 1.35;
-      const dist = radius / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-      cfg.target.copy(fc);
-      camera.position.set(fc.x, fc.y, fc.z + dist);
-      // no auto look-at — camera keeps its own orientation
+      // --- camera: use the authored GLB camera if present ---
+      glbCam = (gltf.cameras && gltf.cameras[0]) || null;
+      if (glbCam) {
+        camera.fov = glbCam.fov;      // vertical FOV from Blender lens (e.g. 25mm)
+        camera.updateProjectionMatrix();
+        syncCamera();
+      } else {
+        // fallback: auto-fit the whole scene (no auto look-at → keep orientation)
+        const full = new THREE.Box3().setFromObject(root);
+        const fc = full.getCenter(new THREE.Vector3());
+        const fs = full.getSize(new THREE.Vector3());
+        const radius = 0.5 * Math.max(fs.x, fs.y) * 1.35;
+        const dist = radius / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+        cfg.target.copy(fc);
+        camera.position.set(fc.x, fc.y, fc.z + dist);
+        console.warn("[landing-scene] no camera in GLB — using fallback framing. Re-export with Include ▸ Cameras.");
+      }
+
+      // one tick: OrbitControls when on, else mirror the (maybe animated) GLB camera
+      stage.setTick(() => {
+        if (orbit && orbit.enabled) { orbit.update(); return; }
+        if (glbCam && cfg.useGlbCam) syncCamera();
+      });
 
       document.querySelector(".landing__center")?.style.setProperty("display", "none");
       mount.style.pointerEvents = "auto";
-      setProgress(0);
+      apply(0);
       stage.play();
       ScrollTrigger && ScrollTrigger.refresh();
       if (DEBUG) setupGUI();
@@ -150,24 +174,21 @@ export function initLandingScene() {
     (err) => console.warn("[landing-scene] GLB failed to load:", err)
   );
 
-  /* ---- progress 0 (device) → 1 (fanned) ---- */
-  function setProgress(p) {
-    const flip = Math.min(1, p / 0.8);
-    const fan = THREE.MathUtils.smoothstep(p, 0.25, 1);
-    const spread = cfg.fanSpread * fan;
-    if (pivot) pivot.rotation.y = flip * THREE.MathUtils.degToRad(cfg.flipDeg);
-    if (cards.left) { cards.left.position.x = base.left.x + spread; cards.left.rotation.z = -0.06 * fan; }
-    if (cards.right) { cards.right.position.x = base.right.x - spread; cards.right.rotation.z = 0.06 * fan; }
-    if (cards.middle) { cards.middle.position.z = base.middle.z + 0.05 * fan; }
-    if (hand) {
-      hand.position.z = handBaseZ - cfg.handRecede * p;
-      const fade = Math.max(0, 1 - p / 0.6);
-      if (handKit) handKit.setFade(fade);
-      hand.visible = fade > 0.02;
-    }
-    iconFade = Math.max(0, 1 - p / 0.5);
+  /* ---- apply animation progress 0→1 (clips + code-driven materials) ---- */
+  function apply(animP) {
+    animP = THREE.MathUtils.clamp(animP, 0, 1);
+    // clamp just under the duration so LoopRepeat never wraps back to frame 0
+    if (mixer) mixer.setTime(Math.min(animP, 0.9999) * clipDur);
+    const fade = Math.max(0, 1 - animP / 0.6);
+    if (handKit) handKit.setFade(fade);
+    if (hand) hand.visible = fade > 0.02;
+    iconFade = Math.max(0, 1 - animP / 0.5);
     applyIconOpacity();
   }
+
+  // map the pinned scroll (which includes the hold tail) → animation progress
+  const animSplit = () => cfg.animVh / (cfg.animVh + cfg.holdVh);
+  const endPx = () => Math.round(window.innerHeight * (cfg.animVh + cfg.holdVh));
 
   /* ---- icon hover + click ---- */
   const ray = new THREE.Raycaster();
@@ -196,16 +217,20 @@ export function initLandingScene() {
     else window.open(ic.url, "_blank", "noopener");
   });
 
-  /* ---- pinned scroll scrub ---- */
+  /* ---- pinned scroll scrub (+ hold tail) ---- */
   if (gsap && ScrollTrigger && !prefersReduced) {
     st = ScrollTrigger.create({
       trigger: "#landing",
       start: "top top",
-      end: "+=" + Math.round(window.innerHeight * 1.1),
+      end: () => "+=" + endPx(),   // function → re-evaluated on every refresh
       pin: true,
       scrub: 0.5,
       anticipatePin: 1,
-      onUpdate: (self) => setProgress(self.progress),
+      refreshPriority: 1,          // topmost pin → refresh FIRST so its spacer
+                                   // is restored before wibPin measures its start
+                                   // (else wib pins 1458px early, over the landing)
+      invalidateOnRefresh: true,   // recompute length once innerHeight is known
+      onUpdate: (self) => apply(self.progress / animSplit()),
     });
   }
 
@@ -219,6 +244,7 @@ export function initLandingScene() {
       return;
     }
     const gui = new GUI({ title: "Landing scene" });
+    const state = { progress: 0, scrollDriven: true };
 
     // ---- copy ALL current values to clipboard (paste back to bake) ----
     gui.add({ copy() {
@@ -228,10 +254,10 @@ export function initLandingScene() {
       const dump = {
         camera: {
           position: [r(camera.position.x), r(camera.position.y), r(camera.position.z)],
-          target: [r(cfg.target.x), r(cfg.target.y), r(cfg.target.z)],
           fov: camera.fov,
+          fromGlb: !!glbCam,
         },
-        animation: { flipDeg: cfg.flipDeg, fanSpread: r(cfg.fanSpread), handRecede: r(cfg.handRecede) },
+        scroll: { animVh: cfg.animVh, holdVh: cfg.holdVh },
         hand: handKit ? {
           colorBottom: hex(u.uColorBottom.value),
           colorTop: hex(u.uColorTop.value),
@@ -251,40 +277,33 @@ export function initLandingScene() {
       } else { done(); prompt("Copy these values:", text); }
     } }, "copy").name("⧉ COPY ALL VALUES");
 
-    // no auto look-at; pos/target sliders just move values (target only
-    // feeds OrbitControls when it's enabled)
-    const applyCam = () => {};
+    // ---- Animation / scroll ----
+    const anim = gui.addFolder("Animation");
+    anim.add(state, "scrollDriven").name("scroll-driven").onChange((on) => { if (st) on ? st.enable() : st.disable(false); });
+    anim.add(state, "progress", 0, 1, 0.001).name("scrub progress").onChange((v) => { if (!state.scrollDriven) apply(v); });
+    const refreshEnd = () => ScrollTrigger.refresh(); // end is a function of cfg → recomputes on refresh
+    anim.add(cfg, "animVh", 0.3, 3, 0.05).name("anim length (vh)").onChange(refreshEnd);
+    anim.add(cfg, "holdVh", 0, 3, 0.05).name("hold length (vh)").onChange(refreshEnd);
+    if (coverMat) anim.add(coverMat, "side", { Front: THREE.FrontSide, Back: THREE.BackSide, Double: THREE.DoubleSide }).name("cover side").onChange(() => (coverMat.needsUpdate = true));
+
+    // ---- Camera ----
     const cam = gui.addFolder("Camera");
-    cam.add(camera.position, "x", -20, 20, 0.01).name("pos x").onChange(applyCam).listen();
-    cam.add(camera.position, "y", -20, 20, 0.01).name("pos y").onChange(applyCam).listen();
-    cam.add(camera.position, "z", -20, 20, 0.01).name("pos z").onChange(applyCam).listen();
-    cam.add(cfg.target, "x", -20, 20, 0.01).name("target x").onChange(applyCam).listen();
-    cam.add(cfg.target, "y", -20, 20, 0.01).name("target y").onChange(applyCam).listen();
-    cam.add(cfg.target, "z", -20, 20, 0.01).name("target z").onChange(applyCam).listen();
+    cam.add(cfg, "useGlbCam").name("use GLB camera").listen();
+    cam.add(camera.position, "x", -20, 20, 0.01).name("pos x").listen();
+    cam.add(camera.position, "y", -20, 20, 0.01).name("pos y").listen();
+    cam.add(camera.position, "z", -20, 20, 0.01).name("pos z").listen();
     cam.add(camera, "fov", 10, 90, 1).name("fov").onChange(() => camera.updateProjectionMatrix());
     cam.add({ log() {
-      const p = camera.position, t = cfg.target;
-      console.log(`camera.position.set(${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)}); target(${t.x.toFixed(2)}, ${t.y.toFixed(2)}, ${t.z.toFixed(2)}); fov ${camera.fov}`);
+      const p = camera.position;
+      console.log(`camera.position.set(${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)}); fov ${camera.fov}`);
     } }, "log").name("▶ log camera to console");
-
-    // OrbitControls (free camera). Disables the icon raycast while on.
     cam.add({ orbit: false }, "orbit").name("OrbitControls").onChange(async (on) => {
       if (on && !orbit) {
         const { OrbitControls } = await import("three/addons/controls/OrbitControls.js");
         orbit = new OrbitControls(camera, renderer.domElement);
-        stage.setTick(() => orbit && orbit.enabled && orbit.update());
       }
       if (orbit) { orbit.enabled = on; orbit.target.copy(cfg.target); orbit.update(); }
     });
-
-    const anim = gui.addFolder("Animation");
-    const state = { progress: 0, scrollDriven: true };
-    anim.add(state, "scrollDriven").name("scroll-driven").onChange((on) => { if (st) on ? st.enable() : st.disable(false); });
-    anim.add(state, "progress", 0, 1, 0.001).name("progress").onChange((v) => { if (!state.scrollDriven) setProgress(v); });
-    anim.add(cfg, "flipDeg", 0, 360, 1).name("flip °").onChange(() => setProgress(state.progress));
-    anim.add(cfg, "fanSpread", 0, 4, 0.01).name("fan spread").onChange(() => setProgress(state.progress));
-    anim.add(cfg, "handRecede", 0, 6, 0.01).name("hand recede").onChange(() => setProgress(state.progress));
-    if (coverMat) anim.add(coverMat, "side", { Front: THREE.FrontSide, Back: THREE.BackSide, Double: THREE.DoubleSide }).name("cover side").onChange(() => (coverMat.needsUpdate = true));
 
     // ---- Hand material stack ----
     if (handKit) {

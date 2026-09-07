@@ -237,7 +237,7 @@ export function initWhatIBuild() {
     scrollTrigger: {
       trigger: pinEl,
       start: "top top",
-      end: "+=" + window.innerHeight * (n - 1),
+      end: () => "+=" + window.innerHeight * (n - 1),   // function → survives innerHeight=0 at init
       pin: true,
       scrub: 0.6,
       invalidateOnRefresh: true,   // re-read window.innerHeight on resize
