@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="./css/reveal.css" />
   <link rel="stylesheet" href="./css/landing.css" />
   <link rel="stylesheet" href="./css/what-i-build.css" />
+  <link rel="stylesheet" href="./css/abilities.css" />
   <link rel="stylesheet" href="./css/journey.css" />
   <link rel="stylesheet" href="./css/media.css" />
 
@@ -119,10 +120,10 @@
       </div>
     </section>
 
-    <section class="section" id="abilities" data-section>
-      <div class="scene-mount" data-scene="abilities"></div>
+    <section class="section abilities" id="abilities" data-section>
+      <div class="abilities__floor" aria-hidden="true"></div>
       <h2 class="section-title" data-title="Abilities" data-reveal>Abilities</h2>
-      <p class="section__lead" data-reveal>Interactive card scene (click to flip) comes in Phase 4.</p>
+      <div class="abilities__deck" id="abilitiesDeck" data-reveal="fade"></div>
     </section>
 
     <section class="section journey" id="journey" data-section>

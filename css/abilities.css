@@ -1,0 +1,182 @@
+/* ============================================================
+   Abilities — fanned 3D flip cards on a perspective grid floor
+   (pure DOM/CSS 3D, no WebGL)
+
+   Resting card = front image aspect (684×939, portrait). On flip the
+   card grows to a LANDSCAPE shape and the back image is rotated −90°
+   (CCW) to read upright + fill it (the 1440×2400 files hold landscape
+   content stored portrait). Left card on top; hover tints/lifts in
+   place; click opens one large; outside/Esc closes.
+
+   NOTE (WIP): grid floor is a plain white grid with no edge fade for
+   easier tuning. Re-add the radial mask once the angle/size is dialled.
+
+   Tunable knobs live on .abilities__deck — see the table below.
+   ============================================================ */
+
+#abilities { background: var(--bg); color: var(--fg); }
+
+.abilities {
+  position: relative;
+  overflow: hidden;                 /* clip the wide floor */
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  gap: clamp(2rem, 6vh, 5rem);
+  padding: var(--space-lg) var(--section-pad);
+}
+
+/* ---- perspective grid floor (plain white, no fade — WIP) ---- */
+.abilities__floor {
+  --floor-line: rgba(255, 255, 255, 0.85);
+  --floor-cell: 60px;
+  --floor-tilt: 60deg;              /* smaller = more top-down / more visible */
+
+  position: absolute;
+  left: 50%;
+  bottom: -6vh;
+  width: 300vw;
+  height: 130vh;                    /* tall so the grid reaches up behind the cards */
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  transform: perspective(900px) rotateX(var(--floor-tilt));
+  background-image:
+    repeating-linear-gradient(0deg,  transparent 0 calc(var(--floor-cell) - 2px), var(--floor-line) calc(var(--floor-cell) - 2px) var(--floor-cell)),
+    repeating-linear-gradient(90deg, transparent 0 calc(var(--floor-cell) - 2px), var(--floor-line) calc(var(--floor-cell) - 2px) var(--floor-cell));
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- deck ---- */
+.abilities__deck {
+  /* | Variable       | Controls                                        |
+     |----------------|-------------------------------------------------|
+     | --card-w       | resting card width (height from front AR)       |
+     | --front-ar     | front image aspect (w/h)                        |
+     | --open-w       | opened (landscape) card width                   |
+     | --open-ar      | opened card aspect (w/h) = rotated back content |
+     | --fan-x        | horizontal step between adjacent cards          |
+     | --fan-arc      | how much outer cards drop (arc curvature)       |
+     | --fan-spread   | rotation step between adjacent cards (fan angle)|
+     | --lift         | hover lift distance (local up)                  |
+     | --open-y       | extra vertical nudge of the opened card         | */
+  --card-w: clamp(210px, 21vw, 340px);
+  --front-ar: calc(684 / 939);
+  --card-h: calc(var(--card-w) / var(--front-ar));
+  --open-w: clamp(480px, 66vw, 980px);
+  --open-ar: calc(2400 / 1440);     /* back content, once rotated → landscape */
+  --open-h: calc(var(--open-w) / var(--open-ar));
+  --deck-h: calc(var(--card-h) * 1.35);
+
+  --fan-x: clamp(120px, 15vw, 250px);
+  --fan-arc: 22px;
+  --fan-spread: 12deg;
+  --lift: 30px;
+  --open-y: 0px;
+
+  position: relative;
+  z-index: 1;                        /* above the floor */
+  height: var(--deck-h);
+  perspective: 1700px;
+  perspective-origin: 50% 42%;
+}
+
+.abil-card {
+  --i0: calc(var(--i) - 1.5);        /* -1.5 … 1.5 */
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--card-w);
+  height: var(--card-h);
+  padding: 0;
+  background: none;
+  z-index: calc(10 - var(--i));      /* left card stacked on top */
+  transform-origin: 50% 50%;
+  transform:
+    translateX(-50%)
+    translateX(calc(var(--i0) * var(--fan-x)))
+    translateY(calc(var(--i0) * var(--i0) * var(--fan-arc)))
+    rotate(calc(var(--i0) * var(--fan-spread)));
+  transition: transform 0.55s var(--ease-out), width 0.6s var(--ease-out), height 0.6s var(--ease-out), opacity 0.4s ease, filter 0.4s ease;
+  cursor: pointer;
+}
+
+/* fake shadow onto the floor (kept horizontal via counter-rotate) */
+.abil-card::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9%;
+  width: 82%;
+  height: 16%;
+  transform: translateX(-50%) rotate(calc(-1 * var(--i0) * var(--fan-spread)));
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85), transparent 70%);
+  filter: blur(14px);
+  z-index: -1;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.abil-card__inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s var(--ease-out);
+}
+
+.abil-card__face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: #0b0c09;
+}
+.abil-card__face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* back = flipped face; image rotated −90° (CCW), sized via container
+   units so the swapped box fills the face exactly after rotation */
+.abil-card__back { transform: rotateY(180deg); container-type: size; }
+.abil-card__back img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100cqh;                    /* swapped: img width  = face height */
+  height: 100cqw;                   /* swapped: img height = face width  */
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+/* hover tint glow rising from the base */
+.abil-card__front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(130% 100% at 50% 100%, rgba(156, 227, 37, 0.32), transparent 68%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* ---- hover (no z-index change → card keeps its order) ---- */
+.abil-card:not(.is-open):hover .abil-card__inner { transform: translateY(calc(-1 * var(--lift))); }
+.abil-card:not(.is-open):hover .abil-card__front { border-color: var(--accent); box-shadow: 0 0 30px rgba(156, 227, 37, 0.4); }
+.abil-card:not(.is-open):hover .abil-card__front::after { opacity: 1; }
+
+/* ---- open: grow to landscape, centred in the deck, flipped ---- */
+.abilities__deck.has-open .abil-card:not(.is-open) { opacity: 0.25; filter: blur(2px); pointer-events: none; }
+.abil-card.is-open {
+  z-index: 30;
+  width: var(--open-w);
+  height: var(--open-h);
+  transform: translateX(-50%) translateY(calc((var(--deck-h) - var(--open-h)) / 2 + var(--open-y)));
+}
+.abil-card.is-open::after { opacity: 0; }
+.abil-card.is-open .abil-card__inner { transform: rotateY(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .abil-card__inner, .abil-card { transition: none; }
+}

@@ -7,6 +7,7 @@ import { initPreloader } from "./preloader.js";
 import { initNav } from "./nav.js";
 import { initLanding } from "./sections/landing.js";
 import { initWhatIBuild } from "./sections/what-i-build.js";
+import { initAbilities } from "./sections/abilities.js";
 import { initJourney } from "./sections/journey.js";
 import { initMedia } from "./sections/media.js";
 import { initReveal } from "./reveal.js";
@@ -41,6 +42,7 @@ initNav(app);
 /* ---- Section modules ---- */
 initLanding();
 initWhatIBuild();
+initAbilities();
 initJourney();
 initMedia();
 
