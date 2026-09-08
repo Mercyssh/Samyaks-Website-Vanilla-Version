@@ -17,20 +17,22 @@
 #abilities { background: var(--bg); color: var(--fg); }
 
 .abilities {
+  --floor-tilt: 60deg;              /* shared by the floor + the card shadows */
   position: relative;
   overflow: hidden;                 /* clip the wide floor */
   min-height: 100vh;
   display: grid;
   align-content: center;
-  gap: clamp(2rem, 6vh, 5rem);
+  gap: clamp(3.5rem, 10vh, 8rem);   /* gap between the title and the deck */
   padding: var(--space-lg) var(--section-pad);
 }
 
 /* ---- perspective grid floor (plain white, no fade — WIP) ---- */
 .abilities__floor {
   --floor-line: rgba(255, 255, 255, 0.85);
-  --floor-cell: 60px;
-  --floor-tilt: 60deg;              /* smaller = more top-down / more visible */
+  --floor-cell: 120px;               /* --floor-tilt inherited from .abilities */
+  --floor-fade-solid: 0%;           /* bottom band kept fully opaque */
+  --floor-fade-end: 100%;            /* point (up from bottom) where it's fully gone */
 
   position: absolute;
   left: 50%;
@@ -39,10 +41,13 @@
   height: 130vh;                    /* tall so the grid reaches up behind the cards */
   translate: -50% 0;
   transform-origin: 50% 100%;
-  transform: perspective(900px) rotateX(var(--floor-tilt));
+  transform: perspective(700px) rotateX(var(--floor-tilt));
   background-image:
     repeating-linear-gradient(0deg,  transparent 0 calc(var(--floor-cell) - 2px), var(--floor-line) calc(var(--floor-cell) - 2px) var(--floor-cell)),
     repeating-linear-gradient(90deg, transparent 0 calc(var(--floor-cell) - 2px), var(--floor-line) calc(var(--floor-cell) - 2px) var(--floor-cell));
+  /* fade the grid out from the near (bottom) edge up toward the horizon */
+  -webkit-mask-image: linear-gradient(to top, #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
+  mask-image: linear-gradient(to top, #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
   pointer-events: none;
   z-index: 0;
 }
@@ -60,10 +65,10 @@
      | --fan-spread   | rotation step between adjacent cards (fan angle)|
      | --lift         | hover lift distance (local up)                  |
      | --open-y       | extra vertical nudge of the opened card         | */
-  --card-w: clamp(210px, 21vw, 340px);
+  --card-w: clamp(168px, 17vw, 272px);      /* ~20% smaller at rest */
   --front-ar: calc(684 / 939);
   --card-h: calc(var(--card-w) / var(--front-ar));
-  --open-w: clamp(480px, 66vw, 980px);
+  --open-w: clamp(576px, 79vw, 1176px);     /* ~20% larger when open */
   --open-ar: calc(2400 / 1440);     /* back content, once rotated → landscape */
   --open-h: calc(var(--open-w) / var(--open-ar));
   --deck-h: calc(var(--card-h) * 1.35);
@@ -101,20 +106,25 @@
   cursor: pointer;
 }
 
-/* fake shadow onto the floor (kept horizontal via counter-rotate) */
-.abil-card::after {
-  content: "";
+/* fake floor shadow: a wide radial-gradient ellipse living INSIDE the
+   floor. The floor is already tilted (perspective + rotateX) and is not
+   preserve-3d, so its children are flattened onto that plane — the shadow
+   lies flat on the grid with no tilt of its own. Positioned from the
+   floor's near (bottom) edge, since the floor is the coordinate space now. */
+.abil-shadow {
+  --shadow-w: clamp(480px, 62vw, 1000px);
+  --shadow-h: 300px;                 /* ellipse height on the floor plane */
+  --shadow-up: 44vh;                 /* how far up the floor the ellipse sits (under the fan) */
   position: absolute;
   left: 50%;
-  bottom: -9%;
-  width: 82%;
-  height: 16%;
-  transform: translateX(-50%) rotate(calc(-1 * var(--i0) * var(--fan-spread)));
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85), transparent 70%);
+  bottom: var(--shadow-up);
+  width: var(--shadow-w);
+  height: var(--shadow-h);
+  transform: translate(-50%, 50%);   /* centre the ellipse on that point (floor supplies the tilt) */
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 40%, transparent 70%);
   filter: blur(14px);
-  z-index: -1;
-  transition: opacity 0.4s ease;
   pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 .abil-card__inner {
@@ -174,7 +184,7 @@
   height: var(--open-h);
   transform: translateX(-50%) translateY(calc((var(--deck-h) - var(--open-h)) / 2 + var(--open-y)));
 }
-.abil-card.is-open::after { opacity: 0; }
+.abilities:has(.abilities__deck.has-open) .abil-shadow { opacity: 0; }
 .abil-card.is-open .abil-card__inner { transform: rotateY(180deg); }
 
 @media (prefers-reduced-motion: reduce) {

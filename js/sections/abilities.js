@@ -20,6 +20,11 @@ export function initAbilities() {
   const deck = document.getElementById("abilitiesDeck");
   if (!deck) return;
 
+  // one collective shadow, laid on the perspective floor (lies flat because
+  // it inherits the floor's tilted plane) rather than in the upright deck.
+  const floor = document.querySelector(".abilities__floor");
+  if (floor) floor.innerHTML = `<span class="abil-shadow" aria-hidden="true"></span>`;
+
   deck.innerHTML = ABILITIES.map(
     (a, i) => `
     <button type="button" class="abil-card" style="--i:${i}" aria-expanded="false" aria-label="${a.title}">
