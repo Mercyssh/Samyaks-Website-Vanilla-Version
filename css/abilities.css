@@ -56,6 +56,41 @@
   z-index: 0;
 }
 
+/* ---- background sine-wave motif (behind the deck, above the floor) ----
+   | Variable      | Controls                                    |
+   |---------------|---------------------------------------------|
+   | --wave-band   | vertical height of the wave band            |
+   | --wave-cy     | vertical centre of the band (% of section)  |
+   | --wave-speed  | base scroll duration (wave 2 runs slower)   | */
+.abilities__waves {
+  --wave-band: 320px;
+  --wave-cy: 60%;
+  --wave-speed: 16s;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--wave-cy);
+  height: var(--wave-band);
+  translate: 0 -50%;
+  z-index: 0;                        /* above the floor, behind the deck (z-index:1) */
+  pointer-events: none;
+  overflow: hidden;
+}
+.abilities__wave {
+  position: absolute;
+  inset: 0;
+  background-image: var(--wave-img);
+  background-repeat: repeat-x;
+  background-position: 0 center;
+  background-size: var(--wave-period) 100%;
+  animation: abil-wave-scroll var(--wave-speed) linear infinite;
+}
+/* second wave: slower + opposite direction → phase relative to the first drifts */
+.abilities__wave--2 { animation-duration: calc(var(--wave-speed) * 1.6); animation-direction: reverse; }
+@keyframes abil-wave-scroll {
+  to { background-position-x: var(--wave-period); }
+}
+
 /* ---- deck ---- */
 .abilities__deck {
   /* | Variable       | Controls                                        |
@@ -191,6 +226,11 @@
 .abilities:has(.abilities__deck.has-open) .abil-shadow { opacity: 0; }
 .abil-card.is-open .abil-card__inner { transform: rotateY(180deg); }
 
+/* dim (not hide) the section title while a card is open, to push focus to it */
+.abilities .section-title { transition: opacity 0.45s ease; }
+.abilities:has(.abilities__deck.has-open) .section-title { opacity: 0.35; }
+
 @media (prefers-reduced-motion: reduce) {
   .abil-card__inner, .abil-card { transition: none; }
+  .abilities__wave { animation: none; }
 }
