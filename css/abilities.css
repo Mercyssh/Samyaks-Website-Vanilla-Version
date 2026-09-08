@@ -29,8 +29,7 @@
 
 /* ---- perspective grid floor (plain white, no fade — WIP) ---- */
 .abilities__floor {
-  --floor-line: rgba(255, 255, 255, 0.85);
-  --floor-cell: 120px;               /* --floor-tilt inherited from .abilities */
+  --floor-cell: 120px;               /* tile size on screen; --floor-tilt inherited from .abilities */
   --floor-fade-solid: 0%;           /* bottom band kept fully opaque */
   --floor-fade-end: 100%;            /* point (up from bottom) where it's fully gone */
 
@@ -42,9 +41,11 @@
   translate: -50% 0;
   transform-origin: 50% 100%;
   transform: perspective(700px) rotateX(var(--floor-tilt));
-  background-image:
-    repeating-linear-gradient(0deg,  transparent 0 calc(var(--floor-cell) - 2px), var(--floor-line) calc(var(--floor-cell) - 2px) var(--floor-cell)),
-    repeating-linear-gradient(90deg, transparent 0 calc(var(--floor-cell) - 2px), var(--floor-line) calc(var(--floor-cell) - 2px) var(--floor-cell));
+  opacity: 0.2;
+  background-image: url("../assets/img/gridtile.png");
+  background-repeat: repeat;
+  background-size: var(--floor-cell) var(--floor-cell);
+  background-position: 50% 100%;    /* anchor tiling at the near edge so it stays put on resize */
   /* fade the grid out from the near (bottom) edge up toward the horizon */
   -webkit-mask-image: linear-gradient(to top, #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
   mask-image: linear-gradient(to top, #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
@@ -112,7 +113,7 @@
    lies flat on the grid with no tilt of its own. Positioned from the
    floor's near (bottom) edge, since the floor is the coordinate space now. */
 .abil-shadow {
-  --shadow-w: clamp(480px, 62vw, 1000px);
+  --shadow-w: clamp(480px, 80vw, 1400px);
   --shadow-h: 300px;                 /* ellipse height on the floor plane */
   --shadow-up: 44vh;                 /* how far up the floor the ellipse sits (under the fan) */
   position: absolute;
