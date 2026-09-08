@@ -29,9 +29,13 @@
 
 /* ---- perspective grid floor (plain white, no fade — WIP) ---- */
 .abilities__floor {
-  --floor-cell: 120px;               /* tile size on screen; --floor-tilt inherited from .abilities */
-  --floor-fade-solid: 0%;           /* bottom band kept fully opaque */
-  --floor-fade-end: 100%;            /* point (up from bottom) where it's fully gone */
+  --floor-cell: 140px;               /* tile size on screen; --floor-tilt inherited from .abilities */
+  --floor-fade-solid: 25%;          /* inner radius kept fully opaque */
+  --floor-fade-end: 35%;            /* outer radius where it's fully gone */
+  --floor-fade-cx: 50%;             /* mask centre X (in the floor's local box) */
+  --floor-fade-cy: 50%;            /* mask centre Y — 100% = near/bottom edge */
+  --floor-fade-rx: 60%;             /* mask ellipse radius X */
+  --floor-fade-ry: 90%;             /* mask ellipse radius Y */
 
   position: absolute;
   left: 50%;
@@ -41,14 +45,13 @@
   translate: -50% 0;
   transform-origin: 50% 100%;
   transform: perspective(700px) rotateX(var(--floor-tilt));
-  opacity: 0.2;
-  background-image: url("../assets/img/gridtile.png");
+  opacity: 0.1;
+  background-image: url("../assets/img/gridtile2.png");
   background-repeat: repeat;
   background-size: var(--floor-cell) var(--floor-cell);
   background-position: 50% 100%;    /* anchor tiling at the near edge so it stays put on resize */
-  /* fade the grid out from the near (bottom) edge up toward the horizon */
-  -webkit-mask-image: linear-gradient(to top, #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
-  mask-image: linear-gradient(to top, #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
+  -webkit-mask-image: radial-gradient(ellipse var(--floor-fade-rx) var(--floor-fade-ry) at var(--floor-fade-cx) var(--floor-fade-cy), #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
+  mask-image: radial-gradient(ellipse var(--floor-fade-rx) var(--floor-fade-ry) at var(--floor-fade-cx) var(--floor-fade-cy), #000 var(--floor-fade-solid), transparent var(--floor-fade-end));
   pointer-events: none;
   z-index: 0;
 }
