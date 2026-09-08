@@ -117,6 +117,8 @@
   position: absolute;
   z-index: var(--z-content);
   max-width: 260px;
+  /* logo + headline follow currentColor: muted grey at rest, white on hover.
+     Not a link — hover only, no navigation. */
   color: var(--fg-dim);
   display: flex;
   flex-direction: column;
@@ -132,17 +134,26 @@
 @media (prefers-reduced-motion: reduce) {
   .press { animation: none; }
 }
+/* logo is tinted via mask (silhouette from the image's alpha) so it takes
+   currentColor. The mask-image url is set INLINE in the HTML so it resolves
+   against the page, not this stylesheet's folder; --ar keeps its aspect ratio. */
 .press__logo {
+  display: block;
   height: var(--press-logo-h);
+  aspect-ratio: var(--ar);
   width: auto;
   max-width: 100%;
-  object-fit: contain;
-  object-position: left center;
   margin-bottom: 0.15rem;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-position: left center; mask-position: left center;
+  transition: background-color 0.2s ease;
 }
 .press--tr .press__logo,
-.press--br .press__logo { object-position: right center; }
-.press__headline { font-size: var(--step--1); font-weight: 700; color: var(--fg); text-wrap: pretty; }
+.press--br .press__logo { -webkit-mask-position: right center; mask-position: right center; }
+.press__headline { font-size: var(--step--1); font-weight: 700; color: currentColor; text-wrap: pretty; transition: color 0.2s ease; }
+.press:hover { color: #fff; }
 .press__snippet { font-size: var(--step--1); color: var(--fg-faint); line-height: 1.35; text-wrap: pretty; }
 
 .press--tl { top: 8vh; left: var(--section-pad); text-align: left; animation-delay: -0.5s; }
