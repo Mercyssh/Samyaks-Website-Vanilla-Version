@@ -27,8 +27,11 @@ import { buildHandMaterial } from "./hand-material.js";
 const MODEL_URL = "./assets/models/landing.glb";
 const DEBUG = new URLSearchParams(location.search).has("debug");
 
-// TODO(copy): real destinations + confirm which plane is which
-const LINKS = { linkedin: "#", mail: "mailto:hello@samyakchakrabarty.com" };
+// TODO(copy): confirm which plane is which (upper = LinkedIn, lower = Mail)
+const LINKS = {
+  linkedin: "https://www.linkedin.com/in/samyak-chakrabarty-5240266?originalSubdomain=in",
+  mail: "mailto:emailme@samyakchakrabarty.com",
+};
 
 export function initLandingScene() {
   const mount = document.querySelector('.scene-mount[data-scene="landing"]');
@@ -39,14 +42,20 @@ export function initLandingScene() {
   if (!stage) return;
   const { scene, camera, renderer } = stage;
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.9));
-  const key = new THREE.DirectionalLight(0xffffff, 1.15);
-  key.position.set(2, 3, 4);
-  scene.add(key);
+  // No lights: every material in this scene is UNLIT (cards → MeshBasicMaterial,
+  // hand → self-contained shader with its lighting term neutralised). Nothing
+  // here should respond to a light source.
 
   // scroll layout (viewport-height multiples): animation plays over animVh,
   // then the final frame is HELD over holdVh before the pin releases.
-  const cfg = { animVh: 1.1, holdVh: 0.7, target: new THREE.Vector3(0, 0, 0), useGlbCam: true };
+  const cfg = { animVh: 0.5, holdVh: 0.4, target: new THREE.Vector3(0, 0, 0), useGlbCam: true };
+
+  // DOM overlay elements that fade out as the scroll scrubs the animation
+  const overlayEls = [
+    ...document.querySelectorAll("#landing .press"),
+    document.querySelector("#landing .landing__tagline"),
+  ].filter(Boolean);
+  let overlayHooked = false;
 
   const cards = {};
   let hand = null, handKit = null, coverMat = null;
@@ -57,8 +66,9 @@ export function initLandingScene() {
   let st = null;
   let orbit = null;
 
+  // hoverK (0.5 rest → 1 hovered) is tweened over 0.2s; iconFade is the scroll fade
   const applyIconOpacity = () => {
-    icons.forEach((ic) => { if (ic.mat) { ic.mat.opacity = (ic.hover ? 1 : 0.5) * iconFade; ic.obj.visible = iconFade > 0.02; } });
+    icons.forEach((ic) => { if (ic.mat) { ic.mat.opacity = ic.hoverK * iconFade; ic.obj.visible = iconFade > 0.02; } });
   };
 
   const syncCamera = () => {
@@ -105,25 +115,37 @@ export function initLandingScene() {
         });
       }
 
-      // All meshes share ONE "Card Material" (alphaMode BLEND + doubleSided).
-      // That shared transparency makes the stacked cards sort wrong at the
-      // flip extreme (back card bleeds through). → give each its own OPAQUE
-      // clone so the depth buffer occludes them at any angle.
-      const makeCardOpaque = (node, { front = false } = {}) => {
+      // Cards are UNLIT: swap the GLB's PBR "Card Material" (which picks up
+      // specular gloss from any light) for MeshBasicMaterial — flat, full
+      // brightness, ignores lights. Also OPAQUE: the shared BLEND material
+      // made the stacked cards sort wrong at the flip extreme (back card bleeds
+      // through); an opaque material lets the depth buffer occlude them at any
+      // angle. Preserve the artwork texture + base colour from the source.
+      const makeCardUnlit = (node, { front = false } = {}) => {
         node && node.traverse((o) => {
           if (!o.isMesh || !o.material) return;
-          o.material = o.material.clone();
-          o.material.transparent = false;
-          o.material.depthWrite = true;
-          o.material.side = front ? THREE.FrontSide : THREE.DoubleSide;
+          const src = o.material;
+          o.material = new THREE.MeshBasicMaterial({
+            map: src.map || null,
+            color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
+            vertexColors: src.vertexColors || false,
+            // Honour the texture's alpha via alphaTest (cutout) rather than
+            // blending: fully-transparent texels are DISCARDED (not painted
+            // black), while the material stays in the opaque pass so the depth
+            // buffer still sorts the stacked cards correctly through the flip.
+            transparent: false,
+            alphaTest: 0.5,
+            depthWrite: true,
+            side: front ? THREE.FrontSide : THREE.DoubleSide,
+          });
         });
       };
       // cover: FrontSide → its back is culled once flipped, revealing the pillars
-      makeCardOpaque(cards.cover, { front: true });
+      makeCardUnlit(cards.cover, { front: true });
       cards.cover && cards.cover.traverse((o) => { if (o.isMesh) coverMat = o.material; });
-      makeCardOpaque(cards.left);
-      makeCardOpaque(cards.middle);
-      makeCardOpaque(cards.right);
+      makeCardUnlit(cards.left);
+      makeCardUnlit(cards.middle);
+      makeCardUnlit(cards.right);
 
       // hand: bespoke material stack (gradient + fresnel + 50% opacity)
       if (hand) handKit = buildHandMaterial(hand);
@@ -133,8 +155,19 @@ export function initLandingScene() {
       planes.sort((a, b) => b.position.y - a.position.y); // upper first
       const urls = [LINKS.linkedin, LINKS.mail];
       planes.forEach((obj, i) => {
-        const entry = { obj, mat: null, url: urls[i] || "#", hover: false };
-        obj.traverse((o) => { if (o.isMesh && o.material) { o.material = o.material.clone(); o.material.transparent = true; entry.mat = o.material; o.userData.icon = entry; } });
+        const entry = { obj, mat: null, url: urls[i] || "#", hover: false, hoverK: 0.5 };
+        obj.traverse((o) => {
+          if (!o.isMesh || !o.material) return;
+          const src = o.material;
+          // unlit too (opacity is driven per-frame by applyIconOpacity)
+          o.material = new THREE.MeshBasicMaterial({
+            map: src.map || null,
+            color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
+            transparent: true,
+          });
+          entry.mat = o.material;
+          o.userData.icon = entry;
+        });
         icons.push(entry);
       });
       applyIconOpacity();
@@ -184,6 +217,19 @@ export function initLandingScene() {
     if (hand) hand.visible = fade > 0.02;
     iconFade = Math.max(0, 1 - animP / 0.5);
     applyIconOpacity();
+
+    // Fade the DOM overlay (press cards + tagline) in lockstep with the
+    // scroll scrub. Only take over once the user actually scrolls (animP>0)
+    // so the entrance reveal (reveal.js) plays untouched at rest.
+    if (animP > 0) {
+      if (!overlayHooked) {
+        overlayHooked = true;
+        // drop reveal.js's 0.7s opacity transition so the scrub stays crisp
+        overlayEls.forEach((el) => { el.style.transition = "none"; });
+      }
+      const overlayFade = Math.max(0, 1 - animP / 0.5);
+      overlayEls.forEach((el) => { el.style.opacity = overlayFade; });
+    }
   }
 
   // map the pinned scroll (which includes the hold tail) → animation progress
@@ -204,17 +250,22 @@ export function initLandingScene() {
   renderer.domElement.addEventListener("pointermove", (ev) => {
     if (orbit && orbit.enabled) return;
     const hit = iconFade > 0.1 ? pick(ev) : null;
-    let changed = false;
-    icons.forEach((ic) => { const h = ic === hit; if (h !== ic.hover) { ic.hover = h; changed = true; } });
-    if (changed) applyIconOpacity();
+    icons.forEach((ic) => {
+      const h = ic === hit;
+      if (h === ic.hover) return;
+      ic.hover = h;
+      const target = h ? 1 : 0.5;
+      // ease the material opacity over 0.2s instead of snapping
+      if (gsap) gsap.to(ic, { hoverK: target, duration: 0.2, ease: "power2.out", overwrite: true, onUpdate: applyIconOpacity });
+      else { ic.hoverK = target; applyIconOpacity(); }
+    });
     renderer.domElement.style.cursor = hit ? "pointer" : "";
   });
   renderer.domElement.addEventListener("click", (ev) => {
     if (iconFade <= 0.1 || (orbit && orbit.enabled)) return;
     const ic = pick(ev);
     if (!ic || !ic.url || ic.url === "#") return;
-    if (ic.url.startsWith("mailto:")) window.location.href = ic.url;
-    else window.open(ic.url, "_blank", "noopener");
+    window.open(ic.url, "_blank", "noopener");
   });
 
   /* ---- pinned scroll scrub (+ hold tail) ---- */

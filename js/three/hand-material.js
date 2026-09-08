@@ -83,17 +83,19 @@ export function buildHandMaterial(hand) {
   const cfg = {
     // COLOR + DEPTH
     colorBottom: "#191919",   // Spline Color 191919
-    colorTop: "#6f7477",      // Depth ramp grey endpoint
-    // LIGHTING
-    ambient: 0.85,
-    lightStrength: 0.3,
+    colorTop: "#6a6e71",      // Depth ramp grey endpoint
+    // LIGHTING — UNLIT: ambient 0 + no directional term → the depth base is
+    // multiplied to black, so the hand reads as its FRESNEL RIM only over a
+    // near-transparent body. No scene/GUI light affects it.
+    ambient: 0.0,
+    lightStrength: 0.0,
     // FRESNEL
     fresnelColor: "#c9d3d8",
-    fresnelPower: 2.6,
-    fresnelStrength: 0.22,
-    fresnelAlpha: 0.18,
+    fresnelPower: 4.5,
+    fresnelStrength: 0.19,
+    fresnelAlpha: 0.21,
     // OVERALL
-    opacity: 0.5,             // Spline Color 50%
+    opacity: 0.23,            // baked from lil-gui
   };
 
   const uniforms = {

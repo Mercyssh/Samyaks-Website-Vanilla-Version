@@ -25,25 +25,25 @@
   -webkit-mask-image: radial-gradient(120% 90% at 50% 45%, #000 40%, transparent 78%);
 }
 
-/* green halo that tracks the pointer (JS sets --mx/--my) */
+/* green halo — static, centred on the screen */
 .landing__halo {
   position: absolute;
   inset: 0;
   z-index: 0;
-  --mx: 50%;
-  --my: 45%;
   background: radial-gradient(
-    360px 360px at var(--mx) var(--my),
+    360px 360px at 50% 50%,
     rgba(140, 198, 63, 0.22),
     rgba(140, 198, 63, 0.07) 40%,
     transparent 70%
   );
-  transition: background-position 0.1s linear;
   pointer-events: none;
 }
 
 /* corner press cards */
 .press {
+  --press-logo-h: 28.6px;      /* height of the outlet logo/icon (width follows) */
+  --press-bob-dist: 6px;       /* float amplitude */
+  --press-bob-dur: 7s;         /* float period */
   position: absolute;
   z-index: var(--z-content);
   max-width: 260px;
@@ -51,21 +51,52 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  /* slow floating bob — uses the `translate` property so it composes with
+     reveal.js's `transform` entrance instead of overriding it. */
+  animation: press-bob var(--press-bob-dur) ease-in-out infinite;
 }
-.press__outlet {
-  font-family: Georgia, "Times New Roman", serif; /* wordmark stand-in until logos supplied */
-  font-size: var(--step-2);
-  font-weight: 700;
-  color: var(--fg);
-  letter-spacing: -0.01em;
+@keyframes press-bob {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 calc(-1 * var(--press-bob-dist)); }
 }
-.press__headline { font-size: var(--step--1); font-weight: 700; color: var(--fg); }
-.press__snippet { font-size: var(--step--1); color: var(--fg-faint); line-height: 1.35; }
+@media (prefers-reduced-motion: reduce) {
+  .press { animation: none; }
+}
+.press__logo {
+  height: var(--press-logo-h);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 0.15rem;
+}
+.press--tr .press__logo,
+.press--br .press__logo { object-position: right center; }
+.press__headline { font-size: var(--step--1); font-weight: 700; color: var(--fg); text-wrap: pretty; }
+.press__snippet { font-size: var(--step--1); color: var(--fg-faint); line-height: 1.35; text-wrap: pretty; }
 
-.press--tl { top: 8vh; left: var(--section-pad); text-align: left; }
-.press--tr { top: 8vh; right: var(--section-pad); text-align: right; align-items: flex-end; }
-.press--bl { bottom: 8vh; left: var(--section-pad); text-align: left; }
-.press--br { bottom: 8vh; right: var(--section-pad); text-align: right; align-items: flex-end; }
+.press--tl { top: 8vh; left: var(--section-pad); text-align: left; animation-delay: -0.5s; }
+.press--tr { top: 8vh; right: var(--section-pad); text-align: right; align-items: flex-end; animation-delay: -3.6s; }
+.press--bl { bottom: 8vh; left: var(--section-pad); text-align: left; animation-delay: -5.2s; }
+.press--br { bottom: 8vh; right: var(--section-pad); text-align: right; align-items: flex-end; animation-delay: -2.1s; }
+
+/* CNBC (bottom-left) only: logo + title on one row, subtitle spanning below.
+   Its logo is near-square, so it also gets a taller --press-logo-h. */
+.press--bl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "logo title"
+    "sub  sub";
+  align-items: center;
+  column-gap: 0.7rem;
+  row-gap: 0.45rem;
+  max-width: 320px;
+  --press-logo-h: 41.8px;
+}
+.press--bl .press__logo { grid-area: logo; margin-bottom: 0; }
+.press--bl .press__headline { grid-area: title; }
+.press--bl .press__snippet { grid-area: sub; }
 
 /* centre */
 .landing__center {
