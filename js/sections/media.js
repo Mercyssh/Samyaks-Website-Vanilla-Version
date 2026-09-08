@@ -115,11 +115,13 @@ const MEDIA_CONFIG = {
     },
     {
       name: "Awards",
+      // Awards have no blurb → they render "stacked" (title above the graphic,
+      // per image1). `title` mirrors `label` so the name also heads the detail.
       items: [
-        { label: "Forbes Asia's most influential social entrepreneurs", href: "#", img: PLACEHOLDER },
-        { label: "Campaign South Asia Young Achiever", href: "#", img: PLACEHOLDER },
-        { label: "Bombay Ad Club Young Emvie", href: "#", img: PLACEHOLDER },
-        { label: "Times Lead India", href: "#", img: PLACEHOLDER },
+        { label: "Forbes Asia's most influential social entrepreneurs", title: "Forbes Asia's most influential social entrepreneurs", href: "#", img: PLACEHOLDER },
+        { label: "Campaign South Asia Young Achiever", title: "Campaign South Asia Young Achiever", href: "#", img: PLACEHOLDER },
+        { label: "Bombay Ad Club Young Emvie", title: "Bombay Ad Club Young Emvie", href: "#", img: PLACEHOLDER },
+        { label: "Times Lead India", title: "Times Lead India", href: "#", img: PLACEHOLDER },
       ],
     },
     {
@@ -330,15 +332,32 @@ export function initMedia() {
     });
   }
 
-  /* ---- detail (right half) ---- */
+  /* ---- detail (right half) ----
+     Three layout modes, keyed off the `title` / `blurb` fields:
+       • blurb present            → full (text column left, graphic right)
+       • title, no blurb          → stacked (title centred ABOVE the graphic)
+       • neither title nor blurb  → graphic-only (just the centred graphic)
+     The blurb's clamp + fade only make sense as a "there's more → Read
+     Article" hint, so when there's no read-more button we show it in full. */
   const paint = (it) => {
     const showRead = !!it.article;
+    const hasBlurb = !!it.blurb;
+    const hasTitle = !!it.title;
+    const hasText = hasBlurb || hasTitle;
+
+    detailEl.classList.toggle("is-graphic-only", !hasText);
+    detailEl.classList.toggle("is-stacked", hasTitle && !hasBlurb);
+
+    const textBlock = hasText
+      ? `<div class="media__detail-text">
+          <h3 class="media__detail-title">${it.title || it.label}</h3>
+          ${hasBlurb ? `<p class="media__detail-blurb${showRead ? "" : " media__detail-blurb--full"}">${it.blurb}</p>` : ""}
+          ${showRead ? `<button class="media__cta" type="button" data-read>${it.buttonLabel || "Read Article"}</button>` : ""}
+        </div>`
+      : "";
+
     detailEl.innerHTML = `
-      <div class="media__detail-text">
-        <h3 class="media__detail-title">${it.title || it.label}</h3>
-        ${it.blurb ? `<p class="media__detail-blurb">${it.blurb}</p>` : ""}
-        ${showRead ? `<button class="media__cta" type="button" data-read>${it.buttonLabel || "Read Article"}</button>` : ""}
-      </div>
+      ${textBlock}
       <div class="media__preview">
         ${renderMedia(it)}
       </div>`;
