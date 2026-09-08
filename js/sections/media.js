@@ -55,57 +55,110 @@ const MEDIA_CONFIG = {
           blurb:
             "India's aspiration to become an economic superpower is intricately tied to its ability to leverage the demographic dividend and uplift disadvantaged regions. However, this ambition faces a significant challenge",
           img: PLACEHOLDER,
-          article: PLACEHOLDER, // TODO(copy): full-length article screenshot
+          article: PLACEHOLDER, // media: full-length article screenshot (user fills)
         },
-        // TODO(copy): NDTV / CNBC editorial headlines + blurbs + URLs
-        { 
-          group: "Editorials", 
-          label: "NDTV", 
-          title: "The World Of Work Has Changed", 
-          blurb: "Kumudini is a 22-year-old living at Mumbai's Dharavi slum. Her father works at a leather tannery and her mother as a domestic help. They worked hard to send her to a private school and then took a loan against the little gold they had",
-          img: PLACEHOLDER 
+        {
+          group: "Editorials",
+          label: "NDTV",
+          title: "The World Of Work Has Changed.",
+          blurb:
+            "Kumudini is a 22-year-old living at Mumbai's Dharavi slum. Her father works at a leather tannery and her mother as a domestic help. They worked hard to send her to a private school and then took a loan against the little gold they had to pay for her college.",
+          img: PLACEHOLDER,
+          article: PLACEHOLDER, // media: full-length article screenshot (user fills)
         },
-        { 
-          group: "Editorials", 
-          label: "CNBC", 
-          title: "CSR 2.0: How can it be optimised in the age of GenAI", 
-          blurb: "Intelligent technologies and forecasts such as generative AI raise the question of how we can save India's next generation from automation-induced unemployment and professional irrelevance",
-          img: PLACEHOLDER 
+        {
+          group: "Editorials",
+          label: "CNBC",
+          title: "CSR 2.0: How can it be optimised in the age of GenAI",
+          blurb:
+            "Intelligent technologies and forecasts such as generative AI raise the question of how we can save India's next generation from automation-induced unemployment and professional irrelevance",
+          img: PLACEHOLDER,
+          article: PLACEHOLDER, // media: full-length article screenshot (user fills)
         },
 
-        // Example of a video preview (YouTube). Swap `video` for an .mp4
-        // path to serve a file instead; mediaAspect avoids any JS sizing.
-        { group: "Interviews", label: "NDTV", title: "NDTV interview", video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", mediaAspect: "16 / 9" },
-        { group: "Interviews", label: "BBC", title: "BBC interview", href: "#", img: PLACEHOLDER },
-        { group: "Interviews", label: "Master's Union", title: "Master's Union", href: "#", img: PLACEHOLDER },
-        { group: "Interviews", label: "Analytics India Magazine", title: "Analytics India Magazine", href: "#", img: PLACEHOLDER },
+        // Interviews: live site shows only a media preview (no headline/blurb).
+        // The NDTV entry keeps the sample video preview. Swap `video` for an
+        // .mp4 path to serve a file instead; mediaAspect avoids any JS sizing.
+        { group: "Interviews", label: "NDTV", video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", mediaAspect: "16 / 9" },
+        { group: "Interviews", label: "BBC", href: "#", img: PLACEHOLDER },
+        { group: "Interviews", label: "Master's Union", href: "#", img: PLACEHOLDER },
+        { group: "Interviews", label: "Analytics India Magazine", href: "#", img: PLACEHOLDER },
 
-        { group: "Announcements", label: "Nimaya x Govt's AI Mission", title: "Nimaya x Government's AI Mission", href: "#", img: PLACEHOLDER },
-        { group: "Announcements", label: "Harper Collins Book", title: "HarperCollins book", href: "#", img: PLACEHOLDER },
-        { group: "Announcements", label: "Nimaya x Yourstory", title: "Nimaya x YourStory", href: "#", img: PLACEHOLDER },
+        {
+          group: "Announcements",
+          label: "Nimaya x Govt's AI Mission",
+          title: "Samyak Chakrabarty and Navya Nanda's Nimaya partners with Govt's AI Mission",
+          blurb:
+            "Samyak Chakrabarty and Navya Nanda's Nimaya has signed an MOU with IndiaAI, an IBD of Digital India Corporation, Ministry of Electronics & Information Technology (MeitY), to ensure women from under-served communities have an edge in leveraging AI at work.",
+          img: PLACEHOLDER,
+          article: PLACEHOLDER, // media: full-length article screenshot (user fills)
+        },
+        {
+          group: "Announcements",
+          label: "Harper Collins Book",
+          title: "Samyak Chakrabarty & Navya Naveli Nanda Author A Playbook For India's Gen Z",
+          blurb:
+            "At a time when advice for young people often feels overbearing, The Map positions itself as something quieter and more thoughtful. Written by Navya Naveli Nanda and Samyak Chakrabarty, and releasing later this year with HarperCollins India",
+          img: PLACEHOLDER,
+          article: PLACEHOLDER, // media: full-length article screenshot (user fills)
+        },
+        {
+          group: "Announcements",
+          label: "Nimaya x Yourstory",
+          title: "Samyak Chakrabarty and Navya Naveli Nanda's Nimaya is helping young women kickstart their careers",
+          blurb:
+            "Started in 2021 by Navya Naveli Nanda, Founder of Project Naveli and Samyak Chakrabarty, Founder of Workverse, the initiative has trained more than 350 girls so far, helping them overcome fears and enter the workforce.",
+          img: PLACEHOLDER,
+          article: PLACEHOLDER, // media: full-length article screenshot (user fills)
+        },
       ],
     },
     {
       name: "Awards",
       items: [
-        { label: "Forbes Asia's most influential social entrepreneurs", title: "Forbes Asia's most influential social entrepreneurs", href: "#", img: PLACEHOLDER },
-        { label: "Campaign South Asia Young Achiever", title: "Campaign South Asia Young Achiever", href: "#", img: PLACEHOLDER },
-        { label: "Bombay Ad Club Young Emvie", title: "Bombay Ad Club Young Emvie", href: "#", img: PLACEHOLDER },
-        { label: "Times Lead India", title: "Times Lead India", href: "#", img: PLACEHOLDER },
+        { label: "Forbes Asia's most influential social entrepreneurs", href: "#", img: PLACEHOLDER },
+        { label: "Campaign South Asia Young Achiever", href: "#", img: PLACEHOLDER },
+        { label: "Bombay Ad Club Young Emvie", href: "#", img: PLACEHOLDER },
+        { label: "Times Lead India", href: "#", img: PLACEHOLDER },
       ],
     },
     {
       name: "Fellowships",
       items: [
-        { label: "INK Fellowship", title: "INK Fellowship", href: "#", img: PLACEHOLDER },
-        { label: "RC Fellowship", title: "RC Fellowship", href: "#", img: PLACEHOLDER },
+        {
+          label: "INK Fellowship",
+          blurb: "India's most prestigious fellowship for young leaders in social innovation",
+          href: "#",
+          img: PLACEHOLDER,
+        },
+        {
+          label: "RC Fellowship Trust of India",
+          title: "RC Fellowship",
+          blurb:
+            "In the memory of Silicon Valley Genius and mentor to Google's Founders Prof Rajeev Motwani - RC Fellowship invites social innovators from India to Palo Alto to learn from leaders of future forward companies such as GoogleX, Tesla, SpaceX and Neuralink.",
+          href: "#",
+          img: PLACEHOLDER,
+        },
       ],
     },
     {
       name: "Books",
       items: [
-        { label: "The Map", subtitle: "2027", title: "The Map", href: "#", img: PLACEHOLDER },
-        { label: "Generation Einstein", subtitle: "2013", title: "Generation Einstein", href: "#", img: PLACEHOLDER },
+        {
+          label: "The Map",
+          subtitle: "2027",
+          blurb:
+            "(Slated for release in 2027 by Harper Collins) Co-authoring with Navya Naveli Nanda, amongst India's top youth influencers. The Map is a play book for youth to navigate the new world. Themes include work, identity, dope (dopamine) , morality and privacy",
+          href: "#",
+          img: PLACEHOLDER,
+        },
+        {
+          label: "Generation Einstein",
+          blurb:
+            "Commissioned by Ronnie Screwvala for UTV (now Disney India), I co-authored Generation Einstein with Dutch youth-trends researcher Jeroen Boschma. The book mapped 16+ mindset archetypes of Indian millennials and Gen Z as consumers, uncovering the triggers that shape their purchase decisions and brand loyalties. Widely circulated among industry leaders, it was read by over 300 C-suite executives across consumer brands, media platforms, and advertising agencies.",
+          href: "#",
+          img: PLACEHOLDER,
+        },
       ],
     },
   ],
