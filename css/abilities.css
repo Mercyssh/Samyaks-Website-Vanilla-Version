@@ -18,13 +18,51 @@
 
 .abilities {
   --floor-tilt: 60deg;              /* shared by the floor + the card shadows */
+  --title-gap: clamp(3.5rem, 5vh, 8rem);
   position: relative;
   overflow: hidden;                 /* clip the wide floor */
   min-height: 100vh;
   display: grid;
   align-content: center;
-  gap: clamp(3.5rem, 10vh, 8rem);   /* gap between the title and the deck */
+  gap: var(--title-gap);            /* gap between the title block and the deck */
   padding: var(--space-lg) var(--section-pad);
+}
+
+/* small hint under the title — pulled up tight so it reads as part of the
+   title block, leaving the full --title-gap before the deck */
+.abilities__hint {
+  margin: calc(-1 * var(--title-gap) + 0.75rem) 0 0;
+  font-size: var(--step-0);
+  color: var(--fg-faint);
+  text-align: center;
+}
+
+/* ---- subtle repeating dot grid (backmost motif, behind everything) ----
+   | Variable    | Controls                                         |
+   |-------------|--------------------------------------------------|
+   | --dot-gap   | spacing between dots                              |
+   | --dot-size  | dot radius                                        |
+   | --dot-color | dot colour (alpha = subtlety)                     |
+   | --dot-rx    | mask ellipse radius X (horizontal reach)          |
+   | --dot-ry    | mask ellipse radius Y (vertical reach)            |
+   | --dot-solid | radius kept fully opaque before the fade begins   | */
+.abilities::before {
+  content: "";
+  --dot-gap: 26px;
+  --dot-size: 1.5px;
+  --dot-color: rgba(255, 255, 255, 0.06);
+  --dot-rx: 55%;
+  --dot-ry: 32%;
+  --dot-solid: 20%;
+  position: absolute;
+  inset: 0;
+  z-index: 0;                        /* above the section bg, behind the deck */
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--dot-color) var(--dot-size), transparent calc(var(--dot-size) + 0.5px));
+  background-size: var(--dot-gap) var(--dot-gap);
+  /* confine the dots to a horizontal ellipse centred on the deck */
+  -webkit-mask-image: radial-gradient(ellipse var(--dot-rx) var(--dot-ry) at 50% 50%, #000 var(--dot-solid), transparent 100%);
+  mask-image: radial-gradient(ellipse var(--dot-rx) var(--dot-ry) at 50% 50%, #000 var(--dot-solid), transparent 100%);
 }
 
 /* ---- perspective grid floor (plain white, no fade — WIP) ---- */
@@ -109,14 +147,21 @@
   --card-h: calc(var(--card-w) / var(--front-ar));
   --open-w: clamp(576px, 79vw, 1176px);     /* ~20% larger when open */
   --open-ar: calc(2400 / 1440);     /* back content, once rotated → landscape */
-  --open-h: calc(var(--open-w) / var(--open-ar));
+  /* cap the opened height to the viewport so it never clips against the
+     section's overflow:hidden; width is then derived to preserve --open-ar */
+  --open-h: min(calc(var(--open-w) / var(--open-ar)), 74vh);
   --deck-h: calc(var(--card-h) * 1.35);
 
   --fan-x: clamp(120px, 15vw, 250px);
   --fan-arc: 22px;
   --fan-spread: 12deg;
   --lift: 30px;
-  --open-y: 0px;
+  /* the deck is centred in the section together with the title+hint above it,
+     so its centre sits ~half-the-top-block below the section centre. Nudge the
+     opened card up by that much so it centres on screen instead of clipping the
+     bottom. ~5.5rem ≈ title + hint height; --title-gap is the dominant term.
+     (add your own offset by lowering/raising this value) */
+  --open-y: calc((var(--title-gap) + 5.5rem) / -2);
 
   position: relative;
   z-index: 1;                        /* above the floor */
@@ -219,7 +264,7 @@
 .abilities__deck.has-open .abil-card:not(.is-open) { opacity: 0.25; filter: blur(2px); pointer-events: none; }
 .abil-card.is-open {
   z-index: 30;
-  width: var(--open-w);
+  width: calc(var(--open-h) * var(--open-ar));   /* derive from capped height → keeps AR + fits screen */
   height: var(--open-h);
   transform: translateX(-50%) translateY(calc((var(--deck-h) - var(--open-h)) / 2 + var(--open-y)));
 }
@@ -228,7 +273,7 @@
 
 /* dim (not hide) the section title while a card is open, to push focus to it */
 .abilities .section-title { transition: opacity 0.45s ease; }
-.abilities:has(.abilities__deck.has-open) .section-title { opacity: 0.35; }
+.abilities:has(.abilities__deck.has-open) .section-title { opacity: 0.15; }
 
 @media (prefers-reduced-motion: reduce) {
   .abil-card__inner, .abil-card { transition: none; }
