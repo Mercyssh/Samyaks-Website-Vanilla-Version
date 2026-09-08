@@ -477,6 +477,18 @@ export function initWhatIBuild() {
   stackEl.innerHTML = PILLARS.map((p, i) => cardHTML(p, i)).join("");
   const cards = [...stackEl.querySelectorAll(".wib-card")];
 
+  /* size the stack to the TALLEST card's natural content height. Cards are
+     position:absolute (overlapping) once GSAP takes over, so they can't drive
+     the container height themselves — we lay them out in flow briefly, take the
+     max offsetHeight, and pin the stack to it. */
+  const sizeStack = () => {
+    stackEl.classList.add("wib__stack--measuring");
+    let max = 0;
+    for (const c of cards) max = Math.max(max, c.offsetHeight);
+    stackEl.classList.remove("wib__stack--measuring");
+    if (max) stackEl.style.height = Math.ceil(max) + "px";
+  };
+
   /* ---- Read More overlay wiring ---- */
   const overlay = initOverlay();
   stackEl.addEventListener("click", (e) => {
@@ -497,10 +509,21 @@ export function initWhatIBuild() {
     return;
   }
 
+  // size the stack before cards go absolute, and re-measure once fonts settle
+  // (glyph metrics change line counts → height) and on resize (fluid type/width).
+  sizeStack();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeStack);
+
   // stacked: card 0 in place, the rest already opaque (y set per-segment below)
   gsap.set(cards, { position: "absolute", inset: 0 });
   gsap.set(cards, { autoAlpha: 1, scale: 1, y: 0 });
   setActiveTab(0);
+
+  let resizeT;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { sizeStack(); ScrollTrigger.refresh(); }, 150);
+  });
 
   const tl = gsap.timeline({
     scrollTrigger: {

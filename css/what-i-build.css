@@ -32,12 +32,14 @@
 }
 
 .wib__tabs {
+  --wib-tabs-lift: 2.5rem;   /* moves tabs UP only (visual, no layout shift → cards stay put) */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
   width: min(100% - 2 * var(--section-pad), var(--maxw));
   margin-inline: auto;
+  transform: translateY(calc(-1 * var(--wib-tabs-lift)));
 }
 .wib__tab {
   display: inline-flex;
@@ -63,7 +65,20 @@
   position: relative;
   width: min(100% - 2 * var(--section-pad), var(--maxw));
   margin-inline: auto;
-  height: clamp(360px, 56vh, 560px);
+  height: clamp(360px, 56vh, 560px);   /* JS overrides this with the tallest card's real height */
+}
+
+/* transient state while JS measures natural card height: lay cards out in flow
+   (overrides the inline GSAP position/transform via !important) so each card's
+   offsetHeight reports its true content height */
+.wib__stack--measuring { height: auto !important; }
+.wib__stack--measuring .wib-card {
+  position: static !important;
+  inset: auto !important;
+  height: auto !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .wib-card {
