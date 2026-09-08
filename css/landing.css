@@ -13,7 +13,7 @@
   padding: var(--space-lg) var(--section-pad);
 }
 
-/* dot grid + diagonal lines */
+/* dot grid — currently DISABLED via .landing__grid--off (see docs/Guides.md) */
 .landing__grid {
   position: absolute;
   inset: 0;
@@ -24,6 +24,76 @@
   mask-image: radial-gradient(120% 90% at 50% 45%, #000 40%, transparent 78%);
   -webkit-mask-image: radial-gradient(120% 90% at 50% 45%, #000 40%, transparent 78%);
 }
+.landing__grid--off { display: none; }
+
+/* criss-cross tile (gridtile.png) rotated 45°, radial-masked, screen-centred.
+   The tile lives on ::before so the mask on the wrapper stays screen-aligned
+   while the tiling itself is rotated. */
+.landing__criss {
+  --criss-opacity: 0.05;
+  --criss-tile: 70px;     /* on-screen size of one 512px tile */
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: var(--criss-opacity);
+  -webkit-mask-image: radial-gradient(35% 35% at 50% 50%, #000 35%, transparent 78%);
+  mask-image: radial-gradient(35% 35% at 50% 50%, #000 35%, transparent 78%);
+}
+.landing__criss::before {
+  content: "";
+  position: absolute;
+  inset: -50%;            /* oversize so 45° rotation still covers the corners */
+  background: url(../assets/img/gridtile.png) repeat;
+  background-size: var(--criss-tile) var(--criss-tile);
+  transform: rotate(45deg);
+}
+
+/* rotating brand motif (workverse-logo-bgmotif.png), screen-centred */
+.landing__motif {
+  --motif-size: 100vmin;
+  --motif-opacity: 0.3;
+  --motif-dur: 60s;       /* one full turn; larger = slower */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: var(--motif-size);
+  aspect-ratio: 1;
+  background: url(../assets/img/workverse-logo-bgmotif.png) center / contain no-repeat;
+  opacity: var(--motif-opacity);
+  translate: -50% -50%;   /* separate from `rotate` so both compose */
+  animation: motif-spin var(--motif-dur) linear infinite;
+}
+@keyframes motif-spin { to { rotate: 360deg; } }
+
+/* twinkling stars — dots are injected + positioned by js/sections/landing.js */
+.landing__stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.landing__star {
+  --tw-max: 0.7;          /* peak opacity of a star */
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  will-change: opacity;
+  animation: star-twinkle var(--tw-dur) ease-in-out var(--tw-delay) infinite;
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: var(--tw-max); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing__motif { animation: none; }
+  .landing__star { animation: none; opacity: calc(var(--tw-max) * 0.5); }
+}
 
 /* green halo — static, centred on the screen */
 .landing__halo {
@@ -31,8 +101,8 @@
   inset: 0;
   z-index: 0;
   background: radial-gradient(
-    360px 360px at 50% 50%,
-    rgba(140, 198, 63, 0.22),
+    460px 460px at 50% 50%,
+    rgba(140, 198, 63, 0.4),
     rgba(140, 198, 63, 0.07) 40%,
     transparent 70%
   );

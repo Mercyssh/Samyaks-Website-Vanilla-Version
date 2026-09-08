@@ -59,8 +59,13 @@
 
     <section class="section landing" id="landing" data-section>
       <div class="scene-mount" data-scene="landing"></div>
-      <div class="landing__grid" aria-hidden="true"></div>
+      <!-- background layers (all sit behind the 3D scene + content) -->
+      <div class="landing__criss" aria-hidden="true"></div>
+      <div class="landing__motif" aria-hidden="true"></div>
+      <!-- Dotted grid: DISABLED (kept for re-enable — see docs/Guides.md). -->
+      <div class="landing__grid landing__grid--off" aria-hidden="true"></div>
       <div class="landing__halo" id="landingHalo" aria-hidden="true"></div>
+      <div class="landing__stars" id="landingStars" aria-hidden="true"></div>
 
       <a class="press press--tl" href="#media" data-reveal>
         <img class="press__logo" src="./assets/img/landing/hindustantimes.webp" alt="Hindustan Times" />
