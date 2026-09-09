@@ -44,7 +44,7 @@ const PILLARS = [
       {
         label: "AI x Behavioural Research",
         title: "Ashoka University - Centre for Social and Behavioural Change",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card1/aixbehaviouralresearch.png",
         byline: "AI that compresses the feedback loop on behavioural interventions, from months to weeks.",
         stats: [],
         sections: [
@@ -67,7 +67,7 @@ Second, and more ambitiously, we're training AI to analyse field responses at sc
       {
         label: "AI x Workplace Coaching",
         title: "Neuroda",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card1/aixworkplacecoaching.png",
         byline: "An AI workplace mentor that helps young professionals think, decide and solve, not just search for answers.",
         stats: [
           { n: "30,000+", l: "early-career professionals guided" },
@@ -92,7 +92,7 @@ The system is trained specifically on Indian workplace realities: navigating hie
       {
         label: "AI x Program Operations",
         title: "Nimaya Foundation",
-        img: PLACEHOLDER,
+        video: "./assets/img/what-i-build/card1%20thmb.mp4",
         byline: "Turning a nonprofit that trains 10,000+ women into an intelligence-driven organisation.",
         stats: [
           { n: "90%", l: "reduction in programmatic errors" },
@@ -122,7 +122,7 @@ One AI-augmented program manager now delivers 3x the output. Decisions are data-
       {
         label: "AI x Welfare Delivery",
         title: "Yash Chopra Foundation - Saathi Program",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card1/aixwellfaredelivery.png",
         byline: "AI-powered welfare delivery for 5,000+ Hindi film industry workers.",
         stats: [
           { n: "7,000+", l: "beneficiaries across ration, healthcare, education and travel support" },
