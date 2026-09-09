@@ -60,6 +60,15 @@
 .wib__tab-num { font-size: var(--step--1); color: var(--accent-mid); font-weight: 700; }
 .wib__tab-label { font-size: var(--step-0); font-weight: 600; }
 
+/* hint between the tabs (progress) and the card stack */
+.wib__hint {
+  margin: 0;
+  text-align: center;
+  color: var(--fg-faint);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+}
+
 /* ---- card stack ---- */
 .wib__stack {
   --wib-card-min-h: 560px;   /* floor for card/stack height; inherited by .wib-card */
@@ -105,7 +114,9 @@
   background: linear-gradient(155deg, var(--tint, #141414), #0b0c09 78%);
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  cursor: pointer;   /* whole card opens the Read More overlay */
 }
+.wib-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* media stretches to the card's height; width comes from --wib-media-w (JS keeps it
    at height x 3/5), so the frame is 3:5 without CSS having to solve the circular size */
@@ -176,35 +187,6 @@
   text-shadow: -2px 2px 0 rgba(255, 255, 255, 0.2);
 }
 .wib-stat__l { font-size: var(--step--1); color: #fff; max-width: 24ch; line-height: 1.25; }
-
-.wib-card__more {
-  align-self: flex-start;
-  margin-top: 0.4rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.35rem 0.35rem 0.35rem 1.15rem;   /* tight right side: icon circle sits in it */
-  border-radius: var(--r-pill);
-  border: 1px solid rgba(156, 227, 37, 0.35);
-  font-size: var(--step--1);
-  font-weight: 600;
-  color: var(--accent);
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-.wib-card__more-icon {
-  display: grid;
-  place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-.wib-card__more-icon svg { width: 1rem; height: 1rem; }
-.wib-card__more:hover { background: rgba(156, 227, 37, 0.08); border-color: var(--accent); }
-.wib-card__more:hover .wib-card__more-icon { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
 
 /* reduced-motion / no-GSAP fallback: static vertical list */
 .wib__stack--static { height: auto; display: flex; flex-direction: column; gap: var(--space-md); }

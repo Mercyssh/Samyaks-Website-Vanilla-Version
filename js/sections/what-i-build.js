@@ -427,19 +427,13 @@ const statsRow = (stats) =>
 
 function cardHTML(p, i) {
   return `
-  <article class="wib-card" data-card="${i}" style="--tint:${p.tint}">
+  <article class="wib-card" data-card="${i}" style="--tint:${p.tint}" role="button" tabindex="0" aria-label="${p.title} — read more">
     <figure class="wib-card__media">${mediaHTML(p, "wib-card__media-el")}</figure>
     <div class="wib-card__content">
       <ul class="wib-card__tags">${p.tags.map((t) => `<li>${t}</li>`).join("")}</ul>
       <h3 class="wib-card__title">${p.title}</h3>
       <div class="wib-card__body">${p.body.map((t) => `<p>${t}</p>`).join("")}</div>
       ${statsRow(p.stats)}
-      <button class="wib-card__more" type="button" data-more="${i}">
-        <span class="wib-card__more-label">Read More</span>
-        <span class="wib-card__more-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
-        </span>
-      </button>
     </div>
   </article>`;
 }
@@ -505,11 +499,14 @@ export function initWhatIBuild() {
     stackEl.style.setProperty("--wib-media-w", mediaW + "px");
   };
 
-  /* ---- Read More overlay wiring ---- */
+  /* ---- overlay wiring: the whole card opens it (click or Enter/Space) ---- */
   const overlay = initOverlay();
-  stackEl.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-more]");
-    if (btn) overlay.open(PILLARS[+btn.dataset.more]);
+  const openFromCard = (el) => { if (el) overlay.open(PILLARS[+el.dataset.card]); };
+  stackEl.addEventListener("click", (e) => openFromCard(e.target.closest(".wib-card")));
+  stackEl.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const card = e.target.closest(".wib-card");
+    if (card) { e.preventDefault(); openFromCard(card); }
   });
 
   /* ---- scroll behaviour ---- */
