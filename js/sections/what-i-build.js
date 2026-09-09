@@ -23,7 +23,7 @@ const EASE_OUT = "power1.in";  // outgoing card: fade + scale-down curve
 const EASE_IN = "power3.out";  // incoming card: rise-from-below curve
 const OUT_SCALE = 0.7;        // how far the outgoing card scales down (1 = none)
 
-const PILLARS = [
+export const PILLARS = [
   {
     tab: "Making Nonprofits AI-Native",
     title: "Making Nonprofits AI-Native",
@@ -409,7 +409,7 @@ function renderRich(body) {
 
 /** Card/overlay graphic. Pass `video` (a src) to use a looping muted <video>,
  *  otherwise `img` (falls back to the shared placeholder). `poster` is optional. */
-function mediaHTML(item, cls) {
+export function mediaHTML(item, cls) {
   if (item.video) {
     return `<video class="${cls}" src="${item.video}"${item.poster ? ` poster="${item.poster}"` : ""} autoplay muted loop playsinline></video>`;
   }
@@ -570,7 +570,7 @@ export function initWhatIBuild() {
 
 /* --------------------------------------------------------------- overlay --- */
 
-function initOverlay() {
+export function initOverlay() {
   const el = document.getElementById("wibOverlay");
   const tabsEl = document.getElementById("wibOvTabs");
   const bodyEl = document.getElementById("wibOvBody");

@@ -12,6 +12,10 @@ import { initJourney } from "./sections/journey.js";
 import { initMedia } from "./sections/media.js";
 import { initReveal } from "./reveal.js";
 import { initLandingScene } from "./three/landing-scene.js";
+import { isMobile, watchBreakpoint } from "./responsive.js";
+import { initAbilitiesMobile } from "./mobile/abilities.mobile.js";
+import { initWhatIBuildMobile } from "./mobile/what-i-build.mobile.js";
+import { initMedia_Mobile } from "./mobile/media.mobile.js";
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const { gsap, ScrollTrigger, Lenis } = window;
@@ -39,12 +43,27 @@ window.__app = app;
 initPreloader();
 initNav(app);
 
-/* ---- Section modules ---- */
+/* ---- Section modules ----
+   Landing + Journey are still desktop-only for now (mobile phase later).
+   Abilities / What I Build / Media each boot ONE build — desktop or the
+   bespoke mobile layer (js/mobile/*) — chosen from the breakpoint. The
+   two never coexist; crossing 768px reloads (see watchBreakpoint). */
+const mobile = isMobile();
+
 initLanding();
-initWhatIBuild();
-initAbilities();
 initJourney();
-initMedia();
+
+if (mobile) {
+  initWhatIBuildMobile();
+  initAbilitiesMobile();
+  initMedia_Mobile();
+} else {
+  initWhatIBuild();
+  initAbilities();
+  initMedia();
+}
+
+watchBreakpoint();
 
 /* ---- 3D scenes ---- */
 initLandingScene();

@@ -9,7 +9,7 @@
 
 const IMG = "./assets/img/abilities";
 
-const ABILITIES = [
+export const ABILITIES = [
   { title: "Connecting the Dots", front: `${IMG}/Card_1.png`, back: `${IMG}/Card_1_back.png` },
   { title: "Crafting Narratives", front: `${IMG}/Card_2.png`, back: `${IMG}/Card_2_back.png` },
   { title: "Building from Zero", front: `${IMG}/Card_3.png`, back: `${IMG}/Card_3_back.png` },

@@ -43,7 +43,7 @@ const PLACEHOLDER = "./assets/img/placeholder.svg";
      buttonLabel optional — button text (default "Read Article")
    }
 --------------------------------------------------------------------------- */
-const MEDIA_CONFIG = {
+export const MEDIA_CONFIG = {
   panels: [
     {
       name: "Media",
