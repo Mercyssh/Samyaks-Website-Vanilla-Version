@@ -434,6 +434,7 @@ function cardHTML(p, i) {
       <h3 class="wib-card__title">${p.title}</h3>
       <div class="wib-card__body">${p.body.map((t) => `<p>${t}</p>`).join("")}</div>
       ${statsRow(p.stats)}
+      <p class="wib-card__hint" aria-hidden="true">Click to read more</p>
     </div>
   </article>`;
 }
