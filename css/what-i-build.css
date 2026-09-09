@@ -326,8 +326,10 @@ body.wib-overlay-open { overflow: hidden; }
 
 /* graphic leads the card */
 .wib-ov__media { margin: 0 0 1.6rem; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border); }
+/* the graphic dictates its own height: full width, height from the media's
+   natural aspect ratio (no forced ratio, no crop). */
 .wib-ov__media img,
-.wib-ov__media video { width: 100%; aspect-ratio: 3 / 5; object-fit: cover; }
+.wib-ov__media video { display: block; width: 100%; height: auto; }
 
 .wib-ov__section { margin-top: 1.6rem; }
 .wib-ov__section h4 { font-family: var(--font-body); font-weight: 700; font-size: var(--step-2); color: #fff; margin-bottom: 0.5rem; }

@@ -119,7 +119,12 @@ body.m-overlay-open { overflow: hidden; }
      padding back so they still line up with the rails. */
   .wib { padding-inline: 0; }
   .wib__intro { padding-inline: var(--section-pad); }
-  .media { padding-block: var(--space-lg); padding-inline: 0; }
+  /* display:block (not the inherited grid): a grid item's min-width:auto
+     refuses to shrink below its widest content, so the nowrap pill/chip
+     rows would blow .media wider than the viewport — pushing the card
+     off-screen AND leaving the rails nothing to scroll. Block sizes .media
+     to the viewport, so the rails overflow and scroll as intended. */
+  .media { display: block; padding-block: var(--space-lg); padding-inline: 0; }
 
   /* ---- shared pill row (WIB selector + Media categories) ---- */
   .wib-m__sel, .media-m__cats {
@@ -482,4 +487,18 @@ body.m-overlay-open { overflow: hidden; }
     letter-spacing: -0.01em;
   }
   .media-m__cta:active { transform: translateY(1px); }
+
+  /* image graphic: full width, natural height (no fixed box, no crop).
+     Videos keep the aspect-ratio well since iframes/players have no
+     intrinsic size. */
+  .media-m__img { display: block; width: 100%; height: auto; border-radius: 11px; }
+
+  /* ========================================================
+     What I Build — Read-More overlay (shared #wibOverlay), mobile
+     Stack the bar so the close button gets its own row at the top and
+     the project pills sit in a full-width row beneath it.
+     ======================================================== */
+  .wib-overlay__bar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .wib-overlay__close { order: -1; align-self: flex-end; }
+  .wib-ov__tabs { order: 0; flex: 0 0 auto; }
 }

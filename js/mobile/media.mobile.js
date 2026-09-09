@@ -29,12 +29,10 @@ const PLACEHOLDER = "./assets/img/placeholder.svg";
    | Setting        | Controls                                       |
    |----------------|------------------------------------------------|
    | videoAspect    | default aspect of a video well (w / h)         |
-   | imageAspect    | default aspect of an image well (w / h)        |
    | swipeThreshold | px of horizontal drag to change item           |
    ============================================================ */
 const CONFIG = {
   videoAspect: "16 / 9",
-  imageAspect: "4 / 3",
   swipeThreshold: 60,
 };
 
@@ -80,9 +78,8 @@ function mediaFrame(it) {
         <button type="button" class="media-m__play" aria-label="Play video"><span></span></button>
       </div></div>`;
   }
-  return `<div class="media-m__frame"><div class="media-m__well" style="--aspect:${it.mediaAspect || CONFIG.imageAspect}">
-      <img src="${it.img || PLACEHOLDER}" alt="${it.title || it.label}" loading="lazy" />
-    </div></div>`;
+  // image: the graphic controls its own height — full width, height auto.
+  return `<div class="media-m__frame"><img class="media-m__img" src="${it.img || PLACEHOLDER}" alt="${it.title || it.label}" loading="lazy" /></div>`;
 }
 
 function cardHTML(it) {
