@@ -28,7 +28,7 @@ const PILLARS = [
     tab: "Making Nonprofits AI-Native",
     title: "Making Nonprofits AI-Native",
     tint: "#16240E",
-    img: PLACEHOLDER,
+    video: "./assets/img/what-i-build/card1%20thmb.mp4",
     tags: ["Neuroda (AI coach)", "Nimaya", "Ashoka University CSBC", "Yash Raj Films’s Foundation"],
     body: [
       "The organisations solving the hardest problems for public good are the last to get AI's superpowers. I'm changing that.",
@@ -148,7 +148,7 @@ One AI-augmented program manager now delivers 3x the output. Decisions are data-
     tab: "Crafting Learning Simulations",
     title: "Crafting Learning Simulations",
     tint: "#0E2029",
-    img: PLACEHOLDER,
+    video: "./assets/img/what-i-build/card2%20thmb.mp4",
     tags: ["Workverse", "Kamlaverse (SEWA)", "Ishara (Phoenix Hospitality)"],
     body: [
       "Simulations are a powerful tool to train the brain to do what AI cannot.",
@@ -236,7 +236,7 @@ The design bridges two worlds: modern hospitality standards and the lived realit
     tab: "Building Movements for Behavioural Change",
     title: "Building Movements for Behavioural Change",
     tint: "#231A2C",
-    img: PLACEHOLDER,
+    img: "./assets/img/what-i-build/card3%20thmb.png",
     tags: ["UN Young Changemakers Conclave", "Operation Black Dot", "Election Commission of India", "Green Batti Project"],
     body: [
       "When behavioural science, influencers and storytelling meet, millions shift how they think and act. I build movements that shape how people engage with critical cause areas such as preventive healthcare, financial inclusion, education and nutrition.",
@@ -481,12 +481,28 @@ export function initWhatIBuild() {
      position:absolute (overlapping) once GSAP takes over, so they can't drive
      the container height themselves — we lay them out in flow briefly, take the
      max offsetHeight, and pin the stack to it. */
+  const MEDIA_RATIO = 3 / 5;   // media width : height (3:5 portrait)
   const sizeStack = () => {
     stackEl.classList.add("wib__stack--measuring");
+    const cs = getComputedStyle(cards[0]);
+    const frameY =              // card vertical padding + borders (card box -> media box)
+      parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) +
+      parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+    /* circular sizing: media width depends on card height, card height depends on how
+       text wraps in the width the media leaves. Iterate a few times until it settles. */
+    let mediaW = parseFloat(getComputedStyle(stackEl).getPropertyValue("--wib-media-w")) || 280;
     let max = 0;
-    for (const c of cards) max = Math.max(max, c.offsetHeight);
+    for (let pass = 0; pass < 5; pass++) {
+      stackEl.style.setProperty("--wib-media-w", mediaW + "px");
+      max = 0;
+      for (const c of cards) max = Math.max(max, c.offsetHeight);
+      const next = Math.round(Math.max(max - frameY, 0) * MEDIA_RATIO);
+      if (Math.abs(next - mediaW) <= 1) { mediaW = next; break; }
+      mediaW = next;
+    }
     stackEl.classList.remove("wib__stack--measuring");
     if (max) stackEl.style.height = Math.ceil(max) + "px";
+    stackEl.style.setProperty("--wib-media-w", mediaW + "px");
   };
 
   /* ---- Read More overlay wiring ---- */

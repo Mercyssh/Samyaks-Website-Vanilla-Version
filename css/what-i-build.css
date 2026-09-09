@@ -62,10 +62,14 @@
 
 /* ---- card stack ---- */
 .wib__stack {
+  --wib-card-min-h: 560px;   /* floor for card/stack height; inherited by .wib-card */
+  --wib-media-w: 600px;      /* media column width; JS recomputes it from card height (3:5) */
+  --wib-stack-maxw: 70%;   /* card width cap for THIS section — lower to narrow the card */
   position: relative;
-  width: min(100% - 2 * var(--section-pad), var(--maxw));
+  width: min(100% - 2 * var(--section-pad), var(--wib-stack-maxw));
   margin-inline: auto;
   height: clamp(360px, 56vh, 560px);   /* JS overrides this with the tallest card's real height */
+  min-height: var(--wib-card-min-h);   /* floor: stack never shorter than this */
 }
 
 /* transient state while JS measures natural card height: lay cards out in flow
@@ -80,14 +84,21 @@
   opacity: 1 !important;
   visibility: visible !important;
 }
+/* while measuring, the media is a fixed-width, zero-height spacer: it reserves the
+   same horizontal room it takes at runtime (so text wraps identically) without
+   adding any height, letting each card measure to its true text height. */
+.wib__stack--measuring .wib-card__media {
+  align-self: start !important;
+  height: 0 !important;
+}
 
 .wib-card {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(240px, 40%) 1fr;
-  gap: clamp(1.25rem, 3vw, 2.75rem);
+  display: flex;
   align-items: stretch;
+  gap: clamp(1.25rem, 3vw, 2.75rem);
   height: 100%;
+  min-height: var(--wib-card-min-h);
   padding: clamp(1.25rem, 2.5vw, 2rem);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
@@ -96,11 +107,13 @@
   overflow: hidden;
 }
 
-.wib-card__media { height: 100%; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border); }
+/* media stretches to the card's height; width comes from --wib-media-w (JS keeps it
+   at height x 3/5), so the frame is 3:5 without CSS having to solve the circular size */
+.wib-card__media { flex: 0 0 var(--wib-media-w); align-self: stretch; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border); }
 .wib-card__media img,
 .wib-card__media video { width: 100%; height: 100%; object-fit: cover; }
 
-.wib-card__content { display: flex; flex-direction: column; justify-content: flex-start; gap: clamp(0.55rem, 1.4vw, 0.85rem); min-width: 0; }
+.wib-card__content { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: flex-start; gap: clamp(0.55rem, 1.4vw, 0.85rem); min-width: 0; }
 
 .wib-card__tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .wib-card__tags li {
@@ -271,7 +284,7 @@ body.wib-overlay-open { overflow: hidden; }
 
 .wib-ov__media { margin: 1.6rem 0; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border); }
 .wib-ov__media img,
-.wib-ov__media video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.wib-ov__media video { width: 100%; aspect-ratio: 3 / 5; object-fit: cover; }
 
 .wib-ov__section { margin-top: 1.6rem; }
 .wib-ov__section h4 { font-family: var(--font-head); font-weight: 700; font-size: var(--step-2); color: var(--accent-mid); margin-bottom: 0.5rem; }
