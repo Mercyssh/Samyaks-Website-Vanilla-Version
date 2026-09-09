@@ -64,7 +64,7 @@
 .wib__stack {
   --wib-card-min-h: 560px;   /* floor for card/stack height; inherited by .wib-card */
   --wib-media-w: 600px;      /* media column width; JS recomputes it from card height (3:5) */
-  --wib-stack-maxw: 70%;   /* card width cap for THIS section — lower to narrow the card */
+  --wib-stack-maxw: 1200px;   /* card width cap for THIS section — lower to narrow the card */
   position: relative;
   width: min(100% - 2 * var(--section-pad), var(--wib-stack-maxw));
   margin-inline: auto;
