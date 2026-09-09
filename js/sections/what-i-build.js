@@ -581,13 +581,16 @@ function initOverlay() {
   let projects = [];
 
   const paint = (proj) => {
+    const hasStats = proj.stats && proj.stats.length;
+    // Order: graphic → title → byline → stats row (both separators) → sections.
+    // No stats → a single rule stands in for the stats row's separator.
     bodyEl.innerHTML = `
+      <figure class="wib-ov__media">${mediaHTML(proj, "wib-ov__media-el")}</figure>
       <header class="wib-ov__head">
         <h3 class="wib-ov__title">${proj.title}</h3>
         ${proj.byline ? `<p class="wib-ov__byline">${proj.byline}</p>` : ""}
-        ${statsRow(proj.stats)}
       </header>
-      <figure class="wib-ov__media">${mediaHTML(proj, "wib-ov__media-el")}</figure>
+      ${hasStats ? statsRow(proj.stats) : `<hr class="wib-ov__rule" />`}
       <div class="wib-ov__sections">
         ${
           proj.sections && proj.sections.length
@@ -606,6 +609,8 @@ function initOverlay() {
   const open = (pillar) => {
     projects = pillar.projects || [];
     if (!projects.length) return;
+    // tint the content card to match its pillar's scroll-stack card
+    if (pillar.tint) bodyEl.style.setProperty("--tint", pillar.tint);
     tabsEl.innerHTML = projects
       .map((p, i) => `<button type="button" class="wib-ov__pill${i === 0 ? " is-active" : ""}" data-ov="${i}">${p.label}</button>`)
       .join("");
