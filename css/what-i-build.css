@@ -217,7 +217,7 @@
   paint-order: stroke fill;
 
   /* white 20% drop shadow, offset down + left */
-  text-shadow: -2px 2px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: -5px 4px 0 #9de32528;
 }
 .wib-stat__l { font-size: var(--step--1); color: #fff; max-width: 24ch; line-height: 1.25; }
 
@@ -316,10 +316,8 @@ body.wib-overlay-open { overflow: hidden; }
 
 .wib-ov__head { text-align: left; }
 .wib-ov__title { font-family: var(--font-head); font-weight: 500; font-size: var(--step-3); color: var(--fg); }
-.wib-ov__byline { margin-top: 0.6rem; color: var(--fg-dim); max-width: 60ch; font-size: var(--step--1); }
+.wib-ov__byline { margin-top: 0.6rem; color: var(--fg-dim); max-width: 60ch; font-size: var(--step-0); }
 
-/* stats row: both separators come from the base .wib-stats (border-top + -bottom);
-   here it just spans the card with breathing room above/below */
 /* equal-width, centred stat columns come from the base .wib-stats/.wib-stat;
    overlay only adds breathing room above/below the bar */
 .wib-ov__body > .wib-stats {
@@ -328,6 +326,30 @@ body.wib-overlay-open { overflow: hidden; }
 }
 /* standalone separator when a project has no stats */
 .wib-ov__rule { border: 0; border-top: 1px solid var(--border); margin: 1.6rem 0; }
+
+/* stat number + label INSIDE the overlay — bifurcated from the scroll-card
+   .wib-stat__n/.wib-stat__l above so the two contexts can be styled
+   independently. Seeded to match the current look; tune freely from here. */
+.wib-ov__body .wib-stat__n {
+  font-family: var(--font-head);
+  font-weight: 500;
+  font-size: var(--step-3);
+  line-height: 1;
+
+  /* gradient fill: #9CE325 80% -> 20% */
+  color: transparent;
+  background: linear-gradient(90deg, rgba(156, 227, 37, 0.80), rgba(156, 227, 37, 0.20));
+  -webkit-background-clip: text;
+          background-clip: text;
+
+  /* solid green outline */
+  -webkit-text-stroke: 1.3px #9CE325;
+  paint-order: stroke fill;
+
+  /* offset green tint shadow */
+  text-shadow: -5px 4px 0 #9de32528;
+}
+.wib-ov__body .wib-stat__l { font-size: var(--step-0); color: #fff; max-width: 24ch; line-height: 1.25; }
 
 /* graphic leads the card */
 .wib-ov__media { margin: 0 0 1.6rem; border-radius: var(--r-md); overflow: hidden; }
