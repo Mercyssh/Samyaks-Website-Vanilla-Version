@@ -163,7 +163,7 @@ One AI-augmented program manager now delivers 3x the output. Decisions are data-
       {
         label: "Simulations x Employability",
         title: "Workverse",
-        img: PLACEHOLDER,
+        video: "./assets/img/what-i-build/card2/Simulations%20x%20Employability.mp4",
         byline: "A simulated world of work where graduates master the skills AI can't replace.",
         stats: [
           { n: "60,000+", l: "graduates trained" },
@@ -190,7 +190,7 @@ The experience feels like a story you're living through, not a course you're sit
       {
         label: "Simulations x Livelihoods",
         title: "Kamlaverse (SEWA)",
-        img: PLACEHOLDER,
+        video: "./assets/img/what-i-build/card2/Simulations%20x%20Livelihoods.mp4",
         byline: "Training rural women to run modern cafes, without a single classroom session.",
         stats: [],
         sections: [
@@ -212,7 +212,7 @@ The design bridges two worlds: modern hospitality standards and the lived realit
       {
         label: "Simulations x Inclusion",
         title: "Isharaverse (Phoenix Hospitality)",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card2/Simulations%20x%20Inclusion.png",
         byline: "A training simulation for a restaurant chain staffed entirely by deaf and mute professionals.",
         stats: [],
         sections: [
@@ -252,7 +252,7 @@ The design bridges two worlds: modern hospitality standards and the lived realit
       {
         label: "#BanoIronNaari",
         title: "#BanoIronNaari - Government of Uttar Pradesh",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card3/BanoIronNaari.png",
         byline: "A behavioural campaign that turned anaemia awareness into action for rural women across the state of Uttar Pradesh",
         stats: [
           { n: "100,000+", l: "enquiries generated for nearest anaemia testing clinics" },
@@ -278,7 +278,7 @@ But the videos were only the trigger. We trained ASHA workers across anganwadis 
       {
         label: "#GourmetRation",
         title: "#GourmetRation - Government of Uttar Pradesh",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card3/GourmetRation.jpg",
         byline: "Turning government ration kits from something children refuse into something they ask for.",
         stats: [],
         sections: [
@@ -300,7 +300,7 @@ The videos were distributed to lakhs of rural households through anganwadi netwo
       {
         label: "United Nations Young Changemakers Conclave",
         title: "United Nations Young Changemakers Conclave",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card3/unycc.jpg",
         byline: "A national platform that made achieving the Sustainable Development Goals feel personal and aspirational for young Indians.",
         stats: [
           { n: "20", l: "successive national conclaves" },
@@ -327,7 +327,7 @@ Aspirational access: Hosted at venues like the Indian Navy's seaside gardens and
       {
         label: "Operation Black Dot",
         title: "Operation Black Dot (in partnership with Election Commission of India)",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card3/operationblackdot.jpg",
         byline: "A youth-led movement that turned voting from a civic duty into a cultural act.",
         stats: [
           { n: "100,000+", l: "youth engaged" },
@@ -356,7 +356,7 @@ Action: Collaboration with Tata Nano to provide transport to polling booths, eli
       {
         label: "Moonshot Philanthropy Summit",
         title: "Moonshot Philanthropy Summit (In collaboration with Ashoka University)",
-        img: PLACEHOLDER,
+        img: "./assets/img/what-i-build/card3/MoonshotPhilanthropySummit.png",
         byline: "Convincing India's philanthropists to fund impact organisations the way VCs fund startups.",
         stats: [],
         sections: [
