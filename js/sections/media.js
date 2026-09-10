@@ -60,7 +60,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "India's aspiration to become an economic superpower is intricately tied to its ability to leverage the demographic dividend and uplift disadvantaged regions. However, this ambition faces a significant challenge",
           img: MEDIA + "hindustantimes.png",
-          article: PLACEHOLDER, // TODO: full-length article screenshot
+          article: MEDIA + "hindustantimes-full.webp",
         },
         {
           group: "Editorials",
@@ -69,7 +69,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "Kumudini is a 22-year-old living at Mumbai's Dharavi slum. Her father works at a leather tannery and her mother as a domestic help. They worked hard to send her to a private school and then took a loan against the little gold they had to pay for her college.",
           img: MEDIA + "ndtv.png",
-          article: PLACEHOLDER, // TODO: full-length article screenshot
+          article: MEDIA + "ndtv-full.webp",
         },
         {
           group: "Editorials",
@@ -78,7 +78,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "Intelligent technologies and forecasts such as generative AI raise the question of how we can save India's next generation from automation-induced unemployment and professional irrelevance",
           img: MEDIA + "cnbc.png",
-          article: PLACEHOLDER, // TODO: full-length article screenshot
+          article: MEDIA + "cnbc-full.webp",
         },
 
         // Interviews: live site shows only a media preview (no headline/blurb).
@@ -96,7 +96,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "Samyak Chakrabarty and Navya Nanda's Nimaya has signed an MOU with IndiaAI, an IBD of Digital India Corporation, Ministry of Electronics & Information Technology (MeitY), to ensure women from under-served communities have an edge in leveraging AI at work.",
           img: MEDIA + "nimayaxgovt.png",
-          article: PLACEHOLDER, // TODO: full-length article screenshot
+          article: MEDIA + "nimayaxgovt-full.webp",
         },
         {
           group: "Announcements",
@@ -105,7 +105,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "At a time when advice for young people often feels overbearing, The Map positions itself as something quieter and more thoughtful. Written by Navya Naveli Nanda and Samyak Chakrabarty, and releasing later this year with HarperCollins India",
           img: MEDIA + "harpercollinsbook.png",
-          article: PLACEHOLDER, // TODO: full-length article screenshot
+          article: MEDIA + "harpercollinsbook-full.png",
         },
         {
           group: "Announcements",
@@ -114,7 +114,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "Started in 2021 by Navya Naveli Nanda, Founder of Project Naveli and Samyak Chakrabarty, Founder of Workverse, the initiative has trained more than 350 girls so far, helping them overcome fears and enter the workforce.",
           img: MEDIA + "nimayaxyourstory.png",
-          article: PLACEHOLDER, // TODO: full-length article screenshot
+          article: MEDIA + "nimayaxyourstory-full.png",
         },
       ],
     },
