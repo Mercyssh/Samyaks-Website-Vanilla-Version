@@ -371,19 +371,47 @@ export function initMedia() {
     if (readBtn) readBtn.addEventListener("click", () => openOverlay(it.article, it.title || it.label));
   };
 
+  /* Decode an item's image before we reveal it, so the swapped-in content
+     paints already-sized instead of collapsing to zero height (title-only)
+     and snapping back once the image loads. Videos reserve their own height
+     via CSS, so only still images need this. Resolves immediately when there's
+     nothing to load, and is capped so a slow/broken image can't stall the fade. */
+  const preload = (it) =>
+    new Promise((resolve) => {
+      const src = it && !it.video ? it.img : null;
+      if (!src) return resolve();
+      const img = new Image();
+      img.onload = img.onerror = () => resolve();
+      img.src = src;
+      if (img.complete) resolve();       // already cached
+      setTimeout(resolve, 800);          // never block the swap on a slow image
+    });
+
+  const FADE_MS = 220; // keep in sync with the .is-swapping opacity transition
   let current = -1;
-  let swapTimer = 0;
+  let swapToken = 0;
+  // Cross-fade to `it`: fade out, wait for BOTH the fade and the image decode,
+  // then paint + fade in. A token makes only the latest request win, so rapid
+  // clicks don't paint a stale item.
+  const swapDetail = (it) => {
+    const token = ++swapToken;
+    detailEl.classList.add("is-swapping");
+    Promise.all([
+      new Promise((r) => setTimeout(r, FADE_MS)),
+      preload(it),
+    ]).then(() => {
+      if (token !== swapToken) return;
+      paint(it);
+      detailEl.classList.remove("is-swapping");
+    });
+  };
+
   const select = (i) => {
     const items = panels[panelIndex].items || [];
     if (i < 0 || i >= items.length) return;
     current = i;
     buttons.forEach((b, bi) => b.classList.toggle("is-active", bi === i));
-    detailEl.classList.add("is-swapping"); // fade out (opacity in CSS)
-    clearTimeout(swapTimer);
-    swapTimer = setTimeout(() => {
-      paint(items[i]);
-      detailEl.classList.remove("is-swapping");
-    }, 220);
+    swapDetail(items[i]);
   };
 
   // Swap panels without the detail fade — the whole list changes at once.
@@ -398,15 +426,7 @@ export function initMedia() {
     current = 0;
     if (items[0]) {
       if (initial) paint(items[0]);
-      else {
-        // reuse the same fade path so the right half feels consistent
-        detailEl.classList.add("is-swapping");
-        clearTimeout(swapTimer);
-        swapTimer = setTimeout(() => {
-          paint(items[0]);
-          detailEl.classList.remove("is-swapping");
-        }, 220);
-      }
+      else swapDetail(items[0]); // same preload + fade path as select()
     }
   };
 

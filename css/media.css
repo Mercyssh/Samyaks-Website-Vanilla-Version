@@ -227,16 +227,29 @@
   height: 46px;
   display: grid;
   place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+}
+/* The visible circle lives on ::before so the press-scale shrinks only the
+   VISUAL, not the button's 46px hit area. Scaling the button itself moved its
+   edges out from under the cursor on an edge click, so pointerup landed outside
+   and the click never fired. */
+.mediaSel__cycle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   border-radius: 50%;
   border: 1px solid var(--border-strong);
   background: rgba(0, 0, 0, 1);
-  color: var(--fg);
-  cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
-.mediaSel__cycle:hover { border-color: var(--accent); background: rgb(31, 51, 8); }
-.mediaSel__cycle:active { transform: translate(50%, -50%) scale(0.7); transition: transform 0s;}
-.mediaSel__arrow { width: 20px; height: 20px; }
+.mediaSel__cycle:hover::before { border-color: var(--accent); background: rgb(31, 51, 8); }
+.mediaSel__cycle:active::before,
+.mediaSel__cycle:active .mediaSel__arrow { transform: scale(0.7); transition: transform 0s; }
+.mediaSel__arrow { width: 20px; height: 20px; transition: transform 0.2s ease; }
 
 /* ticker: one tick per panel, fanned in an arc over the button top */
 .mediaSel__ticker {
