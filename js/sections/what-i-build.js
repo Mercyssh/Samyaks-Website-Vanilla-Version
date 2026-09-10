@@ -640,6 +640,11 @@ export function initOverlay() {
   });
   closeEl && closeEl.addEventListener("click", close);
   el.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) close(); });
+  // click in the empty area around the card (the scroll region, not the card
+  // itself or the top bar) also closes
+  scrollEl.addEventListener("click", (e) => {
+    if (!e.target.closest(".wib-ov__body")) close();
+  });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 
   return { open };
