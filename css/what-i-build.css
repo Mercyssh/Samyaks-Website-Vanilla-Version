@@ -325,7 +325,7 @@ body.wib-overlay-open { overflow: hidden; }
 .wib-ov__rule { border: 0; border-top: 1px solid var(--border); margin: 1.6rem 0; }
 
 /* graphic leads the card */
-.wib-ov__media { margin: 0 0 1.6rem; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border); }
+.wib-ov__media { margin: 0 0 1.6rem; border-radius: var(--r-md); overflow: hidden; }
 /* the graphic dictates its own height: full width, height from the media's
    natural aspect ratio (no forced ratio, no crop). */
 .wib-ov__media img,
