@@ -577,6 +577,10 @@ export function initOverlay() {
   const closeEl = document.getElementById("wibOvClose");
   if (!el || !tabsEl || !bodyEl) return { open() {} };
 
+  // the actual scrolling element is .wib-overlay__scroll (bodyEl's parent), so
+  // that — not bodyEl — is what must be reset to the top on paint/open.
+  const scrollEl = bodyEl.closest(".wib-overlay__scroll") || bodyEl;
+
   let hideTimer = 0;
   let projects = [];
 
@@ -598,7 +602,7 @@ export function initOverlay() {
             : `<p class="wib-ov__todo">Full write-up coming soon.</p>` // TODO(copy)
         }
       </div>`;
-    bodyEl.scrollTop = 0;
+    scrollEl.scrollTop = 0;
   };
 
   const select = (i) => {
@@ -614,9 +618,11 @@ export function initOverlay() {
     tabsEl.innerHTML = projects
       .map((p, i) => `<button type="button" class="wib-ov__pill${i === 0 ? " is-active" : ""}" data-ov="${i}">${p.label}</button>`)
       .join("");
-    paint(projects[0]);
+    // unhide BEFORE painting: setting scrollTop while the overlay is still
+    // display:none is ignored and the browser restores the old scroll on show.
     clearTimeout(hideTimer);
     el.hidden = false;
+    paint(projects[0]);
     document.body.classList.add("wib-overlay-open");
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("is-open")));
   };
