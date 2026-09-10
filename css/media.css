@@ -430,12 +430,15 @@
   gap: var(--stacked-gap);
 }
 .media__detail.is-stacked .media__detail-title { margin-bottom: 0; }
-/* full-width single column, so a video reclaims its horizontal 16/9 frame
-   instead of collapsing to a square in the cramped right column */
+/* full-width single column: size the video by HEIGHT so aspect-ratio gives a
+   definite width. A percentage width here would resolve against the
+   fit-content .media__preview parent (circular) and collapse to the embed's
+   intrinsic size — iframes to ~300px, <video poster> to the poster's width. */
 .media__detail.is-stacked .media__video,
 .media__detail.is-graphic-only .media__video {
-  height: auto;
-  width: min(100%, calc(var(--preview-max-h) * 16 / 9));
+  height: var(--preview-max-h);
+  width: auto;
+  max-width: 100%;
 }
 
 /* Read-more button: gradient fill + solid border, centred under the text */
