@@ -213,54 +213,20 @@ employability", etc.), each linking out via "Read Article". Reference:
 ---
 
 ## Progress Tracker
-_Updated: 2026-09-05 · ✅ done · 🔄 in progress · ⏳ blocked · ⬜ todo_
+_Updated: 2026-09-11 · ✅ done · 🔄 in progress · ⏳ blocked · ⬜ todo_
 
 - ✅ **P1 Scaffold** — structure, vendored libs (three/gsap/scrolltrigger/lenis), fonts (Jakarta + Magistral woff2), nav, preloader, Lenis+ScrollTrigger boot. Browser-verified.
-- 🔄 **P2 Static sections** (first pass built; user reviewing / requesting changes) — ✅ Media (master/detail) · ✅ What I Build (3 pillar tabs, card+stats) · ✅ Landing overlays (press corners, halo, device placeholder, tagline) · ✅ Journey timeline (3 Acts / nodes) · ✅ Unified `.section-title` component (gradient fill + outline + offset echo + stripe motif, centered, tunable vars). Copy TODOs flagged in-code.
-- 🔄 **P3 Scroll-animation pass** — ✅ entrance reveals (`js/reveal.js` + `css/reveal.css`) · ✅ WIB pinned card-stack scrub (current card shrinks/fades, next rises; tabs sync/click) + structured card (tags·title·body·stats·Read More) + Read More overlay (sub-project pills + Problem/Design/Innovation; overlay copy = TODO) · ⬜ landing device→fan & journey camera scrubs (3D-coupled → land with P4 GLBs).
-- 🔄 **P4 Three.js scenes** — ✅ Landing (`js/three/renderer.js` shared stage + `js/three/landing-scene.js`: loads `landing.glb`, framed camera, offscreen-pause; **pinned** scroll scrub — hand recedes+fades, stack flips 180° (cover backface-culled), left/right fan out; icon planes hover-lit + clickable; no pointer parallax; DOM `.landing__center` hidden). Debug GUI at `?debug` (lil-gui + OrbitControls: camera pos/target/fov, progress scrub, tuning, log-camera). · ✅ Abilities — **built in DOM/CSS 3D, not Three.js** (`css/abilities.css` + `js/sections/abilities.js`): 4 fanned flip-cards, hover tint+glow+lift, click → flip to landscape back image (one open at a time, outside-click/Esc closes); tunable fan/open vars on `.abilities__deck`; placeholder art. · ✅ Journey (`js/three/journey-scene.js`: loads `journey.glb`, mirrors the baked animated GLB camera, offscreen-pause; **pinned** full-viewport scene — canvas letterboxed 16:9 inside a 100vw×100svh stage; scroll scrubs the camera travel, then holds `holdPx`≈100px before release. Timeline moved into `.journey__content` below the scene). Debug GUI at `?debug`. Choreography in `docs/scene-specs.md`.
-- ⬜ **P5 Polish + perf** — reduced-motion, cross-browser, asset optimization.
-- 🔄 **P6 Mobile phase** — bespoke mobile layouts + mobile 3D.
+- ✅ **P2 Static sections** — ✅ Media (master/detail) · ✅ What I Build (3 pillar tabs, card+stats) · ✅ Landing overlays (press corners, halo, device placeholder, tagline) · ✅ Journey timeline (3 Acts / nodes) · ✅ Unified `.section-title` component (gradient fill + outline + offset echo + stripe motif, centered, tunable vars). Copy TODOs flagged in-code.
+- ✅ **P3 Scroll-animation pass** — ✅ entrance reveals (`js/reveal.js` + `css/reveal.css`) · ✅ WIB pinned card-stack scrub (current card shrinks/fades, next rises; tabs sync/click) + structured card (tags·title·body·stats·Read More) + Read More overlay (sub-project pills + Problem/Design/Innovation; overlay copy = TODO) · ✅ landing device→fan & journey camera scrubs (pinned scroll-scrub, landed with the P4 GLBs).
+- ✅ **P4 Three.js scenes** — ✅ Landing (`js/three/renderer.js` shared stage + `js/three/landing-scene.js`: loads `landing.glb`, framed camera, offscreen-pause; **pinned** scroll scrub — hand recedes+fades, stack flips 180° (cover backface-culled), left/right fan out; icon planes hover-lit + clickable; no pointer parallax; DOM `.landing__center` hidden). Debug GUI at `?debug` (lil-gui + OrbitControls: camera pos/target/fov, progress scrub, tuning, log-camera). · ✅ Abilities — **built in DOM/CSS 3D, not Three.js** (`css/abilities.css` + `js/sections/abilities.js`): 4 fanned flip-cards, hover tint+glow+lift, click → flip to landscape back image (one open at a time, outside-click/Esc closes); tunable fan/open vars on `.abilities__deck`; placeholder art. · ✅ Journey (`js/three/journey-scene.js`: loads `journey.glb`, mirrors the baked animated GLB camera, offscreen-pause; **pinned** full-viewport scene — canvas letterboxed 16:9 inside a 100vw×100svh stage; scroll scrubs the camera travel, then holds `holdPx`≈100px before release. Timeline moved into `.journey__content` below the scene). Debug GUI at `?debug`. Choreography in `docs/scene-specs.md`.
+- ✅ **P5 Polish + perf** — ✅ reduced-motion paths · ✅ asset optimization (images → WebP ~83% smaller; videos re-encoded/remuxed ~79% smaller — see `docs/asset-optimization.md`) · ✅ cross-browser pass.
+- ✅ **P6 Mobile phase** — bespoke mobile layouts + mobile 3D.
   - ✅ Abilities · What I Build · Media mobile builds (ported from `Old Files/*Mobile.tsx`). Breakpoint `max-width:768px` (`js/responsive.js` — one source of truth; crossing it reloads so desktop/mobile layers never coexist). Desktop untouched: mobile is a separate DOM+JS+CSS layer (`js/mobile/*`, `css/mobile.css`) that only boots below the break; matching desktop subtrees are hidden. Shared data is `export`ed from the desktop section modules (PILLARS / ABILITIES / MEDIA_CONFIG); the WIB Read-More overlay controller is reused via the exported `initOverlay`.
     - **Abilities** — swipeable fanned deck (drag/fling + spring-snap, dots, swipe hint); tap front card → shared full-screen scrollable image overlay of its back art.
     - **What I Build** — pill selector + snap-rail of cards (flip-in on activate, active video plays), single scrambling stat that cycles; tap card → the desktop WIB overlay.
     - **Media** — category pills + grouped item chips + stacked card (article/image/video), card-swipe to change item; "Read Article" → shared image overlay.
-  - ⬜ Landing + Journey mobile (incl. mobile 3D) — later, as planned. Both still run their desktop build on mobile for now.
+  - ✅ Landing + Journey mobile (incl. mobile 3D) — bespoke mobile scenes boot below 768px in place of the desktop ones (`js/three/landing-scene.mobile.js`, `js/three/journey-scene.mobile.js`). Landing: separate GLB, unlit, GLB camera, hand fade, scroll-driven intro → tap-to-shuffle cards; press carousel (auto-advancing) + collapsed hamburger nav. Journey: mobile GLB scene.
 
-**Assets:** ✅ fonts · ✅ recordings · ⏳ GLBs (user adding) · placeholder image in use.
+**Assets:** ✅ fonts · ✅ recordings · ✅ GLBs (landing/landing-mobile/journey/journey-mobile) · ✅ real images/videos optimized.
 
 ---
-
-## Session Handoff — READ FIRST in a fresh chat
-_Written 2026-09-05 to carry context across a new session. Code + `docs/scene-specs.md` + `CLAUDE.md` are the other sources of truth._
-
-### Where we are
-Phase 1 done; Phase 2 first pass built and **under user review** (user is sending change requests section-by-section — the section-title restyle was the latest). Next after review → Phase 3.
-
-### Built files (all exist, wired, no console errors)
-- `index.html` — import map + all 5 `<section>`s + preloader + nav. Vendored UMD scripts load before the `type="module"` entry.
-- `js/main.js` — boots Lenis + GSAP/ScrollTrigger, inits nav/preloader + all section modules. Exposes `window.__app = { lenis, gsap, ScrollTrigger, prefersReduced }`.
-- `js/nav.js`, `js/preloader.js`.
-- `js/sections/{landing,what-i-build,journey,media}.js` — each `initX()`; content is data-driven arrays inside the module.
-- `css/{tokens,base,nav,preloader,sections,landing,what-i-build,journey,media}.css`.
-- `abilities` section is still a **stub** (3D — Phase 4).
-
-### Key technical facts
-- **No build tooling.** ES modules via import map: `three` → `vendor/three.module.min.js`, plus GLTFLoader + BufferGeometryUtils. GSAP 3.12.5 + ScrollTrigger + Lenis 1.1.14 are **UMD → window globals**. Three is **r0.160.0**.
-- **Run it:** `python -m http.server 5173` (or preview `.claude/launch.json` → "static"). Modules need HTTP, not `file://`.
-- **Fonts:** Plus Jakarta Sans self-hosted (`400–800.woff2`). Magistral: user supplied 15 `.otf`; converted to `magistral-{300,400,500,700,800}.woff2` via `python -m pip install fonttools brotli` → `TTFont(otf).flavor='woff2'`. The 15 `.otf` originals still sit in `assets/fonts/` (unused; safe to delete).
-- **Type scale:** `--step-N` in tokens.css are `clamp(MIN, base+vw, MAX)`, running `--step--1` … `--step-5`. `--step-1` is a small intermediate (between body `--step-0` and `--step-2`); `--step-3` = section titles. Raise MIN+MAX to grow everywhere, MAX only = desktop, the `vw` = ramp speed.
-- **`.section-title`** (css/sections.css): one shared class; needs `data-title` attr on the element (echo copy uses it). Tunable vars: `--title-fill-from/-to`, `--title-outline`, `--title-echo`, `--title-echo-x/-y`, `--title-stroke-w`, `--title-stripe`, `--title-stripe-gap`, `--title-stripe-pad-x/-y`. Uses `-webkit-text-stroke` + `background-clip:text` + `paint-order` → **verify in Firefox**.
-
-### Working agreements (important)
-- **Don't auto-start a preview server or verify in the browser** (per CLAUDE.md) — the user checks the site themselves. Write the change, explain it, stop. Only verify when asked.
-- **The user edits CSS directly on disk** (esp. `.section-title` vars in sections.css). Always treat the on-disk file as source of truth; **never revert their manual tweaks**.
-- **Copy** comes from a live-site text dump + the recordings. Anything uncertain is marked `TODO(copy)` in the modules: Journey Act 2 node descriptions (UN Young Changemakers / Welcome / DDB India) + some "built" lines; all Media items beyond the Hindustan Times article; every outbound "Read More/Article" + social URL. Do not invent facts.
-- **Media = one placeholder image everywhere** until real assets arrive.
-
-### Known issues / candidates
-- Landing tagline overlaps the bottom press cards below ~800px width (desktop-first; revisit in mobile phase).
-- What I Build stat blocks crowd when a pillar has 4 stats — spacing candidate.
-
-### Next steps
-1. Finish P2 review edits. 2. **P3** scroll pass — pin/scrub landing (device → 3-card fan), the WIB card stack, section entrances (GSAP ScrollTrigger). 3. **P4** Three.js scenes from GLBs following `docs/scene-specs.md` (Abilities interactive first, then Landing + Journey scroll cams). 4. P5 polish. 5. P6 mobile.
