@@ -60,7 +60,7 @@
   z-index: 0;
   width: var(--motif-size);
   aspect-ratio: 1;
-  background: url(../assets/img/workverse-logo-bgmotif.png) center / contain no-repeat;
+  background: url(../assets/img/workverse-logo-bgmotif.webp) center / contain no-repeat;
   opacity: var(--motif-opacity);
   translate: -50% -50%;   /* separate from `rotate` so both compose */
   animation: motif-spin var(--motif-dur) linear infinite;

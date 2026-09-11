@@ -59,7 +59,7 @@ export const MEDIA_CONFIG = {
           title: "Soft Skills: The missing piece in employability",
           blurb:
             "India's aspiration to become an economic superpower is intricately tied to its ability to leverage the demographic dividend and uplift disadvantaged regions. However, this ambition faces a significant challenge",
-          img: MEDIA + "hindustantimes.png",
+          img: MEDIA + "hindustantimes.webp",
           article: MEDIA + "hindustantimes-full.webp",
         },
         {
@@ -68,7 +68,7 @@ export const MEDIA_CONFIG = {
           title: "The World Of Work Has Changed.",
           blurb:
             "Kumudini is a 22-year-old living at Mumbai's Dharavi slum. Her father works at a leather tannery and her mother as a domestic help. They worked hard to send her to a private school and then took a loan against the little gold they had to pay for her college.",
-          img: MEDIA + "ndtv.png",
+          img: MEDIA + "ndtv.webp",
           article: MEDIA + "ndtv-full.webp",
         },
         {
@@ -77,15 +77,15 @@ export const MEDIA_CONFIG = {
           title: "CSR 2.0: How can it be optimised in the age of GenAI",
           blurb:
             "Intelligent technologies and forecasts such as generative AI raise the question of how we can save India's next generation from automation-induced unemployment and professional irrelevance",
-          img: MEDIA + "cnbc.png",
+          img: MEDIA + "cnbc.webp",
           article: MEDIA + "cnbc-full.webp",
         },
 
         // Interviews: live site shows only a media preview (no headline/blurb).
         // The NDTV entry keeps the sample video preview. Swap `video` for an
         // .mp4 path to serve a file instead; mediaAspect avoids any JS sizing.
-        { group: "Interviews", label: "NDTV", video: MEDIA + "ndtv.mp4", poster: MEDIA + "ndtv-thmb.png", mediaAspect: "16 / 9" },
-        { group: "Interviews", label: "BBC", video: MEDIA + "bbc.mp4", poster: MEDIA + "bbc-thmb.png", mediaAspect: "16 / 9" },
+        { group: "Interviews", label: "NDTV", video: MEDIA + "ndtv.mp4", poster: MEDIA + "ndtv-thmb.webp", mediaAspect: "16 / 9" },
+        { group: "Interviews", label: "BBC", video: MEDIA + "bbc.mp4", poster: MEDIA + "bbc-thmb.webp", mediaAspect: "16 / 9" },
         { group: "Interviews", label: "Master's Union", video: "https://www.youtube.com/watch?v=p0eOyAhMJeQ", mediaAspect: "16 / 9" },
         { group: "Interviews", label: "Analytics India Magazine", video: "https://www.youtube.com/watch?v=Oe0D_68UkNA", mediaAspect: "16 / 9" },
 
@@ -95,7 +95,7 @@ export const MEDIA_CONFIG = {
           title: "Samyak Chakrabarty and Navya Nanda's Nimaya partners with Govt's AI Mission",
           blurb:
             "Samyak Chakrabarty and Navya Nanda's Nimaya has signed an MOU with IndiaAI, an IBD of Digital India Corporation, Ministry of Electronics & Information Technology (MeitY), to ensure women from under-served communities have an edge in leveraging AI at work.",
-          img: MEDIA + "nimayaxgovt.png",
+          img: MEDIA + "nimayaxgovt.webp",
           article: MEDIA + "nimayaxgovt-full.webp",
         },
         {
@@ -104,8 +104,8 @@ export const MEDIA_CONFIG = {
           title: "Samyak Chakrabarty & Navya Naveli Nanda Author A Playbook For India's Gen Z",
           blurb:
             "At a time when advice for young people often feels overbearing, The Map positions itself as something quieter and more thoughtful. Written by Navya Naveli Nanda and Samyak Chakrabarty, and releasing later this year with HarperCollins India",
-          img: MEDIA + "harpercollinsbook.png",
-          article: MEDIA + "harpercollinsbook-full.png",
+          img: MEDIA + "harpercollinsbook.webp",
+          article: MEDIA + "harpercollinsbook-full.webp",
         },
         {
           group: "Announcements",
@@ -113,8 +113,8 @@ export const MEDIA_CONFIG = {
           title: "Samyak Chakrabarty and Navya Naveli Nanda's Nimaya is helping young women kickstart their careers",
           blurb:
             "Started in 2021 by Navya Naveli Nanda, Founder of Project Naveli and Samyak Chakrabarty, Founder of Workverse, the initiative has trained more than 350 girls so far, helping them overcome fears and enter the workforce.",
-          img: MEDIA + "nimayaxyourstory.png",
-          article: MEDIA + "nimayaxyourstory-full.png",
+          img: MEDIA + "nimayaxyourstory.webp",
+          article: MEDIA + "nimayaxyourstory-full.webp",
         },
       ],
     },
@@ -136,7 +136,7 @@ export const MEDIA_CONFIG = {
           label: "INK Fellowship",
           blurb: "India's most prestigious fellowship for young leaders in social innovation",
           href: "#",
-          img: FELLOWS + "inkfellowship.png",
+          img: FELLOWS + "inkfellowship.webp",
         },
         {
           label: "RC Fellowship Trust of India",
@@ -144,7 +144,7 @@ export const MEDIA_CONFIG = {
           blurb:
             "In the memory of Silicon Valley Genius and mentor to Google's Founders Prof Rajeev Motwani - RC Fellowship invites social innovators from India to Palo Alto to learn from leaders of future forward companies such as GoogleX, Tesla, SpaceX and Neuralink.",
           href: "#",
-          img: FELLOWS + "rcfellowship.png",
+          img: FELLOWS + "rcfellowship.webp",
         },
       ],
     },

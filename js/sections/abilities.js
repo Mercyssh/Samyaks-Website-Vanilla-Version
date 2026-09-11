@@ -9,11 +9,13 @@
 
 const IMG = "./assets/img/abilities";
 
+// back      = landscape detail image (desktop flip).
+// backMobile = tall full-content strip used by the mobile overlay instead.
 export const ABILITIES = [
-  { title: "Connecting the Dots", front: `${IMG}/Card_1.png`, back: `${IMG}/Card_1_back.png` },
-  { title: "Crafting Narratives", front: `${IMG}/Card_2.png`, back: `${IMG}/Card_2_back.png` },
-  { title: "Building from Zero", front: `${IMG}/Card_3.png`, back: `${IMG}/Card_3_back.png` },
-  { title: "Designing behaviour change", front: `${IMG}/Card_4.png`, back: `${IMG}/Card_4_back.png` },
+  { title: "Connecting the Dots", front: `${IMG}/Card_1.webp`, back: `${IMG}/Card_1_back.webp`, backMobile: `${IMG}/Card_1_full_mobile.webp` },
+  { title: "Crafting Narratives", front: `${IMG}/Card_2.webp`, back: `${IMG}/Card_2_back.webp`, backMobile: `${IMG}/Card_2_full_mobile.webp` },
+  { title: "Building from Zero", front: `${IMG}/Card_3.webp`, back: `${IMG}/Card_3_back.webp`, backMobile: `${IMG}/Card_3_full_mobile.webp` },
+  { title: "Designing behaviour change", front: `${IMG}/Card_4.webp`, back: `${IMG}/Card_4_back.webp`, backMobile: `${IMG}/Card_4_full_mobile.webp` },
 ];
 
 /* one seamless period of a sine wave as a tiling SVG data-URI. Starts and

@@ -44,7 +44,7 @@ export const PILLARS = [
       {
         label: "AI x Behavioural Research",
         title: "Ashoka University - Centre for Social and Behavioural Change",
-        img: "./assets/img/what-i-build/card1/aixbehaviouralresearch.png",
+        img: "./assets/img/what-i-build/card1/aixbehaviouralresearch.webp",
         byline: "AI that compresses the feedback loop on behavioural interventions, from months to weeks.",
         stats: [],
         sections: [
@@ -67,7 +67,7 @@ Second, and more ambitiously, we're training AI to analyse field responses at sc
       {
         label: "AI x Workplace Coaching",
         title: "Neuroda",
-        img: "./assets/img/what-i-build/card1/aixworkplacecoaching.png",
+        img: "./assets/img/what-i-build/card1/aixworkplacecoaching.webp",
         byline: "An AI workplace mentor that helps young professionals think, decide and solve, not just search for answers.",
         stats: [
           { n: "30,000+", l: "early-career professionals guided" },
@@ -122,7 +122,7 @@ One AI-augmented program manager now delivers 3x the output. Decisions are data-
       {
         label: "AI x Welfare Delivery",
         title: "Yash Chopra Foundation - Saathi Program",
-        img: "./assets/img/what-i-build/card1/aixwellfaredelivery.png",
+        img: "./assets/img/what-i-build/card1/aixwellfaredelivery.webp",
         byline: "AI-powered welfare delivery for 5,000+ Hindi film industry workers.",
         stats: [
           { n: "7,000+", l: "beneficiaries across ration, healthcare, education and travel support" },
@@ -212,7 +212,7 @@ The design bridges two worlds: modern hospitality standards and the lived realit
       {
         label: "Simulations x Inclusion",
         title: "Isharaverse (Phoenix Hospitality)",
-        img: "./assets/img/what-i-build/card2/Simulations%20x%20Inclusion.png",
+        img: "./assets/img/what-i-build/card2/Simulations%20x%20Inclusion.webp",
         byline: "A training simulation for a restaurant chain staffed entirely by deaf and mute professionals.",
         stats: [],
         sections: [
@@ -236,7 +236,7 @@ The design bridges two worlds: modern hospitality standards and the lived realit
     tab: "Building Movements for Behavioural Change",
     title: "Building Movements for Behavioural Change",
     tint: "#231A2C",
-    img: "./assets/img/what-i-build/card3%20thmb.png",
+    img: "./assets/img/what-i-build/card3%20thmb.webp",
     tags: ["UN Young Changemakers Conclave", "Operation Black Dot", "Election Commission of India", "Green Batti Project"],
     body: [
       "When behavioural science, influencers and storytelling meet, millions shift how they think and act. I build movements that shape how people engage with critical cause areas such as preventive healthcare, financial inclusion, education and nutrition.",
@@ -252,7 +252,7 @@ The design bridges two worlds: modern hospitality standards and the lived realit
       {
         label: "#BanoIronNaari",
         title: "#BanoIronNaari - Government of Uttar Pradesh",
-        img: "./assets/img/what-i-build/card3/BanoIronNaari.png",
+        img: "./assets/img/what-i-build/card3/BanoIronNaari.webp",
         byline: "A behavioural campaign that turned anaemia awareness into action for rural women across the state of Uttar Pradesh",
         stats: [
           { n: "100,000+", l: "enquiries generated for nearest anaemia testing clinics" },
@@ -278,7 +278,7 @@ But the videos were only the trigger. We trained ASHA workers across anganwadis 
       {
         label: "#GourmetRation",
         title: "#GourmetRation - Government of Uttar Pradesh",
-        img: "./assets/img/what-i-build/card3/GourmetRation.jpg",
+        img: "./assets/img/what-i-build/card3/GourmetRation.webp",
         byline: "Turning government ration kits from something children refuse into something they ask for.",
         stats: [],
         sections: [
@@ -300,7 +300,7 @@ The videos were distributed to lakhs of rural households through anganwadi netwo
       {
         label: "United Nations Young Changemakers Conclave",
         title: "United Nations Young Changemakers Conclave",
-        img: "./assets/img/what-i-build/card3/unycc.jpg",
+        img: "./assets/img/what-i-build/card3/unycc.webp",
         byline: "A national platform that made achieving the Sustainable Development Goals feel personal and aspirational for young Indians.",
         stats: [
           { n: "20", l: "successive national conclaves" },
@@ -327,7 +327,7 @@ Aspirational access: Hosted at venues like the Indian Navy's seaside gardens and
       {
         label: "Operation Black Dot",
         title: "Operation Black Dot (in partnership with Election Commission of India)",
-        img: "./assets/img/what-i-build/card3/operationblackdot.jpg",
+        img: "./assets/img/what-i-build/card3/operationblackdot.webp",
         byline: "A youth-led movement that turned voting from a civic duty into a cultural act.",
         stats: [
           { n: "100,000+", l: "youth engaged" },
@@ -356,7 +356,7 @@ Action: Collaboration with Tata Nano to provide transport to polling booths, eli
       {
         label: "Moonshot Philanthropy Summit",
         title: "Moonshot Philanthropy Summit (In collaboration with Ashoka University)",
-        img: "./assets/img/what-i-build/card3/MoonshotPhilanthropySummit.png",
+        img: "./assets/img/what-i-build/card3/MoonshotPhilanthropySummit.webp",
         byline: "Convincing India's philanthropists to fund impact organisations the way VCs fund startups.",
         stats: [],
         sections: [

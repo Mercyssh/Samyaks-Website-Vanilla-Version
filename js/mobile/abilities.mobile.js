@@ -204,7 +204,7 @@ export function initAbilitiesMobile() {
     el.addEventListener("click", () => {
       // swallow the click that ends a real swipe
       if (moved) { moved = false; return; }
-      if (i === active) overlay.open(cards[i].back, cards[i].title);
+      if (i === active) overlay.open(cards[i].backMobile || cards[i].back, cards[i].title);
       else settleTo(i);
     });
   });
