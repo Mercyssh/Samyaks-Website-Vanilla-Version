@@ -154,7 +154,15 @@ export function initLandingSceneMobile() {
       overlayEls.forEach((el) => (el.style.transition = "none"));
     }
     const k = Math.max(0, 1 - scrollP / 0.5);
-    overlayEls.forEach((el) => (el.style.opacity = k));
+    // Once fully faded, also kill interaction so the (invisible) tagline text
+    // and press carousel can't be selected/scrolled underneath the scene.
+    const gone = k <= 0.001 ? "none" : "";
+    overlayEls.forEach((el) => {
+      el.style.opacity = k;
+      el.style.pointerEvents = gone;
+      el.style.userSelect = gone;
+      el.style.webkitUserSelect = gone;
+    });
   }
 
   /* ---- enter / leave the "cards fanned, tap to shuffle" state ---- */

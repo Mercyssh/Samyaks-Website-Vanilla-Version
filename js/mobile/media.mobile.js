@@ -130,8 +130,32 @@ export function initMedia_Mobile() {
 
   const catEls = [...wrap.querySelectorAll(".media-m__cat")];
   const chipsEl = wrap.querySelector(".media-m__chips");
+  const cardWrap = wrap.querySelector(".media-m__card-wrap");
   const cardEl = wrap.querySelector(".media-m__card");
   const dotsEl = wrap.querySelector(".media-m__dots");
+
+  /* Smoothly grow/shrink the card container between two content heights so
+     switching item/category doesn't snap the layout (and the page scroll)
+     up or down. Clips during the tween, then hands height back to `auto`. */
+  const CARD_HEIGHT_MS = 320;
+  const animateCardHeight = (fromH) => {
+    cardWrap.style.height = "auto";
+    const toH = cardWrap.offsetHeight;
+    if (!fromH || fromH === toH) return;
+    cardWrap.style.overflow = "hidden";
+    cardWrap.style.height = fromH + "px";
+    void cardWrap.offsetHeight; // commit the start height before transitioning
+    cardWrap.style.transition = `height ${CARD_HEIGHT_MS}ms var(--ease-out)`;
+    cardWrap.style.height = toH + "px";
+    const done = (e) => {
+      if (e.target !== cardWrap || e.propertyName !== "height") return;
+      cardWrap.style.transition = "";
+      cardWrap.style.height = "";
+      cardWrap.style.overflow = "";
+      cardWrap.removeEventListener("transitionend", done);
+    };
+    cardWrap.addEventListener("transitionend", done);
+  };
 
   let catIndex = 0;
   let itemIndex = 0;
@@ -194,7 +218,9 @@ export function initMedia_Mobile() {
   const paintCard = () => {
     const it = items()[itemIndex];
     if (!it) { cardEl.innerHTML = ""; return; }
+    const prevH = cardWrap.offsetHeight; // measure before swapping content
     cardEl.innerHTML = cardHTML(it);
+    animateCardHeight(prevH);
     // restart the entrance animation
     cardEl.classList.remove("is-swap");
     void cardEl.offsetWidth;
@@ -248,7 +274,6 @@ export function initMedia_Mobile() {
   catEls.forEach((c, i) => c.addEventListener("click", () => selectCat(i)));
 
   /* ---- swipe the card to change item ---- */
-  const cardWrap = wrap.querySelector(".media-m__card-wrap");
   let sx = 0, sy = 0, dragging = false, decided = false, horiz = false;
   cardWrap.addEventListener("pointerdown", (e) => {
     dragging = true; decided = false; horiz = false; sx = e.clientX; sy = e.clientY;
