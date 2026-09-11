@@ -50,11 +50,41 @@ export function initLandingSceneMobile() {
   if (!stage) return;
   const { scene, camera, renderer } = stage;
 
-  // fallback lighting (unlit materials ignore it)
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x202024, 1.15));
-  const key = new THREE.DirectionalLight(0xffffff, 1.25);
-  key.position.set(2, 4, 3);
-  scene.add(key);
+  // NO lights: every material is made UNLIT (MeshBasicMaterial) below, and the
+  // hand uses its self-contained shader — nothing responds to a light source.
+
+  // social icon planes (unlit, half-opacity, tappable → open these links)
+  const LINKS = {
+    linkedin: "https://www.linkedin.com/in/samyak-chakrabarty-5240266?originalSubdomain=in",
+    mail: "mailto:emailme@samyakchakrabarty.com",
+  };
+  const iconMeshes = [];
+  const within = (o, t) => { for (let p = o; p; p = p.parent) if (p === t) return true; return false; };
+  const toUnlit = (o, { side = THREE.DoubleSide, opacity = null } = {}) => {
+    const src = Array.isArray(o.material) ? o.material[0] : o.material;
+    o.material = new THREE.MeshBasicMaterial({
+      map: src.map || null,
+      color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
+      transparent: opacity != null ? true : !!src.transparent,
+      opacity: opacity != null ? opacity : (src.opacity ?? 1),
+      alphaTest: src.alphaTest || 0,
+      side,
+      toneMapped: false,
+    });
+  };
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  const pickIconUrl = (clientX, clientY) => {
+    if (!iconMeshes.length) return null;
+    const r = renderer.domElement.getBoundingClientRect();
+    ndc.x = ((clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(iconMeshes, true)[0];
+    if (!hit) return null;
+    for (let p = hit.object; p; p = p.parent) if (p.userData && p.userData.iconUrl) return p.userData.iconUrl;
+    return null;
+  };
 
   // scroll layout + a baked camera (filled by the ?debug log button).
   const cfg = {
@@ -65,9 +95,8 @@ export function initLandingSceneMobile() {
 
   const hint = document.querySelector("#landing .landing__taphint");
   const overlayEls = [
-    ...document.querySelectorAll("#landing .press"),
     document.querySelector("#landing .landing__tagline"),
-    document.querySelector("#landing .landing__social"),
+    document.querySelector("#landing .landing-m__news"),
   ].filter(Boolean);
   let overlayHooked = false;
 
@@ -225,6 +254,27 @@ export function initLandingSceneMobile() {
 
       // hand: bespoke fresnel material stack (copied from the desktop scene)
       hand = root.getObjectByName("hand");
+      const coverCard = root.getObjectByName("cover card");
+
+      // every material UNLIT (MeshBasic); backface culling (FrontSide) ONLY on
+      // the cover card, everything else DoubleSide. Hand is skipped — it gets
+      // its own self-lit shader below.
+      root.traverse((o) => {
+        if (!o.isMesh || !o.material || within(o, hand)) return;
+        toUnlit(o, { side: within(o, coverCard) ? THREE.FrontSide : THREE.DoubleSide });
+      });
+
+      // social icon planes: half-opacity (desktop's unhovered value) + tappable
+      [["Plane", LINKS.linkedin], ["Plane.001", LINKS.mail]].forEach(([name, url]) => {
+        const node = root.getObjectByName(name);
+        node && node.traverse((o) => {
+          if (!o.isMesh) return;
+          toUnlit(o, { side: THREE.DoubleSide, opacity: 0.5 });
+          o.userData.iconUrl = url;
+          iconMeshes.push(o);
+        });
+      });
+
       if (hand) handKit = buildHandMaterial(hand);
 
       // camera: use the authored GLB camera (fov + transform)
@@ -289,6 +339,8 @@ export function initLandingSceneMobile() {
     section.addEventListener("pointerup", (e) => {
       if (moved || performance.now() - st0 > 500) return;      // a drag/scroll, not a tap
       if (e.target.closest("a, button")) return;                // let links/nav work
+      const url = pickIconUrl(e.clientX, e.clientY);            // tapped a social plane?
+      if (url) { if (url.startsWith("mailto:")) location.href = url; else window.open(url, "_blank", "noopener"); return; }
       tapAdvance();
     });
   }
