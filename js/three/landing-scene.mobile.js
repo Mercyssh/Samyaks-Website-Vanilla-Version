@@ -45,7 +45,7 @@ export function initLandingSceneMobile() {
   const mount = document.querySelector('.scene-mount[data-scene="landing"]');
   if (!mount) return;
 
-  const { gsap, ScrollTrigger, prefersReduced, lenis } = window.__app || {};
+  const { gsap, ScrollTrigger, prefersReduced } = window.__app || {};
   const stage = createStage(mount, { fov: 40 });
   if (!stage) return;
   const { scene, camera, renderer } = stage;
@@ -333,44 +333,6 @@ export function initLandingSceneMobile() {
       invalidateOnRefresh: true,
       onUpdate: (self) => onProgress(self.progress),
     });
-
-    // Magnetic snap driven by finger-release (not ScrollTrigger's own snap):
-    // ST's snap waits for the scroller to come to rest, but Lenis touch inertia
-    // keeps moving after lift, so it felt delayed. Instead, the moment the touch
-    // ends we cancel the inertia with lenis.scrollTo() to the snap target.
-    //  • released past 50% of the intro → settle to the end (scrollP=1 → unlocks
-    //    tap-to-shuffle); before 50% → back to the start.
-    //  • no snap once in the hold/tap band, so the page can still scroll on.
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
-    let pendingSnapPx = null;   // target (px) of an in-flight snap, else null
-
-    const snapOnRelease = () => {
-      if (!st || !lenis) return;
-      const range = st.end - st.start;
-      if (range <= 0) return;
-      const split = animSplit();
-      const value = st.progress;
-      if (value <= 0.001 || value >= split) { pendingSnapPx = null; return; } // at start / tap band
-      const target = value / split > 0.5 ? split : 0;
-      pendingSnapPx = st.start + target * range;
-      lenis.scrollTo(pendingSnapPx, {
-        duration: 0.3, lock: true, force: true, easing: ease,
-        onComplete: () => { pendingSnapPx = null; },
-      });
-    };
-    // A new touch resolves any in-flight snap INSTANTLY to its endpoint, so a
-    // rapid second swipe builds from a clean 0 / end — not the residual of a
-    // still-animating close (which could tip two tiny swipes past the threshold
-    // and wrongly open).
-    const finishPendingSnap = () => {
-      if (pendingSnapPx == null) return;
-      lenis.scrollTo(pendingSnapPx, { immediate: true, force: true });
-      pendingSnapPx = null;
-    };
-    window.addEventListener("touchstart", finishPendingSnap, { passive: true });
-    window.addEventListener("pointerdown", finishPendingSnap, { passive: true });
-    window.addEventListener("touchend", snapOnRelease, { passive: true });
-    window.addEventListener("pointerup", snapOnRelease, { passive: true });
   }
 
   /* ---- tap on the hero → advance the shuffle (only once unlocked) ---- */
