@@ -36,8 +36,8 @@ import { PILLARS, initOverlay } from "../sections/what-i-build.js";
    ============================================================ */
 const CONFIG = {
   showTags: true,
-  cardFlip: true,
-  statLayout: "rotator", // "rotator" | "grid"
+  cardFlip: false,
+  statLayout: "grid", // "rotator" | "grid"
   statInterval: 2600,
   scrambleMs: 700,
   mediaAspect: "1 / 1",
