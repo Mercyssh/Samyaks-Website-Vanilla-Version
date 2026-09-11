@@ -28,10 +28,10 @@ const _dbg = new URLSearchParams(location.search).get("debug");
 // on mobile only this scene boots, so accept the plain "journey" key too
 const DEBUG = _dbg === "" || _dbg === "journey" || _dbg === "journeym" || _dbg === "all";
 
-// 60-frame clip → normalized progress: Act 1 = 0–20, Act 2 = 20–45, then no
-// carousel from 45 on (the scene plays out its tail alone).
+// 60-frame clip → normalized progress: Act 1 = 0–20, Act 2 = 20–40, then the
+// whole awards container hides from frame 40 on (scene plays out its tail alone).
 const ACT_SPLIT = 20 / 60;
-const ACT2_END = 45 / 60;
+const AWARDS_END = 40 / 60;
 const ACT2_AUTOPLAY_MS = 3200;   // dwell per Act-2 slide
 
 export function initJourneySceneMobile() {
@@ -61,6 +61,7 @@ export function initJourneySceneMobile() {
   let sceneRadius = 10;
 
   // --- awards carousel wiring ---
+  const awardsEl = document.getElementById("journeyMAwards");
   const carousels = [...document.querySelectorAll("#journeyMAwards .journey-m__carousel")];
   const carouselFor = (act) => carousels.find((c) => c.dataset.act === String(act));
   let currentAct = 1;
@@ -176,8 +177,10 @@ export function initJourneySceneMobile() {
   function apply(animP) {
     animP = THREE.MathUtils.clamp(animP, 0, 1);
     if (mixer) mixer.setTime(Math.min(animP, 0.9999) * clipDur);
-    // Act 1 → Act 2 → none (0), by keyframe band
-    setAct(animP < ACT_SPLIT ? 1 : animP < ACT2_END ? 2 : 0);
+    // frame band → active act; the whole awards container hides past AWARDS_END
+    const hidden = animP >= AWARDS_END;
+    awardsEl && awardsEl.classList.toggle("is-hidden", hidden);
+    setAct(hidden ? 0 : animP < ACT_SPLIT ? 1 : 2);
   }
 
   // pin length = anim scrub + fixed hold tail; map pinned progress → anim 0→1
