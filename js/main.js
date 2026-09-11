@@ -14,6 +14,7 @@ import { initReveal } from "./reveal.js";
 import { initLandingScene } from "./three/landing-scene.js";
 import { initLandingSceneMobile } from "./three/landing-scene.mobile.js";
 import { initJourneyScene } from "./three/journey-scene.js";
+import { initJourneySceneMobile } from "./three/journey-scene.mobile.js";
 import { isMobile, watchBreakpoint } from "./responsive.js";
 import { initAbilitiesMobile } from "./mobile/abilities.mobile.js";
 import { initWhatIBuildMobile } from "./mobile/what-i-build.mobile.js";
@@ -69,10 +70,11 @@ if (mobile) {
 watchBreakpoint();
 
 /* ---- 3D scenes ----
-   Landing has a bespoke mobile scene (separate GLB + tap-shuffle UX);
-   Journey stays desktop-only for now. */
+   Landing and Journey each have a bespoke mobile scene (separate GLB +
+   mobile UX) that boots below the breakpoint in place of the desktop one. */
 if (mobile) {
   initLandingSceneMobile();
+  initJourneySceneMobile();
 } else {
   initLandingScene();
   initJourneyScene();

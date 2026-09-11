@@ -613,4 +613,104 @@ body.m-overlay-open { overflow: hidden; }
   .wib-ov__body > .wib-stats .wib-stat { flex: initial; }
   /* a lone stat spans both columns instead of sitting half-width */
   .wib-ov__body > .wib-stats .wib-stat:only-child { grid-column: 1 / -1; }
+
+  /* ========================================================
+     Journey (mobile) — replaces the desktop letterboxed scene.
+     A 100svh wrapper: the journey-mobile.glb canvas fills the top and
+     fades out at its lower edge; an awards carousel sits in the reserved
+     space beneath it, switching Act 1 ⇄ Act 2 with the pinned scrub.
+     Tunables live on .journey-m (see table in the change notes).
+     ======================================================== */
+  .journey-scene { display: none; }        /* drop the desktop 16:9 scene */
+
+  .journey-m {
+    --jm-awards-h: 74px;    /* height reserved at the bottom for the carousel */
+    --jm-fade: 10%;         /* how far up from the canvas' bottom edge it fades */
+    --jm-gold: #f5a623;     /* awards card border + title colour */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* canvas takes all remaining height (never full 100svh — the awards row
+     owns the bottom band), full width, and dissolves at its lower edge. */
+  .journey-m__canvas {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    -webkit-mask-image: linear-gradient(to bottom,
+      #000 0%, #000 calc(100% - var(--jm-fade)), transparent 100%);
+            mask-image: linear-gradient(to bottom,
+      #000 0%, #000 calc(100% - var(--jm-fade)), transparent 100%);
+  }
+  /* the .scene-mount (absolute inset:0) fills this relative box */
+
+  /* --- awards card: rounded gold border with a legend-style title on top --- */
+  .journey-m__awards {
+    position: relative;
+    flex: 0 0 auto;
+    height: var(--jm-awards-h);
+    margin: 0 var(--section-pad) clamp(0.75rem, 3vh, 1.5rem);
+    padding: 14px 16px;
+    border: 1px solid var(--jm-gold);
+    border-radius: var(--r-lg);
+    display: grid;
+    place-items: center;
+  }
+  .journey-m__awards-title {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 12px;
+    background: var(--bg);         /* masks the border it sits on */
+    color: var(--jm-gold);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: calc(var(--step-0) - 5px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* two carousels share the same box; the active act is faded in */
+  .journey-m__carousel {
+    position: absolute;
+    inset: 14px 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s var(--ease-out);
+  }
+  .journey-m__carousel.is-active { opacity: 1; pointer-events: auto; }
+
+  .journey-m__track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .journey-m__track::-webkit-scrollbar { display: none; }
+  .journey-m__slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 4px;
+  }
+  .journey-m__slide img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
 }

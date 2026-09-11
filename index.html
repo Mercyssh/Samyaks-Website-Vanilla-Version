@@ -156,12 +156,38 @@
         <h2 class="section-title" data-title="Journey" data-reveal>Journey</h2>
         <p class="journey__lead" id="journeyLead" data-reveal></p>
       </div>
-      <!-- Full-viewport pinned 3D scene: scroll scrubs the baked camera
-           travel, then holds briefly before the page scrolls on. The canvas
-           is letterboxed to 16:9 inside the viewport-sized stage. -->
+      <!-- DESKTOP: full-viewport pinned 3D scene, letterboxed to 16:9. -->
       <div class="journey-scene" id="journeyScene">
         <div class="journey-scene__stage">
           <div class="scene-mount" data-scene="journey"></div>
+        </div>
+      </div>
+
+      <!-- MOBILE (js/three/journey-scene.mobile.js): a 100svh wrapper — the
+           journey-mobile.glb canvas fills the top (fading out at its lower
+           edge), an awards carousel sits in the reserved space below. The
+           carousel switches between Act 1 / Act 2 as the pinned scene scrubs. -->
+      <div class="journey-m" id="journeyMobile">
+        <div class="journey-m__canvas">
+          <div class="scene-mount" data-scene="journey-mobile"></div>
+        </div>
+        <div class="journey-m__awards" id="journeyMAwards">
+          <span class="journey-m__awards-title">Awards &amp; Fellowships</span>
+          <!-- Act 1 (keyframes 0–20) -->
+          <div class="journey-m__carousel is-active" data-act="1">
+            <div class="journey-m__track">
+              <span class="journey-m__slide"><img src="./assets/img/journey/trophy1-mobile.png" alt="Times Now — India's youngest CEO, Times Now Lead India" loading="lazy" /></span>
+            </div>
+          </div>
+          <!-- Act 2 (keyframes 20–45) -->
+          <div class="journey-m__carousel" data-act="2">
+            <div class="journey-m__track">
+              <span class="journey-m__slide"><img src="./assets/img/journey/trophy2-mobile.png" alt="Campaign — Young Achiever, Campaign South Asia" loading="lazy" /></span>
+              <span class="journey-m__slide"><img src="./assets/img/journey/trophy3-mobile.png" alt="Forbes 30 Under 30 — Most Influential Social Entrepreneur, Forbes Asia" loading="lazy" /></span>
+              <span class="journey-m__slide"><img src="./assets/img/journey/fellowship1-mobile.png" alt="Fellowship" loading="lazy" /></span>
+              <span class="journey-m__slide"><img src="./assets/img/journey/fellowship2-mobile.png" alt="Fellowship" loading="lazy" /></span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

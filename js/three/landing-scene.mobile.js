@@ -341,15 +341,34 @@ export function initLandingSceneMobile() {
     //  • released past 50% of the intro → settle to the end (scrollP=1 → unlocks
     //    tap-to-shuffle); before 50% → back to the start.
     //  • no snap once in the hold/tap band, so the page can still scroll on.
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    let pendingSnapPx = null;   // target (px) of an in-flight snap, else null
+
     const snapOnRelease = () => {
       if (!st || !lenis) return;
+      const range = st.end - st.start;
+      if (range <= 0) return;
       const split = animSplit();
       const value = st.progress;
-      if (value <= 0 || value >= split) return;           // at start, or already in tap band
+      if (value <= 0.001 || value >= split) { pendingSnapPx = null; return; } // at start / tap band
       const target = value / split > 0.5 ? split : 0;
-      const px = st.start + target * (st.end - st.start);
-      lenis.scrollTo(px, { duration: 0.35, lock: true, easing: (t) => 1 - Math.pow(1 - t, 3) });
+      pendingSnapPx = st.start + target * range;
+      lenis.scrollTo(pendingSnapPx, {
+        duration: 0.3, lock: true, force: true, easing: ease,
+        onComplete: () => { pendingSnapPx = null; },
+      });
     };
+    // A new touch resolves any in-flight snap INSTANTLY to its endpoint, so a
+    // rapid second swipe builds from a clean 0 / end — not the residual of a
+    // still-animating close (which could tip two tiny swipes past the threshold
+    // and wrongly open).
+    const finishPendingSnap = () => {
+      if (pendingSnapPx == null) return;
+      lenis.scrollTo(pendingSnapPx, { immediate: true, force: true });
+      pendingSnapPx = null;
+    };
+    window.addEventListener("touchstart", finishPendingSnap, { passive: true });
+    window.addEventListener("pointerdown", finishPendingSnap, { passive: true });
     window.addEventListener("touchend", snapOnRelease, { passive: true });
     window.addEventListener("pointerup", snapOnRelease, { passive: true });
   }

@@ -35,12 +35,9 @@ export function initJourneyScene() {
   if (!stage) return;
   const { scene, camera, renderer } = stage;
 
-  // Fallback lighting for any lit (Standard/Physical) materials the Spline
-  // export brought in. Unlit materials simply ignore these.
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x202024, 1.1));
-  const key = new THREE.DirectionalLight(0xffffff, 1.4);
-  key.position.set(3, 6, 4);
-  scene.add(key);
+  // Every material is UNLIT — there are no lights in this scene. Each mesh's
+  // material is swapped to MeshBasicMaterial on load (see makeUnlit below),
+  // carrying over its texture/colour/opacity so nothing responds to lighting.
 
   // scroll layout: the camera travel plays over `animVh` viewport-heights of
   // scroll, then the final frame is HELD over a fixed `holdPx` before release.
@@ -66,6 +63,23 @@ export function initJourneyScene() {
     camera.quaternion.setFromRotationMatrix(glbCam.matrixWorld);
   };
 
+  // swap every mesh's material for an UNLIT MeshBasicMaterial (no lights in
+  // the scene), carrying over texture / colour / opacity / vertex colours.
+  const makeUnlit = (root) => root.traverse((o) => {
+    if (!o.isMesh || !o.material) return;
+    const src = Array.isArray(o.material) ? o.material[0] : o.material;
+    o.material = new THREE.MeshBasicMaterial({
+      map: src.map || null,
+      color: src.color ? src.color.clone() : new THREE.Color(0xffffff),
+      transparent: !!src.transparent,
+      opacity: src.opacity ?? 1,
+      alphaTest: src.alphaTest || 0,
+      vertexColors: src.vertexColors || false,
+      side: THREE.DoubleSide,
+      toneMapped: false,
+    });
+  });
+
   const loader = new GLTFLoader();
   loader.load(
     MODEL_URL,
@@ -73,6 +87,7 @@ export function initJourneyScene() {
       const root = gltf.scene;
       scene.add(root);
       root.updateMatrixWorld(true);
+      makeUnlit(root);
 
       // model radius → only used to scale the ?debug fog sliders' ranges;
       // the fog near/far themselves are baked constants in cfg.fog above.

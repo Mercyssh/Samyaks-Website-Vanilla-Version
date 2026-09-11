@@ -42,6 +42,10 @@
 }
 /* the scene-mount (position:absolute; inset:0) fills the 16:9 stage */
 
+/* the mobile journey layer is off by default — mobile.css turns it on and
+   hides .journey-scene below 768px (see css/mobile.css). */
+.journey-m { display: none; }
+
 /* intro sits ABOVE the pinned scene — the section itself no longer supplies
    vertical padding, so the intro block owns its own. */
 .journey__intro {
