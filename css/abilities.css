@@ -232,10 +232,28 @@
 }
 .abil-card__face img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* front resting state: white border → animates to accent green on hover */
+/* Front edge = two overlaid 1px borders that never affect layout:
+   - resting: a white masked ring that fades top→bottom (a plain border-color
+     can't be a gradient), stopping at ~20% so the bottom never fully vanishes.
+   - hover: the real border (always present, transparent at rest → no size
+     change) turns a solid accent green while the white ring fades out. */
 .abil-card__front {
-  border-color: rgba(255, 255, 255, 0.85);
+  border-color: transparent;               /* reserved 1px; goes green on hover, no reflow */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.abil-card__front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;                              /* above the image */
+  border-radius: inherit;                  /* match the face's --r-md corners */
+  padding: 1px;                            /* ring thickness */
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;         /* punch the centre out → only the 1px ring shows */
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 /* back = flipped face; image rotated −90° (CCW), sized via container
@@ -264,6 +282,7 @@
 /* ---- hover (no z-index change → card keeps its order) ---- */
 .abil-card:not(.is-open):hover .abil-card__inner { transform: translateY(calc(-1 * var(--lift))); }
 .abil-card:not(.is-open):hover .abil-card__front { border-color: var(--accent); box-shadow: 0 0 30px rgba(156, 227, 37, 0.4); }
+.abil-card:not(.is-open):hover .abil-card__front::before { opacity: 0; }
 .abil-card:not(.is-open):hover .abil-card__front::after { opacity: 1; }
 
 /* ---- open: grow to landscape, centred in the deck, flipped ---- */
