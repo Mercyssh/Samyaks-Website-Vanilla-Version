@@ -5,7 +5,7 @@
 
 import { initPreloader } from "./preloader.js";
 import { initNav } from "./nav.js";
-import { initLanding } from "./sections/landing.js";
+import { initLanding, initLandingCarousel } from "./sections/landing.js";
 import { initWhatIBuild } from "./sections/what-i-build.js";
 import { initAbilities } from "./sections/abilities.js";
 import { initJourney } from "./sections/journey.js";
@@ -56,6 +56,7 @@ initLanding();
 initJourney();
 
 if (mobile) {
+  initLandingCarousel();
   initWhatIBuildMobile();
   initAbilitiesMobile();
   initMedia_Mobile();

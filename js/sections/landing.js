@@ -23,6 +23,35 @@ const STARS = {
 
 const rand = (a, b) => a + Math.random() * (b - a);
 
+// ---- mobile press carousel ----
+const NEWS_AUTOPLAY_MS = 4000; // delay between auto-advances (ms)
+
+/* Auto-advance the mobile landing press carousel. Mobile-only; pauses while
+   the user is swiping (and when the tab is hidden), and keeps its index in
+   sync with manual swipes. */
+export function initLandingCarousel() {
+  const track = document.querySelector("#landing .landing-m__track");
+  if (!track) return;
+  const slides = [...track.children];
+  if (slides.length < 2) return;
+  if (!window.matchMedia("(max-width: 768px)").matches) return;      // mobile only
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  let i = 0, pauseUntil = 0;
+  const width = () => track.clientWidth || 1;
+  const go = (n) => {
+    i = ((n % slides.length) + slides.length) % slides.length;
+    track.scrollTo({ left: i * width(), behavior: "smooth" });
+  };
+  const tick = () => { if (Date.now() >= pauseUntil && !document.hidden) go(i + 1); };
+
+  // manual swipe pauses autoplay briefly and keeps the index in sync
+  track.addEventListener("pointerdown", () => { pauseUntil = Date.now() + NEWS_AUTOPLAY_MS * 1.5; }, { passive: true });
+  track.addEventListener("scroll", () => { i = Math.round(track.scrollLeft / width()); }, { passive: true });
+
+  setInterval(tick, NEWS_AUTOPLAY_MS);
+}
+
 export function initLanding() {
   const host = document.getElementById("landingStars");
   if (!host) return;
