@@ -12,6 +12,7 @@ import { initJourney } from "./sections/journey.js";
 import { initMedia } from "./sections/media.js";
 import { initReveal } from "./reveal.js";
 import { initLandingScene } from "./three/landing-scene.js";
+import { initJourneyScene } from "./three/journey-scene.js";
 import { isMobile, watchBreakpoint } from "./responsive.js";
 import { initAbilitiesMobile } from "./mobile/abilities.mobile.js";
 import { initWhatIBuildMobile } from "./mobile/what-i-build.mobile.js";
@@ -67,6 +68,7 @@ watchBreakpoint();
 
 /* ---- 3D scenes ---- */
 initLandingScene();
+if (!mobile) initJourneyScene(); // desktop-only; mobile journey is a later phase
 
 /* ---- Entrance reveals: start after the preloader, with a hard
    safety fallback so content can never stay hidden if site:ready
