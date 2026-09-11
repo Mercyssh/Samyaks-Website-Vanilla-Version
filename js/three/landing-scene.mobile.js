@@ -39,13 +39,13 @@ const _dbg = new URLSearchParams(location.search).get("debug");
 const DEBUG = _dbg === "landingm" || _dbg === "all";
 
 const SEG = 0.5;          // one 30-frame segment @ 60fps
-const SHUFFLE_STEP_DUR = 0.55; // seconds a single tap-advance takes
+const SHUFFLE_STEP_DUR = 0.32; // seconds a single tap-advance takes
 
 export function initLandingSceneMobile() {
   const mount = document.querySelector('.scene-mount[data-scene="landing"]');
   if (!mount) return;
 
-  const { gsap, ScrollTrigger, prefersReduced } = window.__app || {};
+  const { gsap, ScrollTrigger, prefersReduced, lenis } = window.__app || {};
   const stage = createStage(mount, { fov: 40 });
   if (!stage) return;
   const { scene, camera, renderer } = stage;
@@ -333,6 +333,25 @@ export function initLandingSceneMobile() {
       invalidateOnRefresh: true,
       onUpdate: (self) => onProgress(self.progress),
     });
+
+    // Magnetic snap driven by finger-release (not ScrollTrigger's own snap):
+    // ST's snap waits for the scroller to come to rest, but Lenis touch inertia
+    // keeps moving after lift, so it felt delayed. Instead, the moment the touch
+    // ends we cancel the inertia with lenis.scrollTo() to the snap target.
+    //  • released past 50% of the intro → settle to the end (scrollP=1 → unlocks
+    //    tap-to-shuffle); before 50% → back to the start.
+    //  • no snap once in the hold/tap band, so the page can still scroll on.
+    const snapOnRelease = () => {
+      if (!st || !lenis) return;
+      const split = animSplit();
+      const value = st.progress;
+      if (value <= 0 || value >= split) return;           // at start, or already in tap band
+      const target = value / split > 0.5 ? split : 0;
+      const px = st.start + target * (st.end - st.start);
+      lenis.scrollTo(px, { duration: 0.35, lock: true, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    };
+    window.addEventListener("touchend", snapOnRelease, { passive: true });
+    window.addEventListener("pointerup", snapOnRelease, { passive: true });
   }
 
   /* ---- tap on the hero → advance the shuffle (only once unlocked) ---- */
