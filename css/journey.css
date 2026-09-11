@@ -25,11 +25,20 @@
   background: var(--bg);
 }
 .journey-scene__stage {
+  --edge-fade: 5%;   /* how far in from each side the scene fades to transparent */
   position: relative;
   aspect-ratio: 16 / 9;
   width: min(100vw, calc(100svh * 16 / 9));
   max-width: 100vw;
   max-height: 100svh;
+  /* fade the canvas off at the extreme left/right edges only:
+     0% transparent → opaque at --edge-fade → opaque until (100% - --edge-fade) → 0% transparent */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%, #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)), transparent 100%);
+          mask-image: linear-gradient(to right,
+    transparent 0%, #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)), transparent 100%);
 }
 /* the scene-mount (position:absolute; inset:0) fills the 16:9 stage */
 
