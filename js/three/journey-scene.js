@@ -22,7 +22,9 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { createStage } from "./renderer.js";
 
 const MODEL_URL = "./assets/models/journey.glb";
-const DEBUG = new URLSearchParams(location.search).has("debug");
+// journey GUI on bare ?debug, ?debug=journey, or ?debug=all
+const _dbg = new URLSearchParams(location.search).get("debug");
+const DEBUG = _dbg === "" || _dbg === "journey" || _dbg === "all";
 
 export function initJourneyScene() {
   const mount = document.querySelector('.scene-mount[data-scene="journey"]');
@@ -42,12 +44,20 @@ export function initJourneyScene() {
 
   // scroll layout: the camera travel plays over `animVh` viewport-heights of
   // scroll, then the final frame is HELD over a fixed `holdPx` before release.
-  const cfg = { animVh: 1.5, holdPx: 100, target: new THREE.Vector3(0, 0, 0), useGlbCam: true };
+  // fog: linear distance fog, colour defaulting to the page bg so far geometry
+  // dissolves into the letterbox. near/far are in world units — reseeded from
+  // the model's size on load and tunable in the ?debug GUI.
+  const cfg = {
+    animVh: 1.5, holdPx: 100, target: new THREE.Vector3(0, 0, 0), useGlbCam: true,
+    fog: { color: "#0a0a0a", near: 9.96, far: 26.4 }, // baked from ?debug
+  };
+  scene.fog = new THREE.Fog(cfg.fog.color, cfg.fog.near, cfg.fog.far);
 
   let mixer = null, clipDur = 0;
   let glbCam = null;
   let st = null;
   let orbit = null;
+  let sceneRadius = 10; // model bounding radius → sensible fog defaults + GUI ranges
 
   const syncCamera = () => {
     if (!glbCam) return;
@@ -63,6 +73,15 @@ export function initJourneyScene() {
       const root = gltf.scene;
       scene.add(root);
       root.updateMatrixWorld(true);
+
+      // size → fog scale: seed near/far from the model so some fog is visible
+      // by default regardless of the scene's unit scale.
+      const sphere = new THREE.Box3().setFromObject(root).getBoundingSphere(new THREE.Sphere());
+      sceneRadius = sphere.radius || 10;
+      cfg.fog.near = +(sceneRadius * 0.4).toFixed(2);
+      cfg.fog.far = +(sceneRadius * 2.5).toFixed(2);
+      scene.fog.near = cfg.fog.near;
+      scene.fog.far = cfg.fog.far;
 
       if (DEBUG) {
         const names = [];
@@ -140,7 +159,7 @@ export function initJourneyScene() {
     });
   }
 
-  /* ---- DEBUG GUI ---- */
+  /* ---- DEBUG GUI (fog only) ---- */
   async function setupGUI() {
     let GUI;
     try {
@@ -150,28 +169,11 @@ export function initJourneyScene() {
       return;
     }
     const gui = new GUI({ title: "Journey scene" });
-    const state = { progress: 0, scrollDriven: true };
 
-    const anim = gui.addFolder("Animation");
-    anim.add(state, "scrollDriven").name("scroll-driven").onChange((on) => { if (st) on ? st.enable() : st.disable(false); });
-    anim.add(state, "progress", 0, 1, 0.001).name("scrub progress").onChange((v) => { if (!state.scrollDriven) apply(v); });
-    const refreshEnd = () => ScrollTrigger.refresh(); // end is a function of cfg
-    anim.add(cfg, "animVh", 0.3, 4, 0.05).name("anim length (vh)").onChange(refreshEnd);
-    anim.add(cfg, "holdPx", 0, 600, 10).name("hold length (px)").onChange(refreshEnd);
-
-    const cam = gui.addFolder("Camera");
-    cam.add(cfg, "useGlbCam").name("use GLB camera").listen();
-    cam.add(camera, "fov", 10, 90, 1).name("fov").onChange(() => camera.updateProjectionMatrix());
-    cam.add({ log() {
-      const p = camera.position;
-      console.log(`camera.position.set(${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)}); fov ${camera.fov}`);
-    } }, "log").name("▶ log camera to console");
-    cam.add({ orbit: false }, "orbit").name("OrbitControls").onChange(async (on) => {
-      if (on && !orbit) {
-        const { OrbitControls } = await import("three/addons/controls/OrbitControls.js");
-        orbit = new OrbitControls(camera, renderer.domElement);
-      }
-      if (orbit) { orbit.enabled = on; orbit.target.copy(cfg.target); orbit.update(); }
-    });
+    // ranges scaled to the model so the sliders land in a usable window
+    const fog = gui.addFolder("Fog");
+    fog.addColor(cfg.fog, "color").name("colour").onChange((v) => scene.fog.color.set(v));
+    fog.add(cfg.fog, "near", 0, sceneRadius * 3, 0.1).name("near").onChange((v) => (scene.fog.near = v));
+    fog.add(cfg.fog, "far", 0, sceneRadius * 6, 0.1).name("far").onChange((v) => (scene.fog.far = v));
   }
 }

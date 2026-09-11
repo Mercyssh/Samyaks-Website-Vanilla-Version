@@ -1,6 +1,6 @@
 /* ============================================================
-   Journey — DOM timeline of the three Acts.
-   (Phase 4 renders the 3D path behind this via .scene-mount.)
+   Journey — intro copy above a full-viewport pinned 3D scene
+   (the camera travel; see js/three/journey-scene.js).
    ============================================================ */
 
 /* Override the centred-grid .section shell: the 3D scene and the timeline
@@ -33,103 +33,21 @@
 }
 /* the scene-mount (position:absolute; inset:0) fills the 16:9 stage */
 
-.journey__content {
-  padding: var(--space-xl) var(--section-pad);
-  display: grid;
-  gap: var(--space-lg);
+/* intro sits ABOVE the pinned scene — the section itself no longer supplies
+   vertical padding, so the intro block owns its own. */
+.journey__intro {
+  max-width: var(--maxw);
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-lg);
 }
-
-.journey__intro { max-width: var(--maxw); }
 
 /* title uses the shared .section-title (css/sections.css) */
 
 .journey__lead {
-  margin-top: var(--space-md);
-  max-width: 64ch;
+  margin: var(--space-md) auto 0;   /* auto sides → block centered on page, like .wib__lead */
+  max-width: 62ch;
   color: var(--fg-dim);
-  font-size: var(--step-2);
-  line-height: 1.4;
-}
-
-/* ---- acts ---- */
-.journey__acts {
-  max-width: var(--maxw);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  position: relative;
-}
-/* connecting spine */
-.journey__acts::before {
-  content: "";
-  position: absolute;
-  left: 6px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, var(--border-strong) 10%, var(--border-strong) 90%, transparent);
-}
-
-.act { position: relative; padding-left: 34px; }
-/* diamond marker (nods to the 3D gems on the path) */
-.act::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 6px;
-  width: 13px;
-  height: 13px;
-  rotate: 45deg;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent-glow);
-}
-
-.act__head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
-.act__years {
-  font-family: var(--font-head);
-  font-weight: 700;
-  color: var(--accent-mid);
+  text-align: center;
   font-size: var(--step-0);
-  letter-spacing: 0.02em;
-}
-.act__title {
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: var(--step-3);
-  color: var(--fg);
-}
-
-.act__built {
-  margin: 0.7rem 0 1.5rem;
-  max-width: 60ch;
-  color: var(--fg-dim);
-  font-size: var(--step-2);
   line-height: 1.35;
 }
-
-.act__nodes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.2rem;
-}
-.node {
-  padding: 1.2rem 1.3rem;
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: var(--bg-elev);
-}
-.node__role {
-  font-size: var(--step--1);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.node__org {
-  font-family: var(--font-head);
-  font-weight: 700;
-  font-size: var(--step-2);
-  color: var(--fg);
-  margin: 0.25rem 0 0.6rem;
-}
-.node__desc { font-size: var(--step--1); color: var(--fg-faint); line-height: 1.45; }

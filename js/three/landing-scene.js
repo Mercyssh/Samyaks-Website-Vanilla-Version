@@ -25,7 +25,10 @@ import { createStage } from "./renderer.js";
 import { buildHandMaterial } from "./hand-material.js";
 
 const MODEL_URL = "./assets/models/landing.glb";
-const DEBUG = new URLSearchParams(location.search).has("debug");
+// scene-scoped debug: landing GUI only on ?debug=landing (or ?debug=all), so
+// tuning another scene's GUI doesn't also pop this one.
+const _dbg = new URLSearchParams(location.search).get("debug");
+const DEBUG = _dbg === "landing" || _dbg === "all";
 
 // TODO(copy): confirm which plane is which (upper = LinkedIn, lower = Mail)
 const LINKS = {
