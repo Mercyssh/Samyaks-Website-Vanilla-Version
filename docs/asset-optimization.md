@@ -37,31 +37,28 @@ I will, or you can just remove that folder's `*_full_mobile.png`.
 
 ---
 
-## Video pass — PLAN (not yet run)
+## Video pass — DONE (2026-09-11)
 
-Current videos total **~64 MB**, all H.264 MP4. They fall in two buckets, which need
-different treatment:
+All videos re-encoded/remuxed **in place** (same `.mp4` filenames → no code changes).
+Per the confirmed audio facts: **only the media-section interview clips carry audio**;
+every other video is a muted decorative loop, so audio was stripped from those.
 
-| Bucket | Files | Now | Issue |
+**Result: ~61 MB → ~12.7 MB (~79% smaller).**
+
+| File | Before | What changed | After |
 |---|---|---|---|
-| **Decorative loops** (muted, background) | `card2/Simulations x Employability` (29 MB), `…Livelihoods` (21 MB), `card1 thmb`, `card2 thmb` | 1080p **60 fps ~14 Mbps**, some with an **audio track that's never heard** | wildly over-spec for a ~600 px muted loop |
-| **Content clips** (audio matters) | `recognition/media/ndtv.mp4`, `bbc.mp4` | 720p ~0.5–1 Mbps, real interviews | already lean; audio must stay |
+| what-i-build/card2/Simulations x Employability.mp4 | 1920×1080 · 60 fps · ~14 Mbps · 28.3 MB | H.264, →1280×720, →30 fps, **audio stripped**, CRF 28, faststart | 1280×720 · 1.9 MB |
+| what-i-build/card2/Simulations x Livelihoods.mp4 | 1920×1080 · 24 fps · ~3.5 Mbps · 20.5 MB | H.264, →1280×720, **audio stripped**, CRF 28, faststart | 1280×720 · 2.9 MB |
+| what-i-build/card2 thmb.mp4 | 500×800 · 24 fps · ~3.6 Mbps · 5.7 MB | H.264, kept res, **audio stripped**, CRF 28, faststart | 500×800 · 0.55 MB |
+| what-i-build/card1 thmb.mp4 | 1376×768 · 24 fps · ~2.3 Mbps · 1.6 MB | H.264, →1280×714, no audio, CRF 28, faststart | 1280×714 · 0.8 MB |
+| recognition/media/ndtv.mp4 | 1276×720 · 30 fps · ~0.5 Mbps · 3.0 MB · audio | **remux only** (+faststart); audio + quality untouched | 1276×720 · 3.0 MB |
+| recognition/media/bbc.mp4 | 640×362 · 30 fps · ~0.26 Mbps · 3.7 MB · audio | **remux only** (+faststart); audio + quality untouched | 640×362 · 3.7 MB |
 
-### Steps (ffmpeg is installed locally)
-For the **decorative loops** — the ~50 MB of easy wins:
-1. Drop to **30 fps**, **strip audio** (`-an`), scale to ~2× display width (≈720p is plenty; likely less).
-2. Encode two deliverables: **AV1/VP9 WebM** (smallest) + an **H.264 MP4 fallback** for Safari, and add both `<source>`s.
-3. Add `-movflags +faststart` (MP4) so playback starts before full download.
-4. Generate a **poster** frame (first frame → WebP) so nothing loads until in view.
-Expected: those two 21–29 MB files → **~1–3 MB each**.
+The two interview clips were already lean, so they were only remuxed to move the `moov`
+atom to the front (progressive playback) — no re-encode, no quality loss.
 
-For the **content clips**: keep audio + resolution, just re-encode at a sane CRF and add the WebM/MP4 pair + faststart. Modest savings, no quality loss.
-
-### Automated or needs you?
-**Semi-automated.** The encoding itself is a scriptable ffmpeg batch I can run in one pass.
-Three decisions need **your** input first, because they change output, not just size:
-- **Which loops are truly muted/decorative** (safe to strip audio + drop fps) vs. any that should keep sound.
-- **Acceptable resolution** for each loop (I'll propose per file from its on-screen size; you confirm).
-- **A quality eyeball** after encoding — compression artefacts in motion are subjective, so you should spot-check the re-encoded loops before we delete originals.
-
-Ping me when you want to run it and I'll propose exact per-file targets first.
+### Optional further win (not done — needs a code change)
+Videos are emitted as single `<video src>` tags. Adding **VP9/AV1 WebM** alongside the MP4
+(dual `<source>`) would shave roughly another 30–50% off the loops, but it requires
+refactoring the `<video>` emitters in `what-i-build.js`, `media.js`, and the two mobile
+modules to output paired sources. Say the word if you want that pass.
