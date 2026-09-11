@@ -624,6 +624,10 @@ export function initOverlay() {
     el.hidden = false;
     paint(projects[0]);
     document.body.classList.add("wib-overlay-open");
+    // reset BOTH scroll axes on (re)open: vertical content (.wib-overlay__scroll)
+    // to the top and the horizontal pill row (.wib-ov__tabs) to the left. Done
+    // post-layout so momentum/restored scroll positions on mobile don't linger.
+    requestAnimationFrame(() => { scrollEl.scrollTop = 0; tabsEl.scrollLeft = 0; });
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("is-open")));
   };
 

@@ -72,7 +72,7 @@ body.m-overlay-open { overflow: hidden; }
   width: 100%;
   height: auto;
   margin-top: 16px;
-  border-radius: var(--r-md);
+  /* border-radius: var(--r-md); */
   transform: translateY(16px);
   opacity: 0;
   transition: transform 0.32s var(--ease-out), opacity 0.32s ease;
@@ -105,7 +105,7 @@ body.m-overlay-open { overflow: hidden; }
   html { overflow-x: clip; }
 
   /* ---- section shells reflow to natural height on mobile ---- */
-  .section-title { font-size: clamp(1.9rem, 8vw, 2.7rem); }
+  .section-title { font-size: clamp(2.43rem, 10.2vw, 3.45rem); }
   .abilities, .media { min-height: auto; }
   .abilities {
     gap: clamp(1.25rem, 5vw, 2rem);
@@ -352,7 +352,22 @@ body.m-overlay-open { overflow: hidden; }
     will-change: transform;
     -webkit-user-select: none; user-select: none;
   }
-  .abil-m__card img { display: block; width: 100%; height: auto; pointer-events: none; }
+  .abil-m__card img { display: block; width: 100%; height: auto; pointer-events: none; border-radius: var(--r-md); }
+  /* match the desktop card edge: 1px white ring, faded top→bottom, same radius
+     (no hover on mobile, so it stays white) */
+  .abil-m__card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: var(--r-md);
+    padding: 1px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.2));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
 
   /* ========================================================
      Media — mobile
@@ -501,4 +516,14 @@ body.m-overlay-open { overflow: hidden; }
   .wib-overlay__bar { flex-direction: column; align-items: stretch; gap: 10px; }
   .wib-overlay__close { order: -1; align-self: flex-end; }
   .wib-ov__tabs { order: 0; flex: 0 0 auto; }
+
+  /* overlay card stats → two-column grid (desktop keeps its single nowrap row) */
+  .wib-ov__body > .wib-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 16px;
+  }
+  .wib-ov__body > .wib-stats .wib-stat { flex: initial; }
+  /* a lone stat spans both columns instead of sitting half-width */
+  .wib-ov__body > .wib-stats .wib-stat:only-child { grid-column: 1 / -1; }
 }

@@ -109,6 +109,11 @@ export function initMedia_Mobile() {
   const panels = MEDIA_CONFIG.panels || [];
   if (!panels.length) return;
 
+  // mobile uses the short section title (desktop keeps the full one).
+  // data-title drives the offset echo pseudo-element, so update both.
+  const title = section.querySelector(".section-title");
+  if (title) { title.textContent = "Recognition"; title.setAttribute("data-title", "Recognition"); }
+
   const overlay = getImageOverlay();
 
   const wrap = document.createElement("div");
