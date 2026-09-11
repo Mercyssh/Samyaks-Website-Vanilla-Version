@@ -252,9 +252,12 @@ export function initLandingSceneMobile() {
       if (DEBUG) console.log("[landing-mobile] scroll:", scrollActions.length,
         "shuffle:", shuffleActions.length, "conflict:", conflictScroll.length);
 
-      // hand: bespoke fresnel material stack (copied from the desktop scene)
+      // GLTFLoader sanitizes node names ("cover card"→"cover_card",
+      // "Plane.001"→"Plane001"), so match on a normalized name, not the raw one.
+      const norm = (s) => (s || "").toLowerCase().replace(/[\s._]/g, "");
       hand = root.getObjectByName("hand");
-      const coverCard = root.getObjectByName("cover card");
+      let coverCard = null;
+      root.traverse((o) => { if (norm(o.name) === "covercard") coverCard = o; });
 
       // every material UNLIT (MeshBasic); backface culling (FrontSide) ONLY on
       // the cover card, everything else DoubleSide. Hand is skipped — it gets
@@ -264,16 +267,20 @@ export function initLandingSceneMobile() {
         toUnlit(o, { side: within(o, coverCard) ? THREE.FrontSide : THREE.DoubleSide });
       });
 
-      // social icon planes: half-opacity (desktop's unhovered value) + tappable
-      [["Plane", LINKS.linkedin], ["Plane.001", LINKS.mail]].forEach(([name, url]) => {
-        const node = root.getObjectByName(name);
-        node && node.traverse((o) => {
-          if (!o.isMesh) return;
-          toUnlit(o, { side: THREE.DoubleSide, opacity: 0.5 });
-          o.userData.iconUrl = url;
-          iconMeshes.push(o);
-        });
+      // social icon planes: half-opacity (desktop's unhovered value) + tappable.
+      // Plane → LinkedIn, Plane.001 → mail.
+      const iconNodes = [];
+      root.traverse((o) => {
+        const n = norm(o.name);
+        if (n === "plane") iconNodes.push({ node: o, url: LINKS.linkedin });
+        else if (n === "plane001") iconNodes.push({ node: o, url: LINKS.mail });
       });
+      iconNodes.forEach(({ node, url }) => node.traverse((o) => {
+        if (!o.isMesh) return;
+        toUnlit(o, { side: THREE.DoubleSide, opacity: 0.5 });
+        o.userData.iconUrl = url;
+        iconMeshes.push(o);
+      }));
 
       if (hand) handKit = buildHandMaterial(hand);
 
