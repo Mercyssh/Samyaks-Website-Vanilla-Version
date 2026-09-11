@@ -30,10 +30,14 @@ const PLACEHOLDER = "./assets/img/placeholder.svg";
    |----------------|------------------------------------------------|
    | videoAspect    | default aspect of a video well (w / h)         |
    | swipeThreshold | px of horizontal drag to change item           |
+   | reserveExtra   | px added on top of the first item's height when |
+   |                | reserving the card container (absorbs taller    |
+   |                | items so switching never reflows the layout)    |
    ============================================================ */
 const CONFIG = {
   videoAspect: "16 / 9",
   swipeThreshold: 60,
+  reserveExtra: 10,
 };
 
 /* Horizontal-only "scroll into view" — never moves the window vertically
@@ -62,6 +66,25 @@ function toEmbedUrl(url) {
   } catch { return url; }
 }
 
+/** youtube watch/short URL → its id (for the thumbnail), or "" if not youtube. */
+function youtubeId(url) {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") return u.pathname.slice(1);
+    if (host.endsWith("youtube.com")) return u.searchParams.get("v") || u.pathname.split("/").pop() || "";
+    return "";
+  } catch { return ""; }
+}
+
+/** derive a poster from a youtube video when none was supplied. hqdefault
+    always exists; the 16:9 well cover-crops its letterbox bars away. */
+function autoPoster(url) {
+  const id = youtubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "";
+}
+
 /** article / image / video, inferred the same way the desktop paint does. */
 function itemType(it) {
   if (it.video) return "video";
@@ -72,7 +95,7 @@ function itemType(it) {
 function mediaFrame(it) {
   const type = itemType(it);
   if (type === "video") {
-    const poster = it.poster || it.img || PLACEHOLDER;
+    const poster = it.poster || it.img || autoPoster(it.video) || PLACEHOLDER;
     return `<div class="media-m__frame"><div class="media-m__well" style="--aspect:${it.mediaAspect || CONFIG.videoAspect}" data-video="${it.video}">
         <img src="${poster}" alt="" />
         <button type="button" class="media-m__play" aria-label="Play video"><span></span></button>
@@ -134,27 +157,18 @@ export function initMedia_Mobile() {
   const cardEl = wrap.querySelector(".media-m__card");
   const dotsEl = wrap.querySelector(".media-m__dots");
 
-  /* Smoothly grow/shrink the card container between two content heights so
-     switching item/category doesn't snap the layout (and the page scroll)
-     up or down. Clips during the tween, then hands height back to `auto`. */
-  const CARD_HEIGHT_MS = 320;
-  const animateCardHeight = (fromH) => {
-    cardWrap.style.height = "auto";
-    const toH = cardWrap.offsetHeight;
-    if (!fromH || fromH === toH) return;
-    cardWrap.style.overflow = "hidden";
-    cardWrap.style.height = fromH + "px";
-    void cardWrap.offsetHeight; // commit the start height before transitioning
-    cardWrap.style.transition = `height ${CARD_HEIGHT_MS}ms var(--ease-out)`;
-    cardWrap.style.height = toH + "px";
-    const done = (e) => {
-      if (e.target !== cardWrap || e.propertyName !== "height") return;
-      cardWrap.style.transition = "";
-      cardWrap.style.height = "";
-      cardWrap.style.overflow = "";
-      cardWrap.removeEventListener("transitionend", done);
-    };
-    cardWrap.addEventListener("transitionend", done);
+  /* Reserve a fixed height on the card container: the first (default-open)
+     item's height + CONFIG.reserveExtra. Always measured from item 0 so the
+     reservation never drifts as you switch items, and the buffer absorbs the
+     taller items so switching never reflows the layout / jumps the scroll. */
+  const reserveHeight = () => {
+    const first = items()[0];
+    if (!first) return;
+    const saved = cardEl.innerHTML;
+    cardEl.innerHTML = cardHTML(first);
+    const h = cardEl.offsetHeight;
+    cardEl.innerHTML = saved;
+    cardWrap.style.minHeight = (h + CONFIG.reserveExtra) + "px";
   };
 
   let catIndex = 0;
@@ -218,13 +232,19 @@ export function initMedia_Mobile() {
   const paintCard = () => {
     const it = items()[itemIndex];
     if (!it) { cardEl.innerHTML = ""; return; }
-    const prevH = cardWrap.offsetHeight; // measure before swapping content
     cardEl.innerHTML = cardHTML(it);
-    animateCardHeight(prevH);
     // restart the entrance animation
     cardEl.classList.remove("is-swap");
     void cardEl.offsetWidth;
     cardEl.classList.add("is-swap");
+
+    // A card's image measured before it loads reports height 0; once one
+    // decodes, recompute the reservation (always from item 0, so no drift).
+    cardEl.querySelectorAll(".media-m__img, .media-m__well img").forEach((img) => {
+      if (img.complete) return;
+      const cat = catIndex;
+      img.addEventListener("load", () => { if (cat === catIndex) reserveHeight(); }, { once: true });
+    });
 
     const readBtn = cardEl.querySelector("[data-read]");
     if (readBtn) readBtn.addEventListener("click", () => overlay.open(it.article, it.title || it.label));
@@ -268,6 +288,7 @@ export function initMedia_Mobile() {
     });
     renderChips();
     renderDots();
+    reserveHeight();
     selectItem(0);
   };
 
