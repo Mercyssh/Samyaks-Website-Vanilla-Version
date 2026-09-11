@@ -49,11 +49,21 @@
 
   <!-- ===== Nav ===== -->
   <nav class="nav" id="nav" aria-label="Primary">
-    <a class="nav__link" href="#landing"      data-nav>Home</a>
-    <a class="nav__link" href="#what-i-build"  data-nav>What I build</a>
-    <a class="nav__link" href="#abilities"     data-nav>Abilities</a>
-    <a class="nav__link" href="#journey"       data-nav>Journey</a>
-    <a class="nav__link" href="#media"         data-nav>Media</a>
+    <!-- collapsed bar (mobile only): active section name + hamburger -->
+    <div class="nav__bar">
+      <span class="nav__current" id="navCurrent" aria-live="polite">Home</span>
+      <button class="nav__toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <span class="nav__burger" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+    </div>
+    <!-- links: desktop pill row / mobile dropdown panel -->
+    <div class="nav__links" id="navLinks">
+      <a class="nav__link" href="#landing"      data-nav>Home</a>
+      <a class="nav__link" href="#what-i-build"  data-nav>What I build</a>
+      <a class="nav__link" href="#abilities"     data-nav>Abilities</a>
+      <a class="nav__link" href="#journey"       data-nav>Journey</a>
+      <a class="nav__link" href="#media"         data-nav>Media</a>
+    </div>
   </nav>
 
   <!-- ===== Page ===== -->

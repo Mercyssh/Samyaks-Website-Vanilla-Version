@@ -9,7 +9,6 @@
   translate: -50% 0;
   z-index: var(--z-nav);
   display: flex;
-  gap: 4px;
   padding: 6px;
   border-radius: var(--r-pill);
   background: rgba(18, 18, 18, 0.6);
@@ -28,6 +27,10 @@
   pointer-events: none;
 }
 
+/* collapsed bar is desktop-hidden; the links are the pill row */
+.nav__bar { display: none; }
+.nav__links { display: flex; gap: 4px; }
+
 .nav__link {
   position: relative;
   padding: 8px 18px;
@@ -45,8 +48,120 @@
   background: var(--accent);
 }
 
-/* mobile: collapse handled in a later phase */
-@media (max-width: 640px) {
-  .nav { gap: 0; padding: 5px; }
-  .nav__link { padding: 8px 12px; }
+/* ============================================================
+   Mobile: collapse the pill row behind a hamburger (per
+   Old Files/ScrollNav.tsx). The bar shows the active section
+   name + a toggle; the links become a dropdown panel anchored
+   under the bar at the right edge.
+   ============================================================ */
+@media (max-width: 768px) {
+  .nav {
+    left: auto;
+    right: 14px;
+    top: 14px;
+    translate: none;
+    display: block;      /* bar in flow; dropdown is absolutely positioned */
+    padding: 5px;
+    border-radius: var(--r-md);
+  }
+  .nav.is-hidden { translate: 0 -160%; }   /* not centred on mobile */
+
+  .nav__bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 12px;
+  }
+  .nav__current {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 46vw;
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav__toggle {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+  .nav.is-open .nav__toggle {
+    border-color: var(--accent);
+    background: rgba(156, 227, 37, 0.14);
+    color: var(--accent);
+  }
+
+  /* hamburger → X */
+  .nav__burger { display: flex; flex-direction: column; gap: 4px; width: 18px; }
+  .nav__burger i {
+    display: block;
+    width: 18px;
+    height: 1.8px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.22s ease, opacity 0.18s ease;
+  }
+  .nav.is-open .nav__burger i:nth-child(1) { transform: translateY(5.8px) rotate(45deg); }
+  .nav.is-open .nav__burger i:nth-child(2) { opacity: 0; }
+  .nav.is-open .nav__burger i:nth-child(3) { transform: translateY(-5.8px) rotate(-45deg); }
+
+  /* dropdown panel */
+  .nav__links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    min-width: 210px;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: var(--r-md);
+    background: rgba(18, 18, 18, 0.72);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(18px) saturate(1.5);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    transform-origin: top right;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  }
+  .nav.is-open .nav__links {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .nav__link {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: var(--step-0);
+    color: var(--fg-dim);
+    white-space: normal;
+    text-align: center;
+  }
+  .nav__link.is-active {
+    color: var(--accent);
+    background: rgba(156, 227, 37, 0.12);
+    border-color: var(--accent);
+  }
 }

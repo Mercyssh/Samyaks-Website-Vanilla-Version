@@ -12,12 +12,33 @@ export function initNav({ lenis } = {}) {
     .map((l) => document.querySelector(l.getAttribute("href")))
     .filter(Boolean);
 
-  /* ---- smooth anchor scroll ---- */
+  /* ---- mobile collapse (hamburger dropdown; see css/nav.css) ---- */
+  const toggle = document.getElementById("navToggle");
+  const current = document.getElementById("navCurrent");
+  const closeMenu = () => {
+    nav.classList.remove("is-open");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  };
+  if (toggle) {
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = nav.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", String(open));
+    });
+    // tap outside the bar / dropdown closes it
+    document.addEventListener("click", (e) => {
+      if (nav.classList.contains("is-open") && !e.target.closest("#nav")) closeMenu();
+    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+  }
+
+  /* ---- smooth anchor scroll (and close the mobile menu on pick) ---- */
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
       const target = document.querySelector(link.getAttribute("href"));
       if (!target) return;
       e.preventDefault();
+      closeMenu();
       if (lenis) lenis.scrollTo(target, { offset: 0 });
       else target.scrollIntoView({ behavior: "smooth" });
     });
@@ -29,7 +50,7 @@ export function initNav({ lenis } = {}) {
   const onScroll = () => {
     const y = window.scrollY;
     if (Math.abs(y - lastY) > 6) {
-      if (y > lastY && y > 120) nav.classList.add("is-hidden");
+      if (y > lastY && y > 120) { nav.classList.add("is-hidden"); closeMenu(); }
       else nav.classList.remove("is-hidden");
       lastY = y;
     }
@@ -51,7 +72,10 @@ export function initNav({ lenis } = {}) {
   const setActive = (id) => {
     links.forEach((l) => l.classList.remove("is-active"));
     const link = linkFor.get(id);
-    if (link) link.classList.add("is-active");
+    if (link) {
+      link.classList.add("is-active");
+      if (current) current.textContent = link.textContent; // mobile bar label
+    }
   };
 
   const io = new IntersectionObserver(
