@@ -13,6 +13,10 @@
   padding: var(--space-lg) var(--section-pad);
 }
 
+/* mobile-only tap hint (shown by js/three/landing-scene.mobile.js) —
+   hidden on desktop; mobile styling + reveal in css/mobile.css */
+.landing__taphint { display: none; }
+
 /* dot grid — currently DISABLED via .landing__grid--off (see docs/Guides.md) */
 .landing__grid {
   position: absolute;
