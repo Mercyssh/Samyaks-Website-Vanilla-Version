@@ -1,0 +1,6 @@
+# Local-only / reference material — not needed in the deployed repo
+.claude/
+docs/
+Old Files/
+Other Scene Recordings/
+Spline Scene Recordings/
