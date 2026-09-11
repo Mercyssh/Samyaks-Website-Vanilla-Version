@@ -74,14 +74,10 @@ export function initJourneyScene() {
       scene.add(root);
       root.updateMatrixWorld(true);
 
-      // size → fog scale: seed near/far from the model so some fog is visible
-      // by default regardless of the scene's unit scale.
+      // model radius → only used to scale the ?debug fog sliders' ranges;
+      // the fog near/far themselves are baked constants in cfg.fog above.
       const sphere = new THREE.Box3().setFromObject(root).getBoundingSphere(new THREE.Sphere());
       sceneRadius = sphere.radius || 10;
-      cfg.fog.near = +(sceneRadius * 0.4).toFixed(2);
-      cfg.fog.far = +(sceneRadius * 2.5).toFixed(2);
-      scene.fog.near = cfg.fog.near;
-      scene.fog.far = cfg.fog.far;
 
       if (DEBUG) {
         const names = [];
