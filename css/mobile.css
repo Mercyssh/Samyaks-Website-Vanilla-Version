@@ -625,7 +625,7 @@ body.m-overlay-open { overflow: hidden; }
 
   .journey-m {
     --jm-awards-h: 74px;    /* height reserved at the bottom for the carousel */
-    --jm-fade: 10%;         /* how far up from the canvas' bottom edge it fades */
+    --jm-fade: 5%;         /* how far up from the canvas' bottom edge it fades */
     --jm-gold: #f5a623;     /* awards card border + title colour */
     display: flex;
     flex-direction: column;
