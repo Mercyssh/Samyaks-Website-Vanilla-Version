@@ -25,6 +25,94 @@ const OUT_SCALE = 0.7;        // how far the outgoing card scales down (1 = none
 
 export const PILLARS = [
   {
+    tab: "Crafting Learning Simulations",
+    title: "Crafting Learning Simulations",
+    tint: "#0E2029",
+    video: "./assets/img/what-i-build/card2%20thmb.mp4",
+    tags: ["Workverse", "Kamlaverse (SEWA)", "Ishara (Phoenix Hospitality)"],
+    body: [
+      "Simulations are a powerful tool to train the brain to do what AI cannot.",
+      "I design immersive simulations where people step into realistic workplace scenarios, navigating ambiguity, making high-stakes decisions and collaborating with complex personalities. Each simulation builds the capabilities AI cannot replace: judgement, creative problem-solving and the ability to act when there is no right answer.",
+    ],
+    stats: [
+      { n: "50,000+", l: "learners trained" },
+      { n: "40+", l: "universities and organisations" },
+      { n: "3", l: "virtual simulation platforms built" },
+    ],
+    projects: [
+      {
+        label: "Simulations x Employability",
+        title: "Workverse",
+        video: "./assets/img/what-i-build/card2/Simulations%20x%20Employability.mp4",
+        byline: "A simulated world of work where graduates master the skills AI can't replace.",
+        stats: [
+          { n: "60,000+", l: "graduates trained" },
+          { n: "40+", l: "universities and organisations" },
+          { n: "5", l: "simulated environments" },
+          { n: "20+", l: "workplace characters" },
+        ],
+        sections: [
+          {
+            h: "The problem",
+            body: `India produces over 4 crore graduates a year. The capabilities that will define success in an AI-driven workplace (judgement, creative problem-solving, collaboration under pressure) are the exact ones no classroom is designed to teach. Soft skills are recognised as essential by India's National Education Policy, yet for most institutions they remain a tick-box exercise. Graduates encounter real workplace dynamics for the first time only after they start working.`,
+          },
+          {
+            h: "The design",
+            body: `You can't teach resourcefulness or emotional intelligence through instruction. But you can build a world where people have no choice but to exercise it. Workverse drops learners into a startup where they enter as fresh recruits and compete to become CEO. As they progress, they work across five distinct environments, handling difficult clients, navigating office politics, managing crises with incomplete information and collaborating with over twenty different personalities, each with their own motivations and blind spots.
+The experience feels like a story you're living through, not a course you're sitting through. Every scenario is written as a narrative arc with real emotional stakes. The characters respond differently depending on how you approach them. The learning happens because you're too absorbed in the situation to realise you're being trained.`,
+          },
+          {
+            h: "The innovation",
+            body: `While learners are immersed in the simulation, the system is quietly observing, tracking how they respond across scenarios to build a Workplace Intelligence Profile. This isn't a test score. It's an industry-aligned portrait of how someone thinks, decides and collaborates, drawn from their actual behaviour across dozens of situations. For the first time, graduates can show employers what they're capable of, beyond a degree certificate.`,
+          },
+        ],
+      },
+      {
+        label: "Simulations x Livelihoods",
+        title: "Kamlaverse (SEWA)",
+        video: "./assets/img/what-i-build/card2/Simulations%20x%20Livelihoods.mp4",
+        byline: "Training rural women to run modern cafes, without a single classroom session.",
+        stats: [],
+        sections: [
+          {
+            h: "The problem",
+            body: `SEWA, the world's largest collective of self-employed women, runs a growing network of Kamla farm-to-table cafes. Thousands of women needed to be trained in modern hospitality standards, but most came from rural backgrounds with limited exposure to the kind of customer interactions a contemporary cafe demands. Traditional classroom training couldn't bridge that gap at scale: it was too slow, too abstract and too disconnected from the situations these women would actually face.`,
+          },
+          {
+            h: "The design",
+            body: `Kamlaverse recreates the Kamla cafe as an interactive simulation where participants alternate between the roles of guest and staff. They practise greeting modern customers, managing orders, handling unexpected situations and internalising service protocols, all through scenario-based role play with an AI mentor providing real-time feedback.
+The design bridges two worlds: modern hospitality standards and the lived reality of rural women. Instead of written manuals or lecture-style instruction, learning happens through visual storytelling and repeated practice in situations that mirror exactly what they'll encounter on the cafe floor.`,
+          },
+          {
+            h: "The innovation",
+            body: `The breakthrough wasn't the technology. It was the adaptation. Taking modern service frameworks and re-expressing them in a language, pace and context that felt natural to women who had never worked in formal hospitality. The simulation gave them a safe space to build confidence before they ever served a real customer, and that confidence is now visible across Kamla cafes as SEWA members deliver consistent customer experiences while expanding livelihood opportunities for women across Gujarat.`,
+          },
+        ],
+      },
+      {
+        label: "Simulations x Inclusion",
+        title: "Isharaverse (Phoenix Hospitality)",
+        img: "./assets/img/what-i-build/card2/Simulations%20x%20Inclusion.webp",
+        byline: "A training simulation for a restaurant chain staffed entirely by deaf and mute professionals.",
+        stats: [],
+        sections: [
+          {
+            h: "The problem",
+            body: `Phoenix Hospitality runs Ishara, a restaurant chain that employs deaf and mute staff. The challenge wasn't just hospitality training. It was rethinking how training itself works when spoken language, verbal feedback and audio cues are entirely off the table. Every assumption conventional training makes about how people receive information had to be discarded.`,
+          },
+          {
+            h: "The design",
+            body: `The simulation was rebuilt from the ground up around a fully visual and gestural interaction model. Every element (customer interactions, service protocols, feedback from the AI mentor) was redesigned to work without sound or text-heavy instruction. The interface didn't add accessibility as a feature; accessibility was the design language itself. Staff learn by doing: navigating realistic restaurant scenarios through visual cues, gestural prompts and spatial storytelling.`,
+          },
+          {
+            h: "The innovation",
+            body: `Designing for the hardest constraint first unlocked something larger. The visual-first training language turned out to be more intuitive for all learners, not just deaf and mute staff. What began as an inclusion challenge became a proof point: when you design for the edges, the centre benefits too.`,
+          },
+        ],
+      },
+    ],
+  },
+  {
     tab: "Making Nonprofits AI-Native",
     title: "Making Nonprofits AI-Native",
     tint: "#16240E",
@@ -139,94 +227,6 @@ One AI-augmented program manager now delivers 3x the output. Decisions are data-
           {
             h: "The innovation",
             body: `The foundation's beneficiaries are film industry workers, many of them daily wage earners with limited digital literacy. The AI system had to be designed for simplicity and trust, not sophistication. The real challenge wasn't the technology; it was making sure a carpenter or a lighting technician could interact with it as naturally as they'd speak to a program coordinator. When AI serves a welfare program, the bar isn't just efficiency. It's whether the person on the other end still feels seen and heard.`,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    tab: "Crafting Learning Simulations",
-    title: "Crafting Learning Simulations",
-    tint: "#0E2029",
-    video: "./assets/img/what-i-build/card2%20thmb.mp4",
-    tags: ["Workverse", "Kamlaverse (SEWA)", "Ishara (Phoenix Hospitality)"],
-    body: [
-      "Simulations are a powerful tool to train the brain to do what AI cannot.",
-      "I design immersive simulations where people step into realistic workplace scenarios, navigating ambiguity, making high-stakes decisions and collaborating with complex personalities. Each simulation builds the capabilities AI cannot replace: judgement, creative problem-solving and the ability to act when there is no right answer.",
-    ],
-    stats: [
-      { n: "50,000+", l: "learners trained" },
-      { n: "40+", l: "universities and organisations" },
-      { n: "3", l: "virtual simulation platforms built" },
-    ],
-    projects: [
-      {
-        label: "Simulations x Employability",
-        title: "Workverse",
-        video: "./assets/img/what-i-build/card2/Simulations%20x%20Employability.mp4",
-        byline: "A simulated world of work where graduates master the skills AI can't replace.",
-        stats: [
-          { n: "60,000+", l: "graduates trained" },
-          { n: "40+", l: "universities and organisations" },
-          { n: "5", l: "simulated environments" },
-          { n: "20+", l: "workplace characters" },
-        ],
-        sections: [
-          {
-            h: "The problem",
-            body: `India produces over 4 crore graduates a year. The capabilities that will define success in an AI-driven workplace (judgement, creative problem-solving, collaboration under pressure) are the exact ones no classroom is designed to teach. Soft skills are recognised as essential by India's National Education Policy, yet for most institutions they remain a tick-box exercise. Graduates encounter real workplace dynamics for the first time only after they start working.`,
-          },
-          {
-            h: "The design",
-            body: `You can't teach resourcefulness or emotional intelligence through instruction. But you can build a world where people have no choice but to exercise it. Workverse drops learners into a startup where they enter as fresh recruits and compete to become CEO. As they progress, they work across five distinct environments, handling difficult clients, navigating office politics, managing crises with incomplete information and collaborating with over twenty different personalities, each with their own motivations and blind spots.
-The experience feels like a story you're living through, not a course you're sitting through. Every scenario is written as a narrative arc with real emotional stakes. The characters respond differently depending on how you approach them. The learning happens because you're too absorbed in the situation to realise you're being trained.`,
-          },
-          {
-            h: "The innovation",
-            body: `While learners are immersed in the simulation, the system is quietly observing, tracking how they respond across scenarios to build a Workplace Intelligence Profile. This isn't a test score. It's an industry-aligned portrait of how someone thinks, decides and collaborates, drawn from their actual behaviour across dozens of situations. For the first time, graduates can show employers what they're capable of, beyond a degree certificate.`,
-          },
-        ],
-      },
-      {
-        label: "Simulations x Livelihoods",
-        title: "Kamlaverse (SEWA)",
-        video: "./assets/img/what-i-build/card2/Simulations%20x%20Livelihoods.mp4",
-        byline: "Training rural women to run modern cafes, without a single classroom session.",
-        stats: [],
-        sections: [
-          {
-            h: "The problem",
-            body: `SEWA, the world's largest collective of self-employed women, runs a growing network of Kamla farm-to-table cafes. Thousands of women needed to be trained in modern hospitality standards, but most came from rural backgrounds with limited exposure to the kind of customer interactions a contemporary cafe demands. Traditional classroom training couldn't bridge that gap at scale: it was too slow, too abstract and too disconnected from the situations these women would actually face.`,
-          },
-          {
-            h: "The design",
-            body: `Kamlaverse recreates the Kamla cafe as an interactive simulation where participants alternate between the roles of guest and staff. They practise greeting modern customers, managing orders, handling unexpected situations and internalising service protocols, all through scenario-based role play with an AI mentor providing real-time feedback.
-The design bridges two worlds: modern hospitality standards and the lived reality of rural women. Instead of written manuals or lecture-style instruction, learning happens through visual storytelling and repeated practice in situations that mirror exactly what they'll encounter on the cafe floor.`,
-          },
-          {
-            h: "The innovation",
-            body: `The breakthrough wasn't the technology. It was the adaptation. Taking modern service frameworks and re-expressing them in a language, pace and context that felt natural to women who had never worked in formal hospitality. The simulation gave them a safe space to build confidence before they ever served a real customer, and that confidence is now visible across Kamla cafes as SEWA members deliver consistent customer experiences while expanding livelihood opportunities for women across Gujarat.`,
-          },
-        ],
-      },
-      {
-        label: "Simulations x Inclusion",
-        title: "Isharaverse (Phoenix Hospitality)",
-        img: "./assets/img/what-i-build/card2/Simulations%20x%20Inclusion.webp",
-        byline: "A training simulation for a restaurant chain staffed entirely by deaf and mute professionals.",
-        stats: [],
-        sections: [
-          {
-            h: "The problem",
-            body: `Phoenix Hospitality runs Ishara, a restaurant chain that employs deaf and mute staff. The challenge wasn't just hospitality training. It was rethinking how training itself works when spoken language, verbal feedback and audio cues are entirely off the table. Every assumption conventional training makes about how people receive information had to be discarded.`,
-          },
-          {
-            h: "The design",
-            body: `The simulation was rebuilt from the ground up around a fully visual and gestural interaction model. Every element (customer interactions, service protocols, feedback from the AI mentor) was redesigned to work without sound or text-heavy instruction. The interface didn't add accessibility as a feature; accessibility was the design language itself. Staff learn by doing: navigating realistic restaurant scenarios through visual cues, gestural prompts and spatial storytelling.`,
-          },
-          {
-            h: "The innovation",
-            body: `Designing for the hardest constraint first unlocked something larger. The visual-first training language turned out to be more intuitive for all learners, not just deaf and mute staff. What began as an inclusion challenge became a proof point: when you design for the edges, the centre benefits too.`,
           },
         ],
       },
