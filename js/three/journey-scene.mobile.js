@@ -51,8 +51,8 @@ export function initJourneySceneMobile() {
   // they assume journey-mobile.glb shares the desktop model's scale — see the
   // change notes for the re-tune path if the mobile model differs.
   const cfg = {
-    animVh: 2.0, holdPx: 90, useGlbCam: true,
-    fog: { color: "#0a0a0a", near: 10, far: 16 },
+    animVh: 1.0, holdPx: 110, useGlbCam: true,
+    fog: { color: "#0a0a0a", near: 10, far: 13 },
   };
   scene.fog = new THREE.Fog(cfg.fog.color, cfg.fog.near, cfg.fog.far);
 
