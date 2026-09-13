@@ -237,6 +237,7 @@ One AI-augmented program manager now delivers 3x the output. Decisions are data-
     title: "Building Movements for Behavioural Change",
     tint: "#231A2C",
     img: "./assets/img/what-i-build/card3%20thmb.webp",
+    mobileVideo: "./assets/img/what-i-build/Card3%20thmb-mob.webm",   // mobile front-card only
     tags: ["UN Young Changemakers Conclave", "Operation Black Dot", "Election Commission of India", "Green Batti Project"],
     body: [
       "When behavioural science, influencers and storytelling meet, millions shift how they think and act. I build movements that shape how people engage with critical cause areas such as preventive healthcare, financial inclusion, education and nutrition.",

@@ -96,8 +96,10 @@ function scramble(el, to, { enabled = true } = {}) {
 const useRotator = () => CONFIG.statLayout === "rotator";
 
 function cardMedia(p) {
-  if (p.video)
-    return `<video src="${p.video}" muted loop playsinline preload="metadata" disablepictureinpicture></video>`;
+  // mobileVideo overrides the shared img/video for the mobile front card only
+  const vid = p.mobileVideo || p.video;
+  if (vid)
+    return `<video src="${vid}" muted loop playsinline preload="metadata" disablepictureinpicture></video>`;
   return `<img src="${p.img || "./assets/img/placeholder.svg"}" alt="${p.title}" loading="lazy" />`;
 }
 
